@@ -7,7 +7,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function AppLayout() {
     return (
-      <Tabs>
+      <Tabs
+      screenOptions={{header: () => null}}>
         <Tabs.Screen
           name="feed"
           options={{
