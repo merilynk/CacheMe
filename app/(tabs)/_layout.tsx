@@ -1,55 +1,49 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable, useColorScheme } from 'react-native';
-
-import Colors from '../../constants/Colors';
-
+import { Tabs } from "expo-router";
+import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 /**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
+ * Icons from: https://icons.expo.fyi/
  */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function AppLayout() {
+    return (
+      <Tabs>
+        <Tabs.Screen
+          name="feed"
+          options={{
+            tabBarIcon: ({ focused }) => <AntDesign name="home" size={32} color={focused ? "green" : "black"} />,
+            title: "",
+          }}
+        />
+        <Tabs.Screen
+          name="map"
+          options={{
+            tabBarIcon: ({ focused }) => <FontAwesome5 name="map" size={32} color={focused ? "green" : "black"} />,
+            title: "",
+          }}
+        />
+        <Tabs.Screen
+          name="post"
+          options={{
+            tabBarIcon: ({ focused }) => <AntDesign name="plussquareo" size={32} color={focused ? "green" : "black"} />,
+            title: "",
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
-}
+          }}
+        />
+        <Tabs.Screen
+          name="notifications"
+          options={{
+            tabBarIcon: ({ focused }) => <FontAwesome5 name="bell" size={32} color={focused ? "green" : "black"} />,
+            title: "",
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            tabBarIcon: ({ focused }) => <AntDesign name="user" size={32} color={focused ? "green" : "black"} />,
+            title: "",
+          }}
+        />
+      </Tabs>
+    );
+  }
