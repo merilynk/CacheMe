@@ -1,13 +1,39 @@
-import React from 'react'
+import React, {useState} from 'react'
 import ProfileInfo from './ProfileInfor'
-import { useWindowDimensions, View, Image, StyleSheet } from 'react-native'
+import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import RegularText from './Texts/regularText';
+import BigText from './Texts/bigText';
 import { LinearGradient } from 'expo-linear-gradient';
+
+
 
 const PostPreview = () => {
     const {width} = useWindowDimensions()
+    const [isLiked, setIsLiked] = useState(false);
+    const [isComment, setIsComment] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+    const [commentCount, setCommentCount] = useState(0);
+    
+    const toggleLike = () => {
+        if (isLiked) {
+            setLikeCount(likeCount - 1)
+        } else {
+            setLikeCount(likeCount + 1)
+        }
+        setIsLiked(!isLiked);
+    };
+    const toggleComment = () => {
+        if (isComment) {
+            setCommentCount(commentCount - 1)
+        } else {
+            setCommentCount(commentCount + 1)
+        }
+        setIsComment(!isComment);
+    };
+    
+
     return (
         <View style={styles.outerContainer}>
             <ProfileInfo/>
@@ -34,9 +60,15 @@ const PostPreview = () => {
                     end={{ x: 1, y: 1 }}
                     style={styles.gradient}>
                     <View style={styles.icons}>
-                        <AntDesign name="heart" size={35} color="white" />
-                        
-                        <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 66}}/>
+                        <TouchableOpacity onPress={toggleLike}>
+                            <AntDesign name="heart" size={35} color={isLiked ? '#FF6E6E' : '#FFFFFF'}/>
+                        </TouchableOpacity>
+                        <BigText style={{ marginLeft: 22}}>{likeCount}</BigText>
+
+                        <TouchableOpacity onPress={toggleComment}>
+                            <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 66}}/>
+                        </TouchableOpacity>
+                        <BigText style={{ marginLeft: 22}}>{commentCount}</BigText>
                     </View>
                 </LinearGradient>
             </View>
@@ -77,9 +109,10 @@ const styles = StyleSheet.create({
     icons: {
         flexDirection: "row",
         marginHorizontal: 20,
-    }
+    },
     
 })
+
 
 export default PostPreview
 

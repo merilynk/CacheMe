@@ -13,7 +13,7 @@ const Header = () => {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        backgroundColor: "#EEF2FF ",
+        backgroundColor: "#EEF2FF",
         margin: 5,
     },
     image: {
