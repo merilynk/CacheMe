@@ -1,14 +1,16 @@
 
 import * as firebase from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID} from '@env'
+
 const firebaseConfig = {
-  apiKey: "AIzaSyA2gI1VWFJztTH5e2VPhm9S_qq4uSwRRXY",
-  authDomain: "cacheme-e2c52.firebaseapp.com",
-  projectId: "cacheme-e2c52",
-  storageBucket: "cacheme-e2c52.appspot.com",
-  messagingSenderId: "261329796476",
-  appId: "1:261329796476:web:1cfe98a6675b0668fdb8f9",
-  measurementId: "G-ZM5566QVFB"
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID
 };
 
 

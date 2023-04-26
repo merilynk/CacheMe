@@ -8,6 +8,7 @@ import Location from 'expo-location';
 
 
 
+
 export default function Map() {
   const [location, setLocation] = useState<Location.LocationObject | null | undefined>();
   const [loading, setLoading] = useState(true);
