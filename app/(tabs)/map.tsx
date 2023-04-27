@@ -8,6 +8,7 @@ import Location from 'expo-location';
 
 
 
+
 export default function Map() {
   const [location, setLocation] = useState<Location.LocationObject | null | undefined>();
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ export default function Map() {
         longitude: location?.coords.longitude as number,
         latitudeDelta: .28,
         longitudeDelta: .28
-      }}/>
+      }}></MapView>
     </View>
   );
 }
