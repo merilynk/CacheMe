@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import ProfileInfo from './ProfileInfor'
-import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity} from 'react-native'
+import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import RegularText from './Texts/regularText';
@@ -37,24 +37,22 @@ const PostPreview = () => {
     return (
         <View style={styles.outerContainer}>
             <ProfileInfo/>
-            <View style={styles.postContainer}>
-            
-            <Image source={{uri: "https://i0.wp.com/yalewanders.com/wp-content/uploads/2020/01/BAA926E3-465D-4A3C-AE4A-B0984239CFB3.jpg?fit=4032%2C3024&ssl=1"}}
-            style={{
-                width: width - 30, 
-                height: width - 30, 
-                borderRadius: 15,
-                }}
-            />
-            </View>
-
+            <View style={styles.postContainer}> 
+                <Image source={{uri: "https://i0.wp.com/yalewanders.com/wp-content/uploads/2020/01/BAA926E3-465D-4A3C-AE4A-B0984239CFB3.jpg?fit=4032%2C3024&ssl=1"}}
+                style={{
+                    width: width - 30, 
+                    height: width - 30, 
+                    borderRadius: 15,
+                    }}
+                />
+            </View> 
+ 
             <View style={styles.text}>
                 <RegularText>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id porttitor libero, dignissim semper quam. Fusce consectetur porta ante vel pretium. Maecenas in quam sed</RegularText>
             </View>
 
             <View>
                 <LinearGradient
-                    // Background Linear Gradient
                     colors={['rgba(44, 218, 157, .45)', 'rgba(4, 67, 137, .45)']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
