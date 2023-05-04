@@ -1,20 +1,43 @@
 import React, { useState } from 'react';
 import { Button, Image, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import {storage } from "../../firebase"
+import { ref, uploadBytes } from "firebase/storage"
+import {storage, db } from "../../firebase"
 import uuid from 'react-native-uuid';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { ImageResult } from 'expo-image-manipulator';
 import BigText from '../../components/Texts/bigText';
 import RegularText from '../../components/Texts/regularText';
+import { collection, addDoc } from "firebase/firestore";
 
 
 export default function Post() {
     const [imageURI, setImageURI] = useState("");
     const [image, setImage] = useState<ImageResult>();
+    // TODO: below works, need to figure out how to get cache ID on return, and fix other fields to be correct.
+    // TODO: implement posting entire cache instead of "Upload photo" button
     
+    // const [caption, setCaption] = useState("");
+    // const addCache = async () => {
+    //   try {
+    //     const docRef = await addDoc(collection(db, "cache"), {
+    //       imageId: "Test Image ID",
+    //       userId: "Test User ID",
+    //       caption: "Test Caption",
+    //       location: [0.001, 0.001],
+    //       numComments: "69",
+    //       numLikes: 420,
+    //       reported: false
+    //     });
+      
+    //     console.log("Document written with ID: ", docRef.id);
+    //   } catch (e) {
+    //     console.error("Error adding document: ", e);
+    //   }
+    // }
+
     const pickImage = async () => {
+      
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
@@ -30,7 +53,7 @@ export default function Post() {
       };
 
     const uploadImage = async () => {
-      const imageID = uuid.v1()
+      const imageID = uuid.v1() // TODO: replace this with the post ID
       
       if(image){
         const response = await fetch(image.uri);

@@ -1,6 +1,7 @@
 
 import * as firebase from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import { getStorage} from "firebase/storage"
 import {REACT_APP_API_KEY, REACT_APP_AUTH_DOMAIN,
   REACT_APP_PROJECT_ID, REACT_APP_STORAGE_BUCKET,
@@ -27,4 +28,5 @@ if(firebase.getApps().length === 0){
 
 const auth = getAuth(app);
 const storage = getStorage(app);
-export { auth, storage, createUserWithEmailAndPassword, signInWithEmailAndPassword };
+const db = getFirestore(app);
+export { auth, storage, db, createUserWithEmailAndPassword, signInWithEmailAndPassword };
