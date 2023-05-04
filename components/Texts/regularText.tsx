@@ -6,7 +6,7 @@ const { primary, background, secondary, black } = colors;
 
 const StyledText = styled.Text `
     font-size: 19px;
-    color: ${black};
+    color: black ;
     text-align: left;
 `
 
