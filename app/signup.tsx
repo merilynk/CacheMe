@@ -1,7 +1,8 @@
 import { Link, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { auth, createUserWithEmailAndPassword } from '../firebase'
+import { auth, db, createUserWithEmailAndPassword } from '../firebase';
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 
 export default function Home() {
     const [email, setEmail] = useState('');
@@ -20,6 +21,15 @@ export default function Home() {
 
     const handleSignUp = () => {
         createUserWithEmailAndPassword(auth, email, password)
+        .then((result) => {
+          setDoc(doc(db, "user", auth.currentUser?.uid), {
+              __id: auth.currentUser?.uid,
+              name: "",
+              email: email,
+              username: "",
+            }),
+            console.log(result);
+        })
         .catch((error) => {
             const errorCode = error.code;
             if(errorCode == 'auth/invalid-email'){
