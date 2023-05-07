@@ -17,6 +17,14 @@ import { GeoPoint, Timestamp } from 'firebase/firestore';
 const PAGE_SIZE = 20;
 
 const Feed = () => {
+    const [postsToRender, setPostsToRender] = useState(null);
+    const [loading, setLoading] = useState(true);
+    
+    // const fetchPosts = async () => {
+    //     const postsList = [];
+    //     await 
+    // }
+
     return(
         <SafeAreaView>
             <ScrollView stickyHeaderIndices={[0]} style={styles.container}>
@@ -26,7 +34,7 @@ const Feed = () => {
                     image={"https://i0.wp.com/yalewanders.com/wp-content/uploads/2020/01/BAA926E3-465D-4A3C-AE4A-B0984239CFB3.jpg?fit=4032%2C3024&ssl=1"}
                     numComments={200}
                     numLikes={400}
-                    location={new GeoPoint(36.99, 122.05)}
+                    location={new GeoPoint(-78.3, 105.6)}
                     timePosted={new Timestamp(800, 894023)}/>
             </ScrollView>
         </SafeAreaView>

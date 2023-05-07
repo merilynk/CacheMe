@@ -8,6 +8,9 @@ import RegularText from './Texts/regularText';
 import BigText from './Texts/bigText';
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
+import { distanceBetween } from 'geofire-common';
+import getLocation from '../helpers/location';
+import Location from 'expo-location';
 
 import { collection, addDoc, setDoc, doc, getDoc, GeoPoint, Timestamp } from "firebase/firestore";
 import { db, auth } from '../firebase';;
@@ -29,6 +32,8 @@ const PostPreview = (props: PostProps) => {
     const [likeCount, setLikeCount] = useState(props.numLikes);
     const [commentCount, setCommentCount] = useState(props.numComments);
     const [poster, setPoster] = useState("");
+    const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
+    const [distBetween, setDistBetween] = useState(0);
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -44,6 +49,20 @@ const PostPreview = (props: PostProps) => {
 
     useEffect( () => {
         getPoster();
+        (async () => {
+            const loc = await getLocation();
+            setCurrUserLoc(loc);
+            let currUserLat = loc?.coords.latitude as number;
+            let currUserLong = loc?.coords.longitude as number;
+            console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
+            let postLat = props.location.latitude;
+            let postLong = props.location.longitude;
+            console.log("Post: [" + postLat + ", " + postLong + "]");
+            const distInMBtwn = 1000 * distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
+            setDistBetween(distInMBtwn);
+            console.log("Distance Between: " + distInMBtwn);
+            console.log(distBetween);
+        })();
     }, []);
 
     const toggleLike = () => {
@@ -108,7 +127,7 @@ const PostPreview = (props: PostProps) => {
                         <RegularText style={{ marginLeft: 5}}>{commentCount}</RegularText>
                     </View>
                     <View style={styles.icons}>
-                        <RegularText>20 meters away</RegularText>
+                        <RegularText>{distBetween} meters away</RegularText>
                         <TouchableOpacity onPress={locatePost}>
                             <Ionicons name="location-sharp" size={35} color="white" />
                         </TouchableOpacity>
