@@ -67,60 +67,16 @@ const PostPreview = (props: PostProps) => {
         console.log("Post is located at " + props.location);
     }
 
-    // const ProfileInfo = ( {username} ) => {
-    //     return (
-    //         <View style={styles.container}>
-    //         <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
-    //         <View style={styles.profileContainer}>
-    //             <RegularText style={styles.name} >{ username }</RegularText>
-    //             <Text style={styles.postTime}>{ moment(timePosted).fromNow() }</Text>
-    //         </View>
-    //       </View>
-    //      );
-    //  }
-
-    // const Caption = ( {text} ) => (
-    //     <View style={styles.text}>
-    //         <RegularText>{text}</RegularText>
-    //     </View>
-    // )
-
-    // const IconBar = () => (
-    //     <View>
-    //         <LinearGradient
-    //             colors={['rgba(44, 218, 157, .45)', 'rgba(4, 67, 137, .45)']}
-    //             start={{ x: 0, y: 0 }}
-    //             end={{ x: 1, y: 1 }}
-    //             style={styles.gradient}>
-    //             <View style={styles.icons}>
-    //                 <TouchableOpacity onPress={toggleLike}>
-    //                     <AntDesign name="heart" size={35} color={isLiked ? '#FF6E6E' : '#FFFFFF'}/>
-    //                 </TouchableOpacity>
-    //                 <BigText style={{ marginLeft: 22}}>{likeCount}</BigText>
-    
-    //                 <TouchableOpacity onPress={toggleComment}>
-    //                     <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 66}}/>
-    //                 </TouchableOpacity>
-    //                 <BigText style={{ marginLeft: 22}}>{commentCount}</BigText>
-    //             </View>
-    //             <View style={styles.icons}>
-    //                 <TouchableOpacity onPress={ locatePost(location) }>
-    //                     <Ionicons name="location-sharp" size={35} color="white" />
-    //                 </TouchableOpacity>
-    //             </View>
-    //         </LinearGradient>
-    //     </View>
-    // )
-    
-
     return (
         <View style={styles.outerContainer}>
             <View style={styles.container}>
-             <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
              <View style={styles.profileContainer}>
-                 <RegularText style={styles.name} >{ poster }</RegularText>
-                 <Text style={styles.postTime}>{ moment(props.timePosted).fromNow() }</Text>
+                <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
+                <View style={styles.profileContainer}>
+                    <RegularText style={styles.name} >{ poster }</RegularText>
+                </View>
              </View>
+             <Text style={styles.postTime}>{ moment(props.timePosted).fromNow() }</Text>
             </View>
             <View style={styles.postContainer}> 
                 <Image source={{uri: props.image}}
@@ -144,14 +100,15 @@ const PostPreview = (props: PostProps) => {
                         <TouchableOpacity onPress={toggleLike}>
                             <AntDesign name="heart" size={35} color={isLiked ? '#FF6E6E' : '#FFFFFF'}/>
                         </TouchableOpacity>
-                        <BigText style={{ marginLeft: 22}}>{likeCount}</BigText>
+                        <RegularText style={{ marginLeft: 5}}>{likeCount}</RegularText>
         
                         <TouchableOpacity onPress={toggleComment}>
-                            <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 66}}/>
+                            <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 5}}/>
                         </TouchableOpacity>
-                        <BigText style={{ marginLeft: 22}}>{commentCount}</BigText>
+                        <RegularText style={{ marginLeft: 5}}>{commentCount}</RegularText>
                     </View>
                     <View style={styles.icons}>
+                        <RegularText>20 meters away</RegularText>
                         <TouchableOpacity onPress={locatePost}>
                             <Ionicons name="location-sharp" size={35} color="white" />
                         </TouchableOpacity>
@@ -177,7 +134,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     postContainer: {
-        justifyContent: "center",
+        justifyContent: "space-between",
         alignItems: "center"
     },
     text: {
@@ -202,10 +159,13 @@ const styles = StyleSheet.create({
     },
     container: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         margin: 10,
     },
     profileContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginLeft: 8,
     },
     profileImage: {
@@ -221,6 +181,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "500",
     },
+    location: {
+        fontSize: 14,
+        fontWeight: "500",
+    }
 })
 
 
