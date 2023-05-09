@@ -15,7 +15,8 @@ import SelectRadiusScreen from '../../components/dropDownRadius';
 import { FontAwesome } from '@expo/vector-icons'; 
 
 
-
+const windowWidth = Dimensions.get('screen').width
+const windowHeight = Dimensions.get('screen').height
 
 
 export default function Post() {
@@ -119,16 +120,14 @@ export default function Post() {
     )
 }
 
-const windowWidth = Dimensions.get('window').width
-const windowHeight = Dimensions.get('window').height
 
 
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    minHeight: windowHeight - windowHeight/10,
-    paddingTop: windowHeight/25,
-    
+    minHeight: windowHeight - windowHeight/13,
+    paddingTop: windowHeight/20,
+    backgroundColor: "#EEF2FF",
   },
   topRow: {
     flexDirection: 'row',
@@ -138,8 +137,9 @@ const styles = StyleSheet.create({
   bottomRow: { 
     position: "relative",
     paddingHorizontal: windowWidth/15 ,
-    paddingBottom: 10 ,
+    paddingBottom: 25,
     marginTop: "auto",
+    
   },
   postButton: {
     right: 1,

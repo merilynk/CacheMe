@@ -10,7 +10,7 @@ const local_data = [
 ];
 
 const SelectRadiusScreen = (_props: any) => {
-  const [radius, setRadius] = useState('1');
+  const [radius, setRadius] = useState('5');
 
   return (
     <SelectRadius
