@@ -5,7 +5,7 @@ import {colors} from "../../components/colors"
 const { primary, background, secondary, black } = colors;
 
 const StyledText = styled.Text `
-    font-size: 13px;
+    font-size: 10px;
     color: black;
     text-align: left;
 `

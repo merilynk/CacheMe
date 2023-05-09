@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Image, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes } from "firebase/storage"
 import {storage, db } from "../../firebase"
@@ -8,7 +8,14 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { ImageResult } from 'expo-image-manipulator';
 import BigText from '../../components/Texts/bigText';
 import RegularText from '../../components/Texts/regularText';
+import SmallText from '../../components/Texts/smallText';
 import { collection, addDoc } from "firebase/firestore";
+import SelectPrivacyScreen from '../../components/dropDownPrivacy';
+import SelectRadiusScreen from '../../components/dropDownRadius';
+import { FontAwesome } from '@expo/vector-icons'; 
+
+
+
 
 
 export default function Post() {
@@ -64,29 +71,50 @@ export default function Post() {
       }     
     }
 
+    const [text, setText] = useState('');
+
+
     return(
         <View style={styles.container}>
           <View style={styles.topRow}>
             <BigText>Create Cache</BigText>
-            <TouchableOpacity style={styles.buttons}>
+            <TouchableOpacity style={styles.postButton} onPress={uploadImage}>
               <RegularText>Post</RegularText>
             </TouchableOpacity>
           </View>
+
           <View style={styles.postSettings}>
             <TouchableOpacity>
               <RegularText>PFP</RegularText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.dropDownMenu}>
-              <RegularText>Who can see</RegularText>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.dropDownMenu}>
-              <RegularText>radius</RegularText>
+            
+            <View style={styles.dropDownMenu}>
+              <SmallText>Who can see it?</SmallText>
+              <SelectPrivacyScreen></SelectPrivacyScreen>
+            </View>
+
+            <View style={styles.dropDownMenu}>
+              <SmallText>Post Discovery Radius:</SmallText>
+              <SelectRadiusScreen></SelectRadiusScreen>
+            </View>
+          </View>
+          <View>
+            <TextInput 
+              style={styles.textInput} 
+              placeholder="What's your story?" 
+              onChangeText={newText => setText(newText)}
+              defaultValue={text}
+              placeholderTextColor="#B3B3B3"
+              />
+            
+            {imageURI && <Image source={{ uri: imageURI }} style={styles.image} />}
+          </View>
+        
+          <View style={styles.bottomRow}>
+            <TouchableOpacity onPress={pickImage}>
+              <FontAwesome name="picture-o" size={24} color="black"  />
             </TouchableOpacity>
           </View>
-
-          {imageURI && <Image source={{ uri: imageURI }} style={{ width: 200, height: 200 }} />}
-          {image && <Button title="Upload image" onPress={uploadImage} />}
-          <Button title="Pick an image from camera roll" onPress={pickImage} />
         </View>
     )
 }
@@ -99,24 +127,27 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     minHeight: windowHeight - windowHeight/10,
-    paddingTop: 30,
-    borderWidth: 4,
-    borderColor: "blue",
+    paddingTop: windowHeight/25,
+    
   },
   topRow: {
     flexDirection: 'row',
     position: "relative",
     justifyContent: "center",
-    borderStyle: 'dotted',
-    borderWidth: 4,
-    borderColor: "red",
   },
-  buttons: {
+  bottomRow: { 
+    position: "relative",
+    paddingHorizontal: windowWidth/15 ,
+    paddingBottom: 10 ,
+    marginTop: "auto",
+  },
+  postButton: {
     right: 1,
     position: "absolute",
     display: 'flex',
     backgroundColor: "white",
     padding: 5,
+    marginRight: windowWidth/25, 
     borderRadius: 10,
   },
   postSettings: {
@@ -127,10 +158,20 @@ const styles = StyleSheet.create({
   },
   dropDownMenu: {
     display: "flex",
-    backgroundColor: "white",
     padding: 5,
     borderRadius: 10,
-
+  },
+  image: {
+    flexDirection: 'row',
+    position: "relative",
+    width: windowWidth-75,
+    height: windowWidth-75,
+    alignSelf: "center",
+    borderRadius: 10,
+  },
+  textInput:{
+    height: 40,
+    paddingLeft: windowWidth/12,
   }
 
 })
