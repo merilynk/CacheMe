@@ -13,7 +13,8 @@ import getLocation from '../helpers/location';
 import Location from 'expo-location';
 
 import { collection, addDoc, setDoc, doc, getDoc, GeoPoint, Timestamp } from "firebase/firestore";
-import { db, auth } from '../firebase';;
+import { db, auth, storage } from '../firebase';;
+import { getDownloadURL, ref } from "firebase/storage";
 
 type PostProps = {
     captionText: string,
@@ -34,6 +35,7 @@ const PostPreview = (props: PostProps) => {
     const [poster, setPoster] = useState("");
     const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
+    const [imageURI, setImageURI] = useState(props.image);
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -47,8 +49,16 @@ const PostPreview = (props: PostProps) => {
         }
     }
 
+    const getImage = async () => {
+        const gsRef = ref(storage, props.image);
+        getDownloadURL(gsRef).then( (url) => {
+            setImageURI(url);
+        });
+    }
+
     useEffect( () => {
         getPoster();
+        getImage();
         (async () => {
             const loc = await getLocation();
             setCurrUserLoc(loc);
@@ -58,10 +68,12 @@ const PostPreview = (props: PostProps) => {
             let postLat = props.location.latitude;
             let postLong = props.location.longitude;
             console.log("Post: [" + postLat + ", " + postLong + "]");
-            const distInMBtwn = 1000 * distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
-            setDistBetween(distInMBtwn);
-            console.log("Distance Between: " + distInMBtwn);
+            const distInBtwn = distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
+            setDistBetween(Math.round(distInBtwn));
+            console.log("Distance Between: " + distInBtwn);
             console.log(distBetween);
+            console.log(props.timePosted.toDate());
+            console.log(moment(props.timePosted.toDate()).fromNow());
         })();
     }, []);
 
@@ -95,10 +107,10 @@ const PostPreview = (props: PostProps) => {
                     <RegularText style={styles.name} >{ poster }</RegularText>
                 </View>
              </View>
-             <Text style={styles.postTime}>{ moment(props.timePosted).fromNow() }</Text>
+             <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>
             <View style={styles.postContainer}> 
-                <Image source={{uri: props.image}}
+                <Image source={{uri: imageURI}}
                 style={{
                     width: width - 30, 
                     height: width - 30, 
@@ -127,7 +139,7 @@ const PostPreview = (props: PostProps) => {
                         <RegularText style={{ marginLeft: 5}}>{commentCount}</RegularText>
                     </View>
                     <View style={styles.icons}>
-                        <RegularText>{distBetween} meters away</RegularText>
+                        <RegularText>{distBetween} km away</RegularText>
                         <TouchableOpacity onPress={locatePost}>
                             <Ionicons name="location-sharp" size={35} color="white" />
                         </TouchableOpacity>

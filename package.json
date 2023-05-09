@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
-    "@react-native-masked-view/masked-view": "^0.2.9",
+    "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/react-redux": "^7.1.25",
