@@ -9,44 +9,55 @@ import { ImageResult } from 'expo-image-manipulator';
 import BigText from '../../components/Texts/bigText';
 import RegularText from '../../components/Texts/regularText';
 import SmallText from '../../components/Texts/smallText';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, GeoPoint, doc, setDoc, Timestamp } from "firebase/firestore";
 import SelectPrivacyScreen from '../../components/dropDownPrivacy';
 import SelectRadiusScreen from '../../components/dropDownRadius';
-import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons';
+import { auth } from '../../firebase'
+import getLocation from '../../helpers/location'
 
 
 const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
 
-
 export default function Post() {
     const [imageURI, setImageURI] = useState("");
-    const [loading, setLoading] = useState(false)
     const [image, setImage] = useState<ImageResult>();
-    // TODO: below works, need to figure out how to get cache ID on return, and fix other fields to be correct.
-    // TODO: implement posting entire cache instead of "Upload photo" button
-    
-    // const [caption, setCaption] = useState("");
-    // const addCache = async () => {
-    //   try {
-    //     const docRef = await addDoc(collection(db, "cache"), {
-    //       imageId: "Test Image ID",
-    //       userId: "Test User ID",
-    //       caption: "Test Caption",
-    //       location: [0.001, 0.001],
-    //       numComments: "69",
-    //       numLikes: 420,
-    //       reported: false
-    //     });
+    const [caption, setCaption] = useState("");
+    const imageID = uuid.v1().toString();
+
+    const postCache = async () => {
+      addCacheToFirestore();
+      uploadImage();
+    }
+
+    const addCacheToFirestore = async () => {
       
-    //     console.log("Document written with ID: ", docRef.id);
-    //   } catch (e) {
-    //     console.error("Error adding document: ", e);
-    //   }
-    // }
+      try {
+        await getLocation().then((location) => {
+        const newDocRef = doc(collection(db, "cache"));
+        setDoc(
+              newDocRef, 
+              {
+                __id: newDocRef.id,
+                __imageId: imageID,
+                __userId: auth.currentUser?.uid,
+                _createdAt: Timestamp.fromDate(new Date()),
+                caption: caption,
+                location: new GeoPoint(location?.coords.latitude as number, location?.coords.longitude as number),
+                numComments: 0,
+                numLikes: 0,
+                reported: false
+              }
+            )
+        console.log("Document written with ID: ", newDocRef.id);
+            });
+      } catch (e) {
+        console.error("Error adding document: ", imageID);
+      }
+    }
 
     const pickImage = async () => {
-      
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
@@ -54,16 +65,14 @@ export default function Post() {
           quality: 1,
           base64: true, // Remove?
         });
-    
+        
         if (!result.canceled) {
           setImageURI(result.assets[0].uri);
           setImage(await ImageManipulator.manipulateAsync(result.assets[0].uri, [{resize: {width: 500}}], {compress: 1})) 
         }
       };
 
-    const uploadImage = async () => {
-      const imageID = uuid.v1() // TODO: replace this with the post ID
-      
+    const uploadImage = async () => { 
       if(image){
         const response = await fetch(image.uri);
         const blobFile = await response.blob();
@@ -76,17 +85,15 @@ export default function Post() {
       }     
     }
 
-    const [text, setText] = useState('');
-
 
     return(
         <View style={styles.container}>
-          <View style={styles.topRow}>
+          {image && <View style={styles.topRow}>
             <BigText>Create Cache</BigText>
-            <TouchableOpacity style={styles.postButton} onPress={uploadImage}>
+            <TouchableOpacity style={styles.postButton} onPress={postCache}>
               <RegularText>Post</RegularText>
             </TouchableOpacity>
-          </View>
+          </View>}
 
           <View style={styles.postSettings}>
             <TouchableOpacity>
@@ -107,8 +114,8 @@ export default function Post() {
             <TextInput 
               style={styles.textInput} 
               placeholder="What's your story?" 
-              onChangeText={newText => setText(newText)}
-              defaultValue={text}
+              onChangeText={newText => setCaption(newText)}
+              defaultValue={caption}
               placeholderTextColor="#B3B3B3"
               />
             
