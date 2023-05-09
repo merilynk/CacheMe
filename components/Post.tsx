@@ -12,11 +12,12 @@ import { distanceBetween } from 'geofire-common';
 import getLocation from '../helpers/location';
 import Location from 'expo-location';
 
-import { collection, addDoc, setDoc, doc, getDoc, GeoPoint, Timestamp } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 
 type PostProps = {
+    id: string,
     captionText: string,
     uid: string, 
     image: string,
@@ -50,10 +51,13 @@ const PostPreview = (props: PostProps) => {
     }
 
     const getImage = async () => {
-        const gsRef = ref(storage, props.image);
-        getDownloadURL(gsRef).then( (url) => {
-            setImageURI(url);
-        });
+        if (props.image != "" || props.image != null) {
+            const gsRef = ref(storage, props.image);
+            getDownloadURL(gsRef).then( (url) => {
+                setImageURI(url);
+            });
+            console.log("Theres's an image.")
+        }   
     }
 
     useEffect( () => {
@@ -77,20 +81,25 @@ const PostPreview = (props: PostProps) => {
         })();
     }, []);
 
-    const toggleLike = () => {
+    const toggleLike = async () => {
         if (isLiked) {
             setLikeCount(likeCount - 1)
         } else {
             setLikeCount(likeCount + 1)
         }
+        const cacheRef = doc(db, "cache", props.id);
+        await updateDoc(cacheRef, {numLikes: likeCount});
         setIsLiked(!isLiked);
     };
-    const toggleComment = () => {
+    
+    const toggleComment = async () => {
+        const cacheRef = doc(db, "cache", props.id);
         if (isComment) {
             setCommentCount(commentCount - 1)
         } else {
             setCommentCount(commentCount + 1)
         }
+        await updateDoc(cacheRef, {numComments: commentCount});
         setIsComment(!isComment);
     };
 
@@ -109,15 +118,19 @@ const PostPreview = (props: PostProps) => {
              </View>
              <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>
-            <View style={styles.postContainer}> 
-                <Image source={{uri: imageURI}}
-                style={{
-                    width: width - 30, 
-                    height: width - 30, 
-                    borderRadius: 15,
-                    }}
-                />
-            </View> 
+            {props.image == null || props.image == "" ? (
+                <></>
+            ) : (
+                <View style={styles.postContainer}> 
+                    <Image source={{uri: imageURI}}
+                    style={{
+                        width: width - 30, 
+                        height: width - 30, 
+                        borderRadius: 15,
+                        }}
+                    />
+                </View> 
+            )}
             <View style={styles.text}>
                 <RegularText>{props.captionText}</RegularText>
             </View>
@@ -129,7 +142,7 @@ const PostPreview = (props: PostProps) => {
                     style={styles.gradient}>
                     <View style={styles.icons}>
                         <TouchableOpacity onPress={toggleLike}>
-                            <AntDesign name="heart" size={35} color={isLiked ? '#FF6E6E' : '#FFFFFF'}/>
+                            <AntDesign name="heart" size={35} color={isLiked ? '#8E4162' : '#FFFFFF'}/>
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{likeCount}</RegularText>
         

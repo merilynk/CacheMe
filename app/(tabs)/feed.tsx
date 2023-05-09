@@ -105,7 +105,7 @@ const Feed = () => {
             {loading ? (
                 <ScrollView stickyHeaderIndices={[0]} style={styles.container}>
                     <Header/>
-                    <PostPreview captionText={"hello"} 
+                    <PostPreview id={""} captionText={"hello"} 
                         uid={"mgEEj5Bn8PKhEtj2X6dl"} 
                         image={"gs://cachemedev.appspot.com/color_150_11_11.png"}
                         numComments={200}
@@ -120,7 +120,8 @@ const Feed = () => {
                         keyExtractor={(c) => c.__id} 
                         renderItem={({ item }) => {
                             return (
-                                <PostPreview captionText={item.caption} 
+                                <PostPreview id={item.__id}
+                                    captionText={item.caption} 
                                     uid={item.__userId} 
                                     image={item.__imageId} 
                                     numComments={item.numComments} 
