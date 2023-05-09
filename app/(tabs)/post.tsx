@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Text } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes } from "firebase/storage"
 import {storage, db } from "../../firebase"
@@ -21,6 +21,7 @@ const windowHeight = Dimensions.get('screen').height
 
 export default function Post() {
     const [imageURI, setImageURI] = useState("");
+    const [loading, setLoading] = useState(false)
     const [image, setImage] = useState<ImageResult>();
     // TODO: below works, need to figure out how to get cache ID on return, and fix other fields to be correct.
     // TODO: implement posting entire cache instead of "Upload photo" button
@@ -68,6 +69,9 @@ export default function Post() {
         const blobFile = await response.blob();
         const imageRef = ref(storage, `images/${imageID}`);
         const result = await uploadBytes(imageRef, blobFile);
+        if(result){
+          Alert.alert("Upload successful")
+        }
         //TODO: add "uploading" icon while it's uploading, then go to diff page or change page when done.
       }     
     }
