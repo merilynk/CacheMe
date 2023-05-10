@@ -6,6 +6,10 @@ import { auth, createUserWithEmailAndPassword } from '../firebase'
 export default function Home() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+    const [fn, setFn] = useState('');
+    const [mi, setMi] = useState('');
+    const [ln, setLn] = useState('');
 
     const router = useRouter();
     useEffect(() => {
@@ -19,26 +23,62 @@ export default function Home() {
     }, [])
 
     const handleSignUp = () => {
-        createUserWithEmailAndPassword(auth, email, password)
+      const fullName = `${fn} ${mi} ${ln}`;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          auth.currentUser.updateProfile({
+            displayName: username,
+            fullName: fullName,
+          })
+        })
         .catch((error) => {
-            const errorCode = error.code;
-            if(errorCode == 'auth/invalid-email'){
-              alert("Please enter a valid email address");
-            }else if(errorCode == 'auth/email-already-in-use'){
-              alert("Account with that email already exists");
-            }else {
-              alert("Error signing up");
-            }    
+          const errorCode = error.code;
+          if (errorCode == 'auth/invalid-email') {
+            alert("Please enter a valid email address");
+          } else if (errorCode == 'auth/email-already-in-use') {
+            alert("Account with that email already exists");
+          } else {
+            alert("Error signing up");
+          }
         });
     }
 
+  
     return(
         <KeyboardAvoidingView
       style={styles.container}
       behavior="padding"
     >
-        <Text style={styles.titleText}>Create an account</Text>
+      <Text style={styles.titleText}>Create an account</Text>
       <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="First Name"
+          placeholderTextColor={"#575757"}
+          value={fn}
+          onChangeText={text => setFn(text)}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Middle Initial"
+          placeholderTextColor={"#575757"}
+          value={mi}
+          onChangeText={text => setMi(text)}
+          style={[styles.input, styles.miInput]}
+        />
+        <TextInput
+          placeholder="Last Name"
+          placeholderTextColor={"#575757"}
+          value={ln}
+          onChangeText={text => setLn(text)}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Username"
+          placeholderTextColor={"#575757"}
+          value={username}
+          onChangeText={text => setUsername(text)}
+          style={styles.input}
+        />
         <TextInput
           placeholder="Email"
           placeholderTextColor={"#575757"}
@@ -69,6 +109,7 @@ export default function Home() {
     </KeyboardAvoidingView>
     )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
