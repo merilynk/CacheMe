@@ -7,6 +7,9 @@ import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 export default function Home() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
+
 
     const router = useRouter();
     useEffect(() => {
@@ -20,28 +23,28 @@ export default function Home() {
     }, [])
 
     const handleSignUp = () => {
-        createUserWithEmailAndPassword(auth, email, password)
-        .then((result) => {
-          setDoc(doc(db, "user", auth.currentUser?.uid), {
-              __id: auth.currentUser?.uid,
-              name: "",
-              email: email,
-              username: "",
-            }),
-            console.log(result);
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            if(errorCode == 'auth/invalid-email'){
-              alert("Please enter a valid email address");
-            }else if(errorCode == 'auth/email-already-in-use'){
-              alert("Account with that email already exists");
-            }else {
-              alert("Error signing up");
-            }    
-        });
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        setDoc(doc(collection(db, "user"), auth.currentUser?.uid), {
+          __id: auth.currentUser?.uid,
+          name: name,
+          email: email,
+          username: username,
+        }),
+        console.log(result);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        if(errorCode == 'auth/invalid-email'){
+          alert("Please enter a valid email address");
+        }else if(errorCode == 'auth/email-already-in-use'){
+          alert("Account with that email already exists");
+        }else {
+          alert("Error signing up");
+        }    
+      });
     }
-
+    
     return(
         <KeyboardAvoidingView
       style={styles.container}
@@ -49,14 +52,31 @@ export default function Home() {
     >
         <Text style={styles.titleText}>Create an account</Text>
       <View style={styles.inputContainer}>
-        <TextInput
+      <TextInput
+          placeholder="Name"
+          placeholderTextColor={"#575757"}
+          value={username}
+          onChangeText={text => setName(text)}
+          style={styles.input}
+     />
+
+      <TextInput
+          placeholder="Username"
+          placeholderTextColor={"#575757"}
+          value={name}
+          onChangeText={text => setUsername(text)}
+          style={styles.input}
+      />
+
+      <TextInput
           placeholder="Email"
           placeholderTextColor={"#575757"}
           value={email}
           onChangeText={text => setEmail(text)}
           style={styles.input}
         />
-        <TextInput
+
+      <TextInput
           placeholder="Password"
           placeholderTextColor={"#575757"}
           value={password}
