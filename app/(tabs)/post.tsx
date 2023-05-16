@@ -8,7 +8,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { ImageResult } from 'expo-image-manipulator';
 import BigText from '../../components/Texts/bigText';
 import RegularText from '../../components/Texts/regularText';
-import SmallText from '../../components/Texts/smallText';
+import MiniText from '../../components/Texts/miniText';
 import { collection, addDoc, GeoPoint, doc, setDoc, Timestamp } from "firebase/firestore";
 import SelectPrivacyScreen from '../../components/dropDownPrivacy';
 import SelectRadiusScreen from '../../components/dropDownRadius';
@@ -101,12 +101,12 @@ export default function Post() {
             </TouchableOpacity>
             
             <View style={styles.dropDownMenu}>
-              <SmallText>Who can see it?</SmallText>
+              <MiniText>Who can see it?</MiniText>
               <SelectPrivacyScreen></SelectPrivacyScreen>
             </View>
 
             <View style={styles.dropDownMenu}>
-              <SmallText>Post Discovery Radius:</SmallText>
+              <MiniText>Post Discovery Radius:</MiniText>
               <SelectRadiusScreen></SelectRadiusScreen>
             </View>
           </View>
