@@ -107,7 +107,7 @@ const Feed = () => {
                     <Header/>
                     <PostPreview id={""} captionText={"hello"} 
                         uid={"mgEEj5Bn8PKhEtj2X6dl"} 
-                        image={"gs://cachemedev.appspot.com/color_150_11_11.png"}
+                        image={"4d6de4a1-ee2d-11ed-8ee9-63af3c88610d"}
                         numComments={200}
                         numLikes={400}
                         location={new GeoPoint(-78.3, 105.6)}

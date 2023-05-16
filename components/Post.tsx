@@ -36,7 +36,7 @@ const PostPreview = (props: PostProps) => {
     const [poster, setPoster] = useState("");
     const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
-    const [imageURI, setImageURI] = useState(props.image);
+    const [imageURI, setImageURI] = useState<string>();
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -52,7 +52,7 @@ const PostPreview = (props: PostProps) => {
 
     const getImage = async () => {
         if (props.image != "" || props.image != null) {
-            const gsRef = ref(storage, props.image);
+            const gsRef = ref(storage, "images/" + props.image);
             getDownloadURL(gsRef).then( (url) => {
                 setImageURI(url);
             });
