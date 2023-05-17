@@ -26,14 +26,14 @@ export default function Home() {
     const handleSignUp = () => {
       const fullName = `${fn} ${mi} ${ln}`;
       createUserWithEmailAndPassword(auth, email, password)
-        .then((result) => {
-          setDoc(doc(db, "user", auth.currentUser?.uid), {
+        .then(async (result) => {
+          await setDoc(doc(db, "user", auth.currentUser?.uid), { // it says there's an error here but it works?
               __id: auth.currentUser?.uid,
               email: email,
               name: fullName,
               username: username,
             }),
-            console.log(result);
+            // console.log(result);
         })
         .catch((error) => {
           const errorCode = error.code;
