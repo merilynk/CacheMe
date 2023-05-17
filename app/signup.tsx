@@ -27,7 +27,7 @@ export default function Home() {
       const fullName = `${fn} ${mi} ${ln}`;
       createUserWithEmailAndPassword(auth, email, password)
         .then(async (result) => {
-          await setDoc(doc(db, "user", auth.currentUser?.uid), { // it says there's an error here but it works?
+          await setDoc(doc(collection(db, "user"), auth.currentUser?.uid), { 
               __id: auth.currentUser?.uid,
               email: email,
               name: fullName,
