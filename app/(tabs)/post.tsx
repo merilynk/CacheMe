@@ -72,6 +72,20 @@ export default function Post() {
         }
       };
 
+    const takeImage = async () => {
+      let permission = await ImagePicker.requestCameraPermissionsAsync();
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1
+      });
+
+      if (!result.canceled) {
+        setImageURI(result.assets[0].uri);
+        setImage(await ImageManipulator.manipulateAsync(result.assets[0].uri, [{resize: {width: 500}}], {compress: 1})) 
+      }
+    }
+
     const uploadImage = async () => { 
       if(image){
         const response = await fetch(image.uri);
@@ -123,8 +137,11 @@ export default function Post() {
           </View>
         
           <View style={styles.bottomRow}>
-            <TouchableOpacity onPress={pickImage}>
+            <TouchableOpacity onPress={pickImage} style={{padding: 8}}>
               <FontAwesome name="picture-o" size={24} color="black"  />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={takeImage} style={{padding: 8}}>
+              <FontAwesome name="camera" size={24} color="black"  />
             </TouchableOpacity>
           </View>
         </View>
@@ -146,6 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   bottomRow: { 
+    flexDirection: 'row',
     position: "relative",
     paddingHorizontal: windowWidth/15 ,
     paddingBottom: 25,
