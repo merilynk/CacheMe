@@ -15,6 +15,7 @@ import SelectRadiusScreen from '../../components/dropDownRadius';
 import { FontAwesome } from '@expo/vector-icons';
 import { auth } from '../../firebase'
 import getLocation from '../../helpers/location'
+import { useNavigation } from 'expo-router';
 
 
 const windowWidth = Dimensions.get('screen').width
@@ -27,8 +28,8 @@ export default function Post() {
     const imageID = uuid.v1().toString();
 
     const postCache = async () => {
-      addCacheToFirestore();
       uploadImage();
+      addCacheToFirestore();
     }
 
     const addCacheToFirestore = async () => {
@@ -96,6 +97,7 @@ export default function Post() {
           Alert.alert("Upload successful")
         }
         //TODO: add "uploading" icon while it's uploading, then go to diff page or change page when done.
+        // let navigate = useNavigation("./feed");
       }     
     }
 
