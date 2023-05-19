@@ -34,6 +34,10 @@ export default function Post() {
       if(await uploadImage()){
         addCacheToFirestore();
       }
+      setImageURI("");
+      setImage(undefined);
+      setCaption("");
+      setCaptionExists(false);
       router.push("/feed");
       
     }
