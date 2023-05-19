@@ -123,7 +123,7 @@ const Feed = () => {
                                 <PostPreview id={item.__id}
                                     captionText={item.caption} 
                                     uid={item.__userId} 
-                                    image={item.__imageId} 
+                                    image={item.__imageId}
                                     numComments={item.numComments} 
                                     numLikes={item.numLikes} 
                                     location={item.location} 

@@ -51,13 +51,16 @@ const PostPreview = (props: PostProps) => {
     }
 
     const getImage = async () => {
-        if (props.image != "" || props.image != null) {
+        
+        if (props.image != "" && props.image != null) {
             const gsRef = ref(storage, "images/" + props.image);
             getDownloadURL(gsRef).then( (url) => {
                 setImageURI(url);
                 console.log(url);
             });
-        }   
+        } else{
+            setImageURI("");
+        } 
     }
 
     useEffect( () => {
