@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 //import ProfileInfo from './ProfileInfor'
-import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native'
+import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import moment from 'moment';
 import { distanceBetween } from 'geofire-common';
 import getLocation from '../helpers/location';
 import Location from 'expo-location';
+import {BlurView } from 'expo-blur';
 
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
@@ -120,10 +121,22 @@ const PostPreview = (props: PostProps) => {
              </View>
              <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>
-            {props.image == null || props.image == "" ? (
+            {(props.image == null || props.image == "") ? (
                 <></>
-            ) : (
-                <View style={styles.postContainer}> 
+            ) : ( outOfRadius ? (
+                // Blur view not working...
+                <BlurView intensity={80} style={styles.postContainer}> 
+                    <ImageBackground source={{uri: imageURI}}
+                        style={{
+                            width: width - 30, 
+                            height: width - 30, 
+                            borderRadius: 15,
+                            }}
+                        blurRadius={30}>
+                            <Text>Unlock the cache!</Text>
+                    </ImageBackground>  
+                </BlurView>)
+                : (<View style={styles.postContainer }> 
                     <Image source={{uri: imageURI}}
                     style={{
                         width: width - 30, 
@@ -131,9 +144,9 @@ const PostPreview = (props: PostProps) => {
                         borderRadius: 15,
                         }}
                     />
-                </View> 
+                </View> )
             )}
-            <View style={styles.text}>
+            <View style={outOfRadius ? styles.blurredText : styles.text}>
                 <RegularText>{props.captionText}</RegularText>
             </View>
             <View>
@@ -188,6 +201,22 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
         justifyContent: "flex-start",
+    },
+    blurredText: {
+        margin: 15,
+        marginLeft: 20,
+        marginRight: 20,
+        justifyContent: "flex-start",
+        height: 3,
+        width: 70,
+        shadowOpacity: 1,
+        shadowColor: '#000',
+        shadowOffset: { width: 10, height: 10 },
+        shadowRadius: 5,
+        elevation: 5,
+        borderWidth: 0.5,
+        borderColor: "white",
+        backgroundColor: "rgba(255, 255, 255, 1)"
     },
     gradient: {
         flex: 1,
