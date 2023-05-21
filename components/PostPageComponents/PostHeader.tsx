@@ -29,10 +29,11 @@ const PostHeader = () => {
         </View>
         <View style={styles.image}>
             <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 361, height: 361, borderRadius: 10}}></Image>
+            <View style={styles.caption}>
+                <SmallText style={{marginTop: 10}}>Caption</SmallText>
+            </View>
         </View>
-        <View style={styles.caption}>
-            <SmallText>Caption</SmallText>
-        </View>
+        
         <LinearGradient
             colors={['rgba(44, 218, 157, .45)', 'rgba(4, 67, 137, .45)']}
             start={{ x: 0.2, y: 0.2 }}
@@ -43,7 +44,7 @@ const PostHeader = () => {
             </TouchableOpacity>
             <RegularText style={{ marginLeft: 5}}>500</RegularText>
             <TouchableOpacity>
-                <FontAwesome name="comment" size={35} color="white" style={styles.icons}/>
+                <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 8}}/>
             </TouchableOpacity>
             <RegularText style={{ marginLeft: 5}}>500</RegularText>
         </LinearGradient>
@@ -54,10 +55,10 @@ const PostHeader = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         border: "flex",
         width: windowWidth,
-        height: windowHeight,
-        marginVertical: windowHeight/25,
+        marginTop: windowHeight/25,
         justifyContent: "flex-start",
         alignContent: "flex-start",
         flexDirection: "column",
@@ -114,10 +115,8 @@ const styles = StyleSheet.create({
         
     },
     caption: {
-        //flex: 1,
-        width: windowWidth,
-        height: windowHeight/10,
-        borderColor: "red",
+        width: windowWidth*.85,
+        borderColor: "blue",
         borderWidth: 3,
     },
     interactBar: {
@@ -126,10 +125,12 @@ const styles = StyleSheet.create({
         height: 50,
         // justifyContent: 'space-between',
         alignItems: 'center',
+        // borderBottomLeftRadius: 15,
+        // borderBottomRightRadius: 15,
     },
     icons: {
         flexDirection: "row",
-        paddingLeft: 25,
+        paddingLeft: 15,
     }
 
 })
