@@ -37,6 +37,7 @@ const PostPreview = (props: PostProps) => {
     const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
     const [imageURI, setImageURI] = useState<string>();
+    const [outOfRadius, setOutOfRadius] = useState(false);
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -68,16 +69,17 @@ const PostPreview = (props: PostProps) => {
             setCurrUserLoc(loc);
             let currUserLat = loc?.coords.latitude as number;
             let currUserLong = loc?.coords.longitude as number;
-            // console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
             let postLat = props.location.latitude;
             let postLong = props.location.longitude;
-            // console.log("Post: [" + postLat + ", " + postLong + "]");
             const distInBtwn = distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
             setDistBetween(Math.round(distInBtwn));
-            // console.log("Distance Between: " + distInBtwn);
-            // console.log(distBetween);
-            // console.log(props.timePosted.toDate());
-            // console.log(moment(props.timePosted.toDate()).fromNow());
+            console.log("Distance between user and post (km): " + distInBtwn);
+            if (distInBtwn > 5) {
+                console.log("Too far => Blur");
+                setOutOfRadius(true);
+            } else {
+                setOutOfRadius(false);
+            }
         })();
     }, []);
 
