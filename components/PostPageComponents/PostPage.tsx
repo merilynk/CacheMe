@@ -1,17 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, Image, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import PostHeader from './PostHeader';
 import PostComment from './PostComment';
-import CommentBar from './CommentBar'
-
-const windowWidth = Dimensions.get('screen').width;
-const windowHeight = Dimensions.get('screen').height;
+import CommentBar from './CommentBar';
 
 const PostPage = () => {
   return (
     <ScrollView style={styles.container}>
       <PostHeader />
+      
       {/* Add your post content here */}
+      <View style={styles.postContent}>
+        {/* Additional post content */}
+      </View>
 
       <CommentBar />
 
@@ -24,9 +25,11 @@ const PostPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    border: "flex",
-    flexDirection: 'column',
-    // alignItems: "flex-start"
+    backgroundColor: '#F5F5F5',
+  },
+  postContent: {
+    marginVertical: 10,
+    paddingHorizontal: 20,
   },
 });
 
