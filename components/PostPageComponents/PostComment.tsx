@@ -1,5 +1,8 @@
+import { VoiceID } from 'aws-sdk';
 import React from 'react';
 import { View, StyleSheet, Image, Dimensions, Text } from 'react-native';
+import RegularText from "../Texts/regularText"
+import MiniText from '../Texts/miniText';
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
@@ -7,25 +10,53 @@ const windowHeight = Dimensions.get('screen').height;
 const PostComment = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.commentText}>This is a comment.</Text>
+      <View style={styles.topBar}>
+        <View>
+          <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 30, height: 30, borderRadius: 15}}></Image>
+        </View>
+        <View style={styles.userName}>
+          <RegularText>Username</RegularText>
+        </View>
+        <View>
+          <RegularText style={styles.time}>5 hours ago</RegularText>
+        </View>
+      </View>
+      <View style={styles.bottomBar}>
+        <RegularText style={{fontSize: 15}}>This is a really long comment just to see if it overflows over the right or goes down to the bottom</RegularText>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: windowWidth - windowWidth / 10,
-    height: windowHeight / 15,
+    flex: 1,
     backgroundColor: '#F2F2F2',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    marginBottom: 10,
+    marginVertical: 10,
+    flexDirection: "column",
   },
-  commentText: {
-    fontSize: 16,
-    color: 'black',
+  topBar: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 5,
   },
+  userName:{
+    flex: 1,
+    position: "absolute",
+    marginLeft: 45,
+  },
+  time:{
+    flex: 1,
+    fontSize: 13,
+    color: "#545350",
+    paddingRight: 10,
+  },
+  bottomBar: {
+    flex: 1,
+    paddingLeft: 45,
+  }
 });
 
 export default PostComment;

@@ -14,21 +14,21 @@ const PostHeader = () => {
    return (
     <View style={styles.container}>
         <View style={styles.topContainer}>
-            <View style={styles.backArrow}>
-                <Ionicons name="arrow-back-outline" size={24} color="black" />
-            </View>
+            <TouchableOpacity style={styles.backArrow}>
+                <Ionicons name="arrow-back-outline" size={35} color="black" />
+            </TouchableOpacity>
             <View style={styles.profilePic}>
-                <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 50, height: 50, borderRadius: 10}}></Image>
+                <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 50, height: 50, borderRadius: 25,}}></Image>
             </View>
             <View style={styles.userName}>
                 <RegularText>@username</RegularText>
             </View>
             <View style={styles.time}>
-                <RegularText>time</RegularText>
+                <RegularText style={{color: "#545350"}}>8 hours ago</RegularText>
             </View>
         </View>
         <View style={styles.image}>
-            <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 361, height: 361, borderRadius: 10}}></Image>
+            <Image source={require('../../assets/images/takumi.jpeg')} style={{width: windowWidth*.86, height: windowWidth*.86, borderRadius: 15}}></Image>
             <View style={styles.caption}>
                 <SmallText style={{marginTop: 10}}>Caption</SmallText>
             </View>
@@ -36,17 +36,18 @@ const PostHeader = () => {
         
         <LinearGradient
             colors={['rgba(44, 218, 157, .45)', 'rgba(4, 67, 137, .45)']}
-            start={{ x: 0.2, y: 0.2 }}
-            end={{ x: 0.8, y: 0.8 }}
+            start={{ x: 0.1, y: 0.1 }}
+            end={{ x: 0.9, y: 0.9 }}
             style={styles.interactBar}>
             <TouchableOpacity>
                 <AntDesign name="heart" size={35} color={'#8E4162'} style={styles.icons}/>
             </TouchableOpacity>
             <RegularText style={{ marginLeft: 5}}>500</RegularText>
             <TouchableOpacity>
-                <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 8}}/>
+                <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 10}}/>
             </TouchableOpacity>
             <RegularText style={{ marginLeft: 5}}>500</RegularText>
+            <RegularText style={{ marginLeft: 135, color: "#545350" }}>25 km away</RegularText>
         </LinearGradient>
         
     </View>
@@ -62,16 +63,13 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignContent: "flex-start",
         flexDirection: "column",
-        // alignItems: 'center',
-        // borderColor: "red",
-        borderWidth: 3,
+        // backgroundColor: "#EEF2FF"
+        
     },
     topContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        borderColor: "gray",
-        borderWidth: 2,
         height: windowHeight/15,
     },
     backArrow: {
@@ -79,54 +77,40 @@ const styles = StyleSheet.create({
         width: 50,
         height: 30,
         marginLeft: 8,
-        borderLeftWidth: 0,
-        borderColor: "blue",
-        borderWidth: 3,
     },
     profilePic: {
         flex: 1,
         width: 50,
         height: 50,
-        marginLeft: 65,
-        borderLeftWidth: 0,
+        marginLeft: 60,
         position: 'absolute',
     },
     userName: {
         marginLeft: 115,
         position: 'absolute',
         justifyContent: "center",
-        borderColor: "red",
-        borderWidth: 3,
     },
     time: {
         height: 30,
-        borderColor: "red",
-        borderWidth: 3,
         justifyContent: "center",
         alignItems: "flex-end",
+        paddingRight: 25,
     },
     image: {
         width: windowWidth,
         height: windowWidth,
-        borderColor: "red",
-        borderWidth: 3,
         justifyContent: "center",
         alignItems: "center",
         
     },
     caption: {
         width: windowWidth*.85,
-        borderColor: "blue",
-        borderWidth: 3,
     },
     interactBar: {
         flexDirection: "row",
         width: windowWidth,
         height: 50,
-        // justifyContent: 'space-between',
         alignItems: 'center',
-        // borderBottomLeftRadius: 15,
-        // borderBottomRightRadius: 15,
     },
     icons: {
         flexDirection: "row",
