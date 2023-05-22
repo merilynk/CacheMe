@@ -1,6 +1,6 @@
 import { VoiceID } from 'aws-sdk';
 import React from 'react';
-import { View, StyleSheet, Image, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, Text, TouchableOpacity } from 'react-native';
 import RegularText from "../Texts/regularText"
 import MiniText from '../Texts/miniText';
 
@@ -21,9 +21,13 @@ const PostComment = () => {
           <RegularText style={styles.time}>5 hours ago</RegularText>
         </View>
       </View>
-      <View style={styles.bottomBar}>
+      <View style={styles.midderBar}>
         <RegularText style={{fontSize: 15}}>This is a really long comment just to see if it overflows over the right or goes down to the bottom</RegularText>
       </View>
+      
+      <TouchableOpacity style={styles.bottomBar}>
+        <RegularText style={{fontSize: 13, marginTop: 10,}}>Reply</RegularText>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -53,8 +57,11 @@ const styles = StyleSheet.create({
     color: "#545350",
     paddingRight: 10,
   },
-  bottomBar: {
+  midderBar: {
     flex: 1,
+    paddingLeft: 45,
+  },
+  bottomBar: {
     paddingLeft: 45,
   }
 });
