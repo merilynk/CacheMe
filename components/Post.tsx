@@ -11,6 +11,7 @@ import moment from 'moment';
 import { distanceBetween } from 'geofire-common';
 import getLocation from '../helpers/location';
 import Location from 'expo-location';
+import { Link, useRouter } from 'expo-router';
 
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
@@ -37,6 +38,7 @@ const PostPreview = (props: PostProps) => {
     const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
     const [imageURI, setImageURI] = useState<string>();
+    const router = useRouter();
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -101,14 +103,22 @@ const PostPreview = (props: PostProps) => {
         }
         await updateDoc(cacheRef, {numComments: commentCount});
         setIsComment(!isComment);
+        // viewPost();
     };
 
     const locatePost = () => {
         console.log("Post is located at " + props.location);
     }
 
+    /** Allows the user to view a page only with the post and its comments. */
+    const viewPost = () => {
+        console.log("View Post");
+        // router.push("/app/postPageEx");
+        // console.log(router.push);
+    }
+
     return (
-        <View style={styles.outerContainer}>
+        <TouchableOpacity onPress={viewPost} style={styles.outerContainer}>
             <View style={styles.container}>
              <View style={styles.profileContainer}>
                 <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
@@ -118,6 +128,8 @@ const PostPreview = (props: PostProps) => {
              </View>
              <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>
+            <View style={styles.container}>
+            <Link href={"../../postPageEX"}>
             {props.image == null || props.image == "" ? (
                 <></>
             ) : (
@@ -133,6 +145,8 @@ const PostPreview = (props: PostProps) => {
             )}
             <View style={styles.text}>
                 <RegularText>{props.captionText}</RegularText>
+            </View>
+            </Link>
             </View>
             <View>
                 <LinearGradient
@@ -159,7 +173,7 @@ const PostPreview = (props: PostProps) => {
                     </View>
                 </LinearGradient>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
@@ -180,9 +194,10 @@ const styles = StyleSheet.create({
     postContainer: {
         justifyContent: "space-between",
         alignItems: "center"
-    },
+    }, 
     text: {
-        margin: 15,
+        // marginTop: 15,
+        paddingTop: 10,
         marginLeft: 20,
         marginRight: 20,
         justifyContent: "flex-start",
