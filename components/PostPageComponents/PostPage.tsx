@@ -1,10 +1,15 @@
-import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { useRouter, useLocalSearchParams, } from 'expo-router';
+
 import PostHeader from './PostHeader';
 import PostComment from './PostComment';
 import CommentBar from './CommentBar';
 
+
 const PostPage = () => {
+
+
   return (
     <ScrollView style={styles.container}>
       <PostHeader />

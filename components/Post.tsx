@@ -103,22 +103,23 @@ const PostPreview = (props: PostProps) => {
         }
         await updateDoc(cacheRef, {numComments: commentCount});
         setIsComment(!isComment);
-        // viewPost();
+        // Add linking to view post page.
+        viewPost();
     };
+
+    const viewPost = () => {
+        console.log(props.id);
+        router.push({ pathname: 'postPageEX', params: { id: props.id } });
+        // console.log(router);
+        
+    }
 
     const locatePost = () => {
         console.log("Post is located at " + props.location);
     }
 
-    /** Allows the user to view a page only with the post and its comments. */
-    const viewPost = () => {
-        console.log("View Post");
-        // router.push("/app/postPageEx");
-        // console.log(router.push);
-    }
-
     return (
-        <TouchableOpacity onPress={viewPost} style={styles.outerContainer}>
+        <View style={styles.outerContainer}>
             <View style={styles.container}>
              <View style={styles.profileContainer}>
                 <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
@@ -129,7 +130,7 @@ const PostPreview = (props: PostProps) => {
              <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>
             <View style={styles.container}>
-            <Link href={"../../postPageEX"}>
+            <Link href={{ pathname: 'postPageEX', params: { id: props.id } } }>
             {props.image == null || props.image == "" ? (
                 <></>
             ) : (
@@ -173,7 +174,7 @@ const PostPreview = (props: PostProps) => {
                     </View>
                 </LinearGradient>
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 
