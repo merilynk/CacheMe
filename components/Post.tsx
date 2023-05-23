@@ -5,12 +5,12 @@ import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import RegularText from './Texts/regularText';
-import BigText from './Texts/bigText';
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
 import { distanceBetween } from 'geofire-common';
 import getLocation from '../helpers/location';
 import Location from 'expo-location';
+import { useNavigation, useRouter, useLocalSearchParams } from "expo-router";
 
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
@@ -105,10 +105,8 @@ const PostPreview = (props: PostProps) => {
         await updateDoc(cacheRef, {numComments: commentCount});
         setIsComment(!isComment);
     };
-
-    const locatePost = () => {
-        console.log("Post is located at " + props.location);
-    }
+    const params = useLocalSearchParams();
+    const router = useRouter();
 
     return (
         <View style={styles.outerContainer}>
@@ -156,7 +154,10 @@ const PostPreview = (props: PostProps) => {
                     </View>
                     <View style={styles.icons}>
                         <RegularText>{distBetween} km away</RegularText>
-                        <TouchableOpacity onPress={locatePost}>
+                        <TouchableOpacity onPress={() => {
+                            const {latitude = props.location.latitude, longitude = props.location.longitude} = params;
+                            router.push({pathname: "/map", params: {latitude, longitude}});
+                        }}>
                             <Ionicons name="location-sharp" size={35} color="white" />
                         </TouchableOpacity>
                     </View>
