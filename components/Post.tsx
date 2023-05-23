@@ -51,13 +51,16 @@ const PostPreview = (props: PostProps) => {
     }
 
     const getImage = async () => {
-        if (props.image != "" || props.image != null) {
+        
+        if (props.image != "" && props.image != null) {
             const gsRef = ref(storage, "images/" + props.image);
             getDownloadURL(gsRef).then( (url) => {
                 setImageURI(url);
+                console.log(url);
             });
-            console.log("Theres's an image.")
-        }   
+        } else{
+            setImageURI("");
+        } 
     }
 
     useEffect( () => {
@@ -68,16 +71,16 @@ const PostPreview = (props: PostProps) => {
             setCurrUserLoc(loc);
             let currUserLat = loc?.coords.latitude as number;
             let currUserLong = loc?.coords.longitude as number;
-            console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
+            // console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
             let postLat = props.location.latitude;
             let postLong = props.location.longitude;
-            console.log("Post: [" + postLat + ", " + postLong + "]");
+            // console.log("Post: [" + postLat + ", " + postLong + "]");
             const distInBtwn = distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
             setDistBetween(Math.round(distInBtwn));
-            console.log("Distance Between: " + distInBtwn);
-            console.log(distBetween);
-            console.log(props.timePosted.toDate());
-            console.log(moment(props.timePosted.toDate()).fromNow());
+            // console.log("Distance Between: " + distInBtwn);
+            // console.log(distBetween);
+            // console.log(props.timePosted.toDate());
+            // console.log(moment(props.timePosted.toDate()).fromNow());
         })();
     }, []);
 

@@ -45,7 +45,7 @@ const Feed = () => {
     
     const fetchPosts = async () => {
         const postsList:CacheData[] = [];
-        const cacheRef = await collection(db, "cache");
+        const cacheRef = collection(db, "cache");
         const q = query(cacheRef, orderBy('_createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
 
@@ -123,7 +123,7 @@ const Feed = () => {
                                 <PostPreview id={item.__id}
                                     captionText={item.caption} 
                                     uid={item.__userId} 
-                                    image={item.__imageId} 
+                                    image={item.__imageId}
                                     numComments={item.numComments} 
                                     numLikes={item.numLikes} 
                                     location={item.location} 
