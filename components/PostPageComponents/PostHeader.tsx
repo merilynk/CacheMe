@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
 import RegularText from "../Texts/regularText"
 import SmallText from "../Texts/smallText"
 
@@ -11,10 +12,12 @@ const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
 
 const PostHeader = () => {
+    const router = useRouter();
+
    return (
     <View style={styles.container}>
         <View style={styles.topContainer}>
-            <TouchableOpacity style={styles.backArrow}>
+            <TouchableOpacity style={styles.backArrow} onPress={router.back}>
                 <Ionicons name="arrow-back-outline" size={35} color="black" />
             </TouchableOpacity>
             <View style={styles.profilePic}>
