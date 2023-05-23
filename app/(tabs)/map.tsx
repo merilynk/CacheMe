@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import getLocation from '../../helpers/location';
 import React from 'react';
 import Location from 'expo-location';
-import { useRouter } from 'expo-router';
+import { useRouter, useSearchParams } from 'expo-router';
 
 // Firebase
 import { db } from '../../firebase';
@@ -43,7 +43,7 @@ export default function Map() {
   const [postsToRender, setPostsToRender] = useState([cache]);
   const router = useRouter();
 
-
+  const { latitude, longitude } = useSearchParams();
   const mapRef = React.createRef();
   const fetchPosts = async () => {
     const postsList:CacheData[] = [];
@@ -105,10 +105,10 @@ useEffect(() => {
       showsUserLocation={true}
       provider={PROVIDER_GOOGLE}
       region={{
-        latitude: location?.coords.latitude as number,
-        longitude: location?.coords.longitude as number,
-        latitudeDelta: .28,
-        longitudeDelta: .28
+        latitude: latitude ? parseFloat(latitude as string) as number : location?.coords.latitude as number,
+        longitude: longitude ? parseFloat(longitude as string) as number : location?.coords.longitude as number,
+        latitudeDelta: latitude ? 0.01 : .28,
+        longitudeDelta: longitude ? 0.01 : .28,
       }}>
         {postsToRender.map((post) => { // Going through every post and returning a marker object for it
 
