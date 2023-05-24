@@ -1,13 +1,28 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import { useRouter, useLocalSearchParams, } from 'expo-router';
+import { Timestamp, GeoPoint } from 'firebase/firestore';
 
 import PostHeader from './PostHeader';
 import PostComment from './PostComment';
 import CommentBar from './CommentBar';
 
 
-const PostPage = () => {
+type CacheData = {
+  id: string, 
+  userId: string, 
+  username: string,
+  imageRef: string, 
+  caption: string, 
+  comments: never[],
+  distBtwn: number, 
+  timePosted: string, 
+  location: GeoPoint | null, 
+  nLikes: number,
+  nComments: number,
+}
+
+const PostPage = (props: CacheData) => {
 
 
   return (
