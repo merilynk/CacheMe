@@ -32,8 +32,7 @@ export default function Home() {
               email: email,
               name: fullName,
               username: username,
-            }),
-            // console.log(result);
+            });
         })
         .catch((error) => {
           const errorCode = error.code;

@@ -5,11 +5,10 @@ import PostPage from '../components/PostPageComponents/PostPage'
 
 const postPageEx = () => {
     const router = useRouter();
-    const { postId } = useSearchParams();
+    const { postId, userId, imageRef, caption, distBtw, timePosted, location, nLikes, nComments, liked } = useSearchParams();
   
     useEffect ( () => {
       console.log("post id: " + postId);
-      console.log(postId?.length);
     }, [postId]) 
     return (
         <PostPage></PostPage>

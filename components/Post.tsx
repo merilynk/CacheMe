@@ -11,7 +11,7 @@ import moment from 'moment';
 import { distanceBetween } from 'geofire-common';
 import getLocation from '../helpers/location';
 import Location from 'expo-location';
-import { Link, useRouter } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
@@ -38,7 +38,9 @@ const PostPreview = (props: PostProps) => {
     const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
     const [imageURI, setImageURI] = useState<string>();
+
     const router = useRouter();
+    const params = useLocalSearchParams();
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -70,16 +72,16 @@ const PostPreview = (props: PostProps) => {
             setCurrUserLoc(loc);
             let currUserLat = loc?.coords.latitude as number;
             let currUserLong = loc?.coords.longitude as number;
-            console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
+            // console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
             let postLat = props.location.latitude;
             let postLong = props.location.longitude;
-            console.log("Post: [" + postLat + ", " + postLong + "]");
+            // console.log("Post: [" + postLat + ", " + postLong + "]");
             const distInBtwn = distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
             setDistBetween(Math.round(distInBtwn));
-            console.log("Distance Between: " + distInBtwn);
-            console.log(distBetween);
-            console.log(props.timePosted.toDate());
-            console.log(moment(props.timePosted.toDate()).fromNow());
+            // console.log("Distance Between: " + distInBtwn);
+            // console.log(distBetween);
+            // console.log(props.timePosted.toDate());
+            // console.log(moment(props.timePosted.toDate()).fromNow());
         })();
     }, []);
 
@@ -109,8 +111,17 @@ const PostPreview = (props: PostProps) => {
 
     const viewPost = () => {
         console.log(props.id);
-        router.push({ pathname: 'postPageEX', params: { id: props.id } });
-        // console.log(router);
+        const {postId = props.id, 
+            userId = props.uid, 
+            imageRef = imageURI, 
+            caption = props.captionText, 
+            distBtwn = distBetween, 
+            timePosted = props.timePosted, 
+            location = props.location, 
+            nLikes = props.numLikes,
+            liked = isLiked,
+            nComments = props.numComments } = params;
+        router.push({ pathname: 'postPageEX', params: { postId, userId} });
         
     }
 
