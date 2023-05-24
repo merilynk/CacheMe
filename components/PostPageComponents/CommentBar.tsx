@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, StyleSheet, Text, Dimensions } from 'react-native'
+import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native'
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
+const onPress = () => 1;
 
 const CommentBar = () => {
    return (
@@ -26,9 +27,10 @@ const CommentBar = () => {
         <View style={styles.commentBox}>
           <Text>Add a comment</Text>
         </View>
-        <View style={styles.postButton}>
+        <TouchableOpacity style={styles.postButton} onPress = {onPress}>
             <Text>Post</Text>
-        </View>
+        </TouchableOpacity>
+        
       </View>
     </View>
     )
@@ -36,17 +38,19 @@ const CommentBar = () => {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      width: windowWidth,
-      borderWidth: 1,
-      borderColor: "black",
-      height: windowHeight/15,
-      flexDirection: "column",
+      flex: 1,                                    // uneeded tbh
+      width: windowWidth,                         // makes width as big as any window given
+      //borderWidth: 1,                         
+      //borderColor: "black",                   
+      height: windowHeight/10,                //height 1/10 of screen height
+      flexDirection: "column",                //the children stack vertically
+      alignSelf: 'flex-end',                  
+      justifyContent: 'space-between',        
+      backgroundColor: 'white',                         
     },
-    topRow: {
-      height: windowHeight/20,
-      flex: 1,
-      backgroundColor: "white",
+    topRow: {                                 //IF YOU ARE IMPLEMENTING REPLIES YOU CAN JUST NOT RENDER TOP ROW AND IT SHOULD WORK
+      flex: 0.5,
+      backgroundColor: 'beige',
       flexDirection: 'row',
     },
     replyTo: {
@@ -60,36 +64,49 @@ const styles = StyleSheet.create({
       alignItems: "flex-end",
       paddingRight: 15,
     },
-    bottomRow: {
+    bottomRow: {                            //Implementation for the pfp, comment, post button
       flex: 1,
       flexDirection: "row",
-      justifyContent: "space-between",
+      justifyContent: 'flex-end'
+    
     },
     pfp: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "flex-start",
-      paddingLeft: 20,
-      borderColor: "green",
-      borderWidth: 2,
-      borderStyle: "dotted"
+      height: windowHeight/20,
+      width: windowHeight/20,
+      alignSelf: 'center',
+      borderWidth: 8,
+      borderRadius: windowHeight/30,
+      borderColor: 'white',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: windowWidth/60,
+
+
     },
     commentBox: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "flex-start",
-      width: 200,
-      borderColor: "yellow",
-      borderWidth: 2,
+      height: windowHeight/30,
+      alignSelf: 'center',
+      width: windowWidth/1.2,
+      borderColor: "black",
+      borderRadius: 10,
+      borderWidth: 1,
+      justifyContent: 'center',
+      paddingLeft: 3,
+      marginRight: 10,
+
     },
     postButton: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      borderColor: "red",
-      borderWidth: 2,
-      borderStyle: "dotted"
-    }
+      height: windowHeight/30,
+      alignSelf: 'center',
+      justifyContent: 'center',
+    //  borderColor: "red",
+    //  borderWidth: 2,
+    //  borderStyle: "dotted",
+      paddingRight: 20,
+      position: 'absolute',
+      zIndex: 1,
+    },
+    
 })
 
 export default CommentBar

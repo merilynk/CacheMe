@@ -36,7 +36,7 @@ const PostPage = (props: CacheData) => {
 
       <CommentBar />
 
-      <PostComment />
+      {<PostComment />}
       {/* Add any additional components or sections */}
     </ScrollView>
   );
