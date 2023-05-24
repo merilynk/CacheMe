@@ -7,8 +7,8 @@ const windowHeight = Dimensions.get('screen').height;
 
 const CommentBar = () => {
   const [text, onChangeText] = React.useState('');      //comment text updating
-  const postComment = () => console.log(text);                      //Post button is connected implement it here
-
+  const postComment = () => console.log(text);                      //Post button is connected implement it here RECCOMEND RESETING THE TEXT FIELD AFTER CLICKED ONCE SO IT CANT BE SPAMMED
+  const stopReply = () => console.log("stop");          //IMPLEMENT STOP REPLY removes reply part when clicked
 
    return (
     <View style={styles.container}>
@@ -18,9 +18,9 @@ const CommentBar = () => {
           <Text>Replying to []</Text>
         </View>
 
-        <View style={styles.xMark}>
-          <Text>X</Text>
-        </View>
+        <TouchableOpacity style={styles.xMark} onPress = {stopReply}>
+            <Text>X</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.bottomRow}>
@@ -33,8 +33,8 @@ const CommentBar = () => {
           style={styles.commentBox}
           onChangeText={onChangeText}
           value={text}
-          placeholder= "Add a Comment..."
-          placeholderTextColor={"gray"}
+          placeholder= "Add a Comment"
+          placeholderTextColor={"grey"}
         />
         <TouchableOpacity style={styles.postButton} onPress = {postComment}>
             <Text>Post</Text>
