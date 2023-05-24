@@ -29,6 +29,7 @@ const CommentBar = () => {
         <View style={styles.postButton}>
             <Text>Post</Text>
         </View>
+        
       </View>
     </View>
     )
@@ -36,17 +37,19 @@ const CommentBar = () => {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      width: windowWidth,
-      borderWidth: 1,
-      borderColor: "black",
-      height: windowHeight/15,
-      flexDirection: "column",
+      flex: 1,                                    // uneeded tbh
+      width: windowWidth,                         // makes width as big as any window given
+      //borderWidth: 1,                         
+      //borderColor: "black",                   
+      height: windowHeight/10,                //height 1/10 of screen height
+      flexDirection: "column",                //the children stack vertically
+      alignSelf: 'flex-end',                  
+      justifyContent: 'space-between',        
+      backgroundColor: 'white',                         
     },
-    topRow: {
-      height: windowHeight/20,
-      flex: 1,
-      backgroundColor: "white",
+    topRow: {                                 //IF YOU ARE IMPLEMENTING REPLIES YOU CAN JUST NOT RENDER TOP ROW AND IT SHOULD WORK
+      flex: 0.5,
+      backgroundColor: 'pink',
       flexDirection: 'row',
     },
     replyTo: {
@@ -60,36 +63,47 @@ const styles = StyleSheet.create({
       alignItems: "flex-end",
       paddingRight: 15,
     },
-    bottomRow: {
+    bottomRow: {                            //Implementation for the pfp, comment, post button
       flex: 1,
       flexDirection: "row",
-      justifyContent: "space-between",
+    
     },
     pfp: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "flex-start",
-      paddingLeft: 20,
-      borderColor: "green",
-      borderWidth: 2,
-      borderStyle: "dotted"
+      height: windowHeight/20,
+      width: windowHeight/20,
+      alignSelf: 'center',
+      borderWidth: 8,
+      borderRadius: windowHeight/30,
+      borderColor: 'white',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: windowWidth/60,
+
+
     },
     commentBox: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "flex-start",
-      width: 200,
-      borderColor: "yellow",
-      borderWidth: 2,
+      height: windowHeight/30,
+      alignSelf: 'center',
+      width: windowWidth/1.2,
+      borderColor: "black",
+      borderRadius: 10,
+      borderWidth: 1,
+      justifyContent: 'center',
+      paddingLeft: 3,
+
     },
     postButton: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      borderColor: "red",
-      borderWidth: 2,
-      borderStyle: "dotted"
-    }
+      height: windowHeight/30,
+      alignSelf: 'center',
+      justifyContent: 'center',
+    //  borderColor: "red",
+    //  borderWidth: 2,
+    //  borderStyle: "dotted",
+      paddingLeft: windowWidth/1.2 + windowHeight/20 -26,
+      position: 'absolute',
+      zIndex: 1,
+    },
+    
 })
 
 export default CommentBar

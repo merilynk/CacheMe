@@ -21,7 +21,7 @@ const PostPage = () => {
 
       <CommentBar />
 
-      <PostComment />
+      {<PostComment />}
       {/* Add any additional components or sections */}
     </ScrollView>
   );
