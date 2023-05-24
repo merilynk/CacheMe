@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-//import ProfileInfo from './ProfileInfor'
 import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
@@ -17,7 +16,7 @@ import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 
-type PostProps = {
+type CacheData = {
     id: string,
     captionText: string,
     uid: string, 
@@ -27,7 +26,7 @@ type PostProps = {
     location: GeoPoint,
     timePosted: Timestamp,
 }
-const PostPreview = (props: PostProps) => {
+const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
     const [isLiked, setIsLiked] = useState(false);
@@ -35,7 +34,7 @@ const PostPreview = (props: PostProps) => {
     const [likeCount, setLikeCount] = useState(props.numLikes);
     const [commentCount, setCommentCount] = useState(props.numComments);
     const [poster, setPoster] = useState("");
-    const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
+    // const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
     const [imageURI, setImageURI] = useState<string>();
 
@@ -60,7 +59,7 @@ const PostPreview = (props: PostProps) => {
             getDownloadURL(gsRef).then( (url) => {
                 setImageURI(url);
             });
-            console.log("Theres's an image.")
+            // console.log("Theres's an image.")
         }   
     }
 
@@ -69,7 +68,7 @@ const PostPreview = (props: PostProps) => {
         getImage();
         (async () => {
             const loc = await getLocation();
-            setCurrUserLoc(loc);
+            // setCurrUserLoc(loc);
             let currUserLat = loc?.coords.latitude as number;
             let currUserLong = loc?.coords.longitude as number;
             // console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
@@ -111,8 +110,9 @@ const PostPreview = (props: PostProps) => {
 
     const viewPost = () => {
         console.log(props.id);
-        const {postId = props.id, 
+        const { postId = props.id, 
             userId = props.uid, 
+            username = poster,
             imageRef = imageURI, 
             caption = props.captionText, 
             distBtwn = distBetween, 
@@ -121,7 +121,7 @@ const PostPreview = (props: PostProps) => {
             nLikes = props.numLikes,
             liked = isLiked,
             nComments = props.numComments } = params;
-        router.push({ pathname: 'postPageEX', params: { postId, userId} });
+        router.push({ pathname: 'postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
         
     }
 

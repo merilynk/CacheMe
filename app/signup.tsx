@@ -65,7 +65,7 @@ export default function Home() {
           placeholderTextColor={"#575757"}
           value={mi}
           onChangeText={text => setMi(text)}
-          style={[styles.input, styles.miInput]}
+          style={[styles.input, styles.input]}
         />
         <TextInput
           placeholder="Last Name"
