@@ -1,11 +1,15 @@
 import React from 'react'
-import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native'
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
-const onPress = () => 1;
+
 
 const CommentBar = () => {
+  const [text, onChangeText] = React.useState('');      //comment text updating
+  const postComment = () => console.log(text);                      //Post button is connected implement it here RECCOMEND RESETING THE TEXT FIELD AFTER CLICKED ONCE SO IT CANT BE SPAMMED
+  const stopReply = () => console.log("stop");          //IMPLEMENT STOP REPLY removes reply part when clicked
+
    return (
     <View style={styles.container}>
 
@@ -14,9 +18,9 @@ const CommentBar = () => {
           <Text>Replying to []</Text>
         </View>
 
-        <View style={styles.xMark}>
-          <Text>X</Text>
-        </View>
+        <TouchableOpacity style={styles.xMark} onPress = {stopReply}>
+            <Text>X</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.bottomRow}>
@@ -24,10 +28,15 @@ const CommentBar = () => {
           <Text>PFP</Text>
         </View>
 
-        <View style={styles.commentBox}>
-          <Text>Add a comment</Text>
-        </View>
-        <TouchableOpacity style={styles.postButton} onPress = {onPress}>
+        
+        <TextInput
+          style={styles.commentBox}
+          onChangeText={onChangeText}
+          value={text}
+          placeholder= "Add a Comment"
+          placeholderTextColor={"grey"}
+        />
+        <TouchableOpacity style={styles.postButton} onPress = {postComment}>
             <Text>Post</Text>
         </TouchableOpacity>
         
@@ -46,7 +55,7 @@ const styles = StyleSheet.create({
       flexDirection: "column",                //the children stack vertically
       alignSelf: 'flex-end',                  
       justifyContent: 'space-between',        
-      backgroundColor: 'white',                         
+      backgroundColor: 'white',
     },
     topRow: {                                 //IF YOU ARE IMPLEMENTING REPLIES YOU CAN JUST NOT RENDER TOP ROW AND IT SHOULD WORK
       flex: 0.5,
