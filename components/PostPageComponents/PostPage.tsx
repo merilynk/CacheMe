@@ -23,11 +23,19 @@ type CacheData = {
 }
 
 const PostPage = (props: CacheData) => {
-
-
+  
   return (
     <ScrollView style={styles.container}>
-      <PostHeader />
+      <PostHeader id={props.id} 
+        userId={props.userId} 
+        username={props.username}
+        imageRef={props.imageRef}
+        caption={props.caption}
+        distBtwn={props.distBtwn} 
+        timePosted={props.timePosted}
+        location={props.location}
+        nLikes={props.nLikes}
+        nComments={props.nComments} />
       
       {/* Add your post content here */}
       <View style={styles.postContent}>

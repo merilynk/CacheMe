@@ -37,19 +37,19 @@ const postPageEx = () => {
 
     useEffect ( () => {
         console.log("post id: " + id);
-        cache.then( (c) => {
+        cache.then( async (c) => {
             if (c) {
                 getPoster(c.__userId).then( username => {
                     setPoster(username);
                 });
-                getImage(c.__imageId).then( uri => {
+                getImage(c.__imageId).then( async (uri) => {
                     if (uri) {
                         setImageURI(uri);
                     } else {
                         setImageURI("");
                     }
                 });
-                setTimePosted(getTimeDifference(c._createdAt));
+                await setTimePosted(getTimeDifference(c._createdAt));
                 getDistanceBetween(c.location).then( dist => {
                     setDistBetween(dist);
                 })

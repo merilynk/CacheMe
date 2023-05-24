@@ -141,24 +141,24 @@ const PostPreview = (props: CacheData) => {
              <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>
             <View style={styles.container}>
-            <Link href={{ pathname: 'postPageEX', params: { id: props.id } } }>
-            {props.image == null || props.image == "" ? (
-                <></>
-            ) : (
-                <View style={styles.postContainer}> 
-                    <Image source={{uri: imageURI}}
-                    style={{
-                        width: width - 30, 
-                        height: width - 30, 
-                        borderRadius: 15,
-                        }}
-                    />
-                </View> 
-            )}
-            <View style={styles.text}>
-                <RegularText>{props.captionText}</RegularText>
-            </View>
-            </Link>
+                <TouchableOpacity onPress={viewPost}>
+                    {props.image == null || props.image == "" ? (
+                        <></>
+                    ) : (
+                        <View style={styles.postContainer}> 
+                            <Image source={{uri: imageURI}}
+                            style={{
+                                width: width - 30, 
+                                height: width - 30, 
+                                borderRadius: 15,
+                                }}
+                            />
+                        </View> 
+                    )}
+                    <View style={styles.text}>
+                        <RegularText>{props.captionText}</RegularText>
+                    </View>
+                </TouchableOpacity>
             </View>
             <View>
                 <LinearGradient
