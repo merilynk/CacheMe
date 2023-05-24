@@ -15,8 +15,8 @@ import SelectRadiusScreen from '../../components/dropDownRadius';
 import { FontAwesome } from '@expo/vector-icons';
 import { auth } from '../../firebase'
 import getLocation from '../../helpers/location'
-import { useNavigation } from 'expo-router';
-import { Link, useRouter } from 'expo-router';
+
+import {  useRouter } from 'expo-router';
 
 
 const windowWidth = Dimensions.get('screen').width
@@ -29,8 +29,9 @@ export default function Post() {
     const [caption, setCaption] = useState("");
     let imageID = uuid.v1().toString();
     const [captionExists, setCaptionExists] = useState(false);
-
+    const [posting, setPosting] = useState(false);
     const postCache = async () => {
+      setPosting(true);
       if(await uploadImage()){
         addCacheToFirestore();
       }
@@ -38,6 +39,7 @@ export default function Post() {
       setImage(undefined);
       setCaption("");
       setCaptionExists(false);
+      setPosting(false);
       router.push("/feed");
       
     }
@@ -119,9 +121,11 @@ export default function Post() {
         <View style={styles.container}>
           <View style={styles.topRow}>
             <BigText>Create Cache</BigText>
-            <TouchableOpacity style={styles.postButton} onPress={image || captionExists  ? postCache : () => Alert.alert("Add a picture or caption first!")}>
+            {!posting ? <TouchableOpacity style={styles.postButton} onPress={(image || captionExists)  ? postCache : () => Alert.alert("Add a picture or caption first!")}>
               <RegularText>Post</RegularText>
-            </TouchableOpacity>
+            </TouchableOpacity> : <TouchableOpacity style={styles.postButton}>
+              <RegularText>Posting...</RegularText>
+            </TouchableOpacity>}
           </View>
 
           <View style={styles.postSettings}>
