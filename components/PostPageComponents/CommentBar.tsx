@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, StyleSheet, Text, Dimensions } from 'react-native'
+import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native'
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
+const onPress = () => 1;
 
 const CommentBar = () => {
    return (
@@ -26,9 +27,9 @@ const CommentBar = () => {
         <View style={styles.commentBox}>
           <Text>Add a comment</Text>
         </View>
-        <View style={styles.postButton}>
+        <TouchableOpacity style={styles.postButton} onPress = {onPress}>
             <Text>Post</Text>
-        </View>
+        </TouchableOpacity>
         
       </View>
     </View>
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     },
     topRow: {                                 //IF YOU ARE IMPLEMENTING REPLIES YOU CAN JUST NOT RENDER TOP ROW AND IT SHOULD WORK
       flex: 0.5,
-      backgroundColor: 'pink',
+      backgroundColor: 'beige',
       flexDirection: 'row',
     },
     replyTo: {
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
     bottomRow: {                            //Implementation for the pfp, comment, post button
       flex: 1,
       flexDirection: "row",
+      justifyContent: 'flex-end'
     
     },
     pfp: {
@@ -90,6 +92,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       justifyContent: 'center',
       paddingLeft: 3,
+      marginRight: 10,
 
     },
     postButton: {
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
     //  borderColor: "red",
     //  borderWidth: 2,
     //  borderStyle: "dotted",
-      paddingLeft: windowWidth/1.2 + windowHeight/20 -26,
+      paddingRight: 20,
       position: 'absolute',
       zIndex: 1,
     },
