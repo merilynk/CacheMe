@@ -4,7 +4,7 @@ import { View, StyleSheet, Image, Dimensions } from 'react-native'
 import PostPage from '../components/PostPageComponents/PostPage'
 import { GeoPoint, Timestamp } from 'firebase/firestore';
 import Location from 'expo-location';
-import { CacheData, getCacheData, getDistanceBetween, getImage, getPoster, getTimeDifference } from '../components/PostData';
+import { getCacheData, getDistanceBetween, getImage, getPoster, getTimeDifference } from '../components/PostData';
 
 const cache = {
     __id: "",
@@ -49,7 +49,7 @@ const postPageEx = () => {
                         setImageURI("");
                     }
                 });
-                await setTimePosted(getTimeDifference(c._createdAt));
+                setTimePosted(getTimeDifference(c._createdAt));
                 getDistanceBetween(c.location).then( dist => {
                     setDistBetween(dist);
                 })

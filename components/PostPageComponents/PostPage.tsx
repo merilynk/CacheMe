@@ -23,7 +23,7 @@ type CacheData = {
 }
 
 const PostPage = (props: CacheData) => {
-  
+
   return (
     <ScrollView style={styles.container}>
       <PostHeader id={props.id} 
@@ -44,7 +44,11 @@ const PostPage = (props: CacheData) => {
 
       <CommentBar />
 
-      {<PostComment />}
+      {<PostComment __id={props.id}
+                    __userId={props.userId}
+                    username={props.username}
+                    comments={props.comments}
+                    numComments={props.nComments}/>}
       {/* Add any additional components or sections */}
     </ScrollView>
   );
