@@ -1,4 +1,6 @@
+import { VoiceID } from 'aws-sdk';
 import React, { useEffect, useState } from 'react';
+import LogBox from 'react-native';
 import { View, StyleSheet, Image, Dimensions, Text, TouchableOpacity, TextInput, ScrollView, FlatList, SafeAreaView } from 'react-native';
 import RegularText from "../Texts/regularText"
 import MiniText from '../Texts/miniText';
@@ -10,53 +12,103 @@ const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
 
 type CacheData = {
-__id: string;
-__userId: string;
-username: string;
-comments: never[];
-numComments: number;
+  __id: string;
+  __userId: string;
+  username: string;
+  comments: never[];
+  numComments: number;
 }
 
 type CommentData = {
-__id: string;
-__userId: string;
-username: string;
-replies: never[];
-text: string;
-timePosted: string;
+  __id: string;
+  __userId: string;
+  username: string;
+  replies: never[];
+  text: string;
+  timePosted: string;
 }
 
 const comment = {
-__id: "",
-__userId: "",
-username: "",
-replies: [],
-text: "",
-timePosted: "",
+  __id:  "",
+  __userId: "",
+  username: "",
+  replies: [],
+  text: "",
+  timePosted: "",
 }
 
 const PostComment = (props: CommentData) => {
+  {/*const [loading, setLoading] = useState(true);
+  const [showReplyBox, setShowReplyBox] = useState(false);
+  const [replyMessage, setReplyMessage] = useState('');
+const [postedReply, setPostedReply] = useState('');*/}
 
-return (
-<SafeAreaView>
-<View style={styles.container}>
-<View style={styles.topBar}>
-<View>
-<Image source={require('../../assets/images/takumi.jpeg')} style={{ width: 30, height: 30, borderRadius: 15 }}></Image>
-</View>
-<View style={styles.userName}>
-<RegularText>{ props.username }</RegularText>
-</View>
-<View>
-<RegularText style={styles.time}>{ props.timePosted }</RegularText>
-</View>
-</View>
-<View style={styles.midderBar}>
-<RegularText style={{ fontSize: 15 }}>{ props.text }</RegularText>
-</View>
-</View>
-</SafeAreaView>
-);
+  {/*const handleReply = () => {
+    // Handle reply logic here
+    console.log('Reply:', replyMessage);
+    // Display the posted reply
+    setPostedReply(replyMessage);
+    // Clear reply message after sending
+    setReplyMessage('');
+    // Show the reply button again
+    setShowReplyBox(false);
+  };
+
+  const handleShowReplyBox = () => {
+    setShowReplyBox(true);
+  };
+
+  useEffect(() => {
+
+  }, [])*/}
+
+  return (
+    <>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <View style={styles.topBar}>
+          <View>
+            <Image source={require('../../assets/images/takumi.jpeg')} style={{ width: 30, height: 30, borderRadius: 15 }}></Image>
+          </View>
+          <View style={styles.userName}>
+            <RegularText>{props.username}</RegularText>
+          </View>
+          <View>
+            <RegularText style={styles.time}>{props.timePosted}</RegularText>
+          </View>
+        </View>
+        <View style={styles.midderBar}>
+          <RegularText style={{ fontSize: 15 }}>{props.text}</RegularText>
+        </View>
+        {/*{!showReplyBox && (
+          <TouchableOpacity style={styles.bottomBar} onPress={handleShowReplyBox}>
+            <RegularText style={{ fontSize: 13, marginTop: 10, }}>Reply</RegularText>
+          </TouchableOpacity>
+        )}
+
+        {/* {showReplyBox && (
+          <View style={styles.replyContainer}>
+            <TextInput
+              style={styles.replyInput}
+              placeholder="Type your reply..."
+              value={replyMessage}
+              onChangeText={setReplyMessage} />
+            <TouchableOpacity style={styles.replyButton} onPress={handleReply}>
+              <Text style={styles.replyButtonText}>Send</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+
+          {/* Display the posted reply */}
+          {/* postedReply !== '' && (
+            <View style={styles.postedReplyContainer}>
+              <RegularText style={styles.postedReplyText}>{postedReply}</RegularText>
+            </View>
+           )} */}
+        </View>
+    </SafeAreaView></>
+  );
 };
 
 const styles = StyleSheet.create({
