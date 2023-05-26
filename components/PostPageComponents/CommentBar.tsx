@@ -1,5 +1,7 @@
+import { Timestamp, collection, doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { auth, db } from '../../firebase';
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
@@ -9,15 +11,33 @@ const CommentBar = () => {
   const [replying, setReplying] = useState(false); // State to track the reply status
   const [replyToUsername, setReplyToUsername] = useState(''); // State to track the username being replied to
 
-  const postComment = () => {
+  const postComment = async () => {
     if (replying) {
       console.log(`Replying to ${replyToUsername}: ${text}`);
     } else {
       console.log(text);
     }
-    onChangeText('');
+    
+    addCommentToFirestore();
     stopReply();
+    onChangeText('');
   };
+
+  const addCommentToFirestore = async () => {
+    try {
+      const newCommentRef = doc(collection(db, "comment"));
+      setDoc(newCommentRef, {
+        __id: newCommentRef.id,
+        __userId: auth.currentUser?.uid,
+        _createdAt: Timestamp.fromDate(new Date()),
+        replies: [],
+        text: text,
+      })
+      console.log("Document written with ID: ", newCommentRef.id);
+    } catch (e) {
+      console.error("Error adding comment document");
+    }  
+  }
 
   const stopReply = () => {
     setReplying(false);

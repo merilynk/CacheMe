@@ -44,6 +44,7 @@ export default function Post() {
                 __userId: auth.currentUser?.uid,
                 _createdAt: Timestamp.fromDate(new Date()),
                 caption: caption,
+                comments: [],
                 location: new GeoPoint(location?.coords.latitude as number, location?.coords.longitude as number),
                 numComments: 0,
                 numLikes: 0,
