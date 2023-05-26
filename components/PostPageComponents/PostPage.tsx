@@ -1,11 +1,13 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, FlatList } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import { useRouter, useLocalSearchParams, } from 'expo-router';
-import { Timestamp, GeoPoint } from 'firebase/firestore';
+import { Timestamp, GeoPoint, getDoc, doc } from 'firebase/firestore';
 
 import PostHeader from './PostHeader';
 import PostComment from './PostComment';
 import CommentBar from './CommentBar';
+import { getPoster, getTimeDifference } from '../PostData';
+import { db } from '../../firebase';
 
 
 type CacheData = {
@@ -22,35 +24,114 @@ type CacheData = {
   nComments: number,
 }
 
+type CommentData = {
+  __id: string;
+  __userId: string;
+  _createdAt: Timestamp;
+  username: string;
+  replies: never[];
+  text: string;
+  timePosted: string;
+}
+
+const comment = {
+  __id:  "",
+  __userId: "",
+  _createdAt: new Timestamp(0, 0),
+  username: "",
+  replies: [],
+  text: "",
+  timePosted: "",
+}
+
 const PostPage = (props: CacheData) => {
+  const [loading, setLoading] = useState(true);
+  const [postId, setPostId] = useState(props.id);
+  const [commentIds, setCommentIds] = useState(props.comments);
+  const [commentsToRender, setCommentsToRender] = useState([comment]);
+  const [commenter, setCommenter] = useState("");
+  const [whenPosted, setWhenPosted] = useState("");
+
+  console.log(props.comments);
+
+  const fetchPostComments = async (postId: string) => {
+    const commentsList:CommentData[] = [];
+
+    setCommentIds(props.comments);
+    setPostId(postId);
+
+    commentIds.forEach(async (id) => {
+      console.log(id);
+      const comment = {
+        __id:  "",
+        __userId: "",
+        _createdAt: new Timestamp(0, 0),
+        username: "",
+        replies: [],
+        text: "",
+        timePosted: "",
+      }
+
+      // For each comment ID, find the document for the comment
+      const commentDoc = await getDoc(doc(db, "comment", id));
+
+      if (commentDoc.exists()) {
+        comment.__id = commentDoc.data().__id;
+        comment.__userId = commentDoc.data().__userId;
+        comment.username = await getPoster(comment.__userId)
+        // setCommenter(username);
+        comment._createdAt = commentDoc.data()._createdAt;
+        comment.timePosted = getTimeDifference(comment._createdAt)
+        // setWhenPosted(timeDiff);
+        comment.replies = commentDoc.data().replies;
+        comment.text = commentDoc.data().text;
+      }
+      
+      // Add the document to the commentList
+      commentsList.push(comment);
+    })
+
+    setCommentsToRender(commentsList);
+
+    if (loading) {
+      setLoading(false);
+    }
+  }
 
   return (
-    <ScrollView style={styles.container}>
-      <PostHeader id={props.id} 
-        userId={props.userId} 
-        username={props.username}
-        imageRef={props.imageRef}
-        caption={props.caption}
-        distBtwn={props.distBtwn} 
-        timePosted={props.timePosted}
-        location={props.location}
-        nLikes={props.nLikes}
-        nComments={props.nComments} />
+    <View>
+      <FlatList data={commentsToRender}
+        keyExtractor={(c) => c.__id}
+        ListHeaderComponent={
+          <PostHeader id={props.id} 
+          userId={props.userId} 
+          username={props.username}
+          imageRef={props.imageRef}
+          caption={props.caption}
+          distBtwn={props.distBtwn} 
+          timePosted={props.timePosted}
+          location={props.location}
+          nLikes={props.nLikes}
+          nComments={props.nComments} />
+        }
+        renderItem={({item}) => {
+          return (
+            <PostComment __id={item.__id}
+                      __userId={item.__userId}
+                      replies={item.replies}
+                      username={item.username}
+                      text={item.text}
+                      timePosted={item.timePosted}/>
+          )
+        }}>
+      </FlatList>
+
       
-      {/* Add your post content here */}
-      <View style={styles.postContent}>
-        {/* Additional post content */}
-      </View>
-
-      <CommentBar />
-
-      {<PostComment __id={props.id}
-                    __userId={props.userId}
-                    username={props.username}
-                    comments={props.comments}
-                    numComments={props.nComments}/>}
-      {/* Add any additional components or sections */}
-    </ScrollView>
+     
+      <KeyboardAvoidingView>
+        <CommentBar />
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
