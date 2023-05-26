@@ -67,7 +67,6 @@ const CommentBar = () => {
 };
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
     container: {
       flex: 1,                                    // uneeded tbh
       width: windowWidth,                         // makes width as big as any window given                  
@@ -113,49 +112,6 @@ const styles = StyleSheet.create({
 
     },
     commentBox: {
-=======
-  container: {
-    width: windowWidth,
-    height: windowHeight / 10,
-    flexDirection: 'column',
-    alignSelf: 'flex-end',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-  },
-  topRow: {
-    flex: 0.5,
-    backgroundColor: 'beige',
-    flexDirection: 'row',
-  },
-  replyTo: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingLeft: 20,
-  },
-  xMark: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingRight: 15,
-  },
-  bottomRow: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  pfp: {
-    height: windowHeight / 20,
-    width: windowHeight / 20,
-    alignSelf: 'center',
-    borderWidth: 8,
-    borderRadius: windowHeight / 30,
-    borderColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: windowWidth / 60,
-  },
-  commentBox: {
->>>>>>> 79c10803d4e3920d5aef7625777d8b072953d3cb
       height: windowHeight/30,
       alignSelf: 'center',
       width: windowWidth/1.2,

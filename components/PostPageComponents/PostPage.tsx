@@ -1,5 +1,5 @@
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, FlatList, Dimensions,} from 'react-native';
-import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
+// import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
 import React, {useState, useEffect} from 'react';
 import { useRouter, useLocalSearchParams, } from 'expo-router';
 import { Timestamp, GeoPoint, getDoc, doc } from 'firebase/firestore';
