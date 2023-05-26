@@ -112,7 +112,7 @@ const PostComment = (props: CommentData) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: '#FFFFFF',
     marginVertical: 10,
     flexDirection: "column",
   },

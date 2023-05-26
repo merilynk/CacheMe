@@ -48,14 +48,12 @@ const CommentBar = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,                                    // uneeded tbh
-      width: windowWidth,                         // makes width as big as any window given
-      //borderWidth: 1,                         
-      //borderColor: "black",                   
+      width: windowWidth,                         // makes width as big as any window given                  
       height: windowHeight/10,                //height 1/10 of screen height
       flexDirection: "column",                //the children stack vertically
       alignSelf: 'flex-end',                  
       justifyContent: 'space-between',        
-      backgroundColor: 'white',
+      backgroundColor: '#EEF2FF',
     },
     topRow: {                                 //IF YOU ARE IMPLEMENTING REPLIES YOU CAN JUST NOT RENDER TOP ROW AND IT SHOULD WORK
       flex: 0.5,
@@ -108,9 +106,6 @@ const styles = StyleSheet.create({
       height: windowHeight/30,
       alignSelf: 'center',
       justifyContent: 'center',
-    //  borderColor: "red",
-    //  borderWidth: 2,
-    //  borderStyle: "dotted",
       paddingRight: 20,
       position: 'absolute',
       zIndex: 1,
