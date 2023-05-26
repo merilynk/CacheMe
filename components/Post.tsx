@@ -12,7 +12,7 @@ import getLocation from '../helpers/location';
 import Location from 'expo-location';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 
@@ -91,20 +91,20 @@ const PostPreview = (props: CacheData) => {
             setLikeCount(likeCount + 1)
         }
         const cacheRef = doc(db, "cache", props.id);
-        await updateDoc(cacheRef, {numLikes: likeCount});
+        await updateDoc(cacheRef, {numLikes: increment(1)});
         setIsLiked(!isLiked);
     };
     
     const toggleComment = async () => {
-        const cacheRef = doc(db, "cache", props.id);
-        if (isComment) {
-            setCommentCount(commentCount - 1)
-        } else {
-            setCommentCount(commentCount + 1)
-        }
-        await updateDoc(cacheRef, {numComments: commentCount});
-        setIsComment(!isComment);
-        // Add linking to view post page.
+        // const cacheRef = doc(db, "cache", props.id);
+        // if (isComment) {
+        //     setCommentCount(commentCount - 1)
+        // } else {
+        //     setCommentCount(commentCount + 1)
+        // }
+        // await updateDoc(cacheRef, {numComments: commentCount});
+        // setIsComment(!isComment);
+        // // Add linking to view post page.
         viewPost();
     };
 
