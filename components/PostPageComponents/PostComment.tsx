@@ -60,35 +60,71 @@ return (
 };
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-backgroundColor: '#F2F2F2',
-marginVertical: 10,
-flexDirection: "column",
-},
-topBar: {
-outline: '#FF5733',
-flex: 1,
-flexDirection: "row",
-justifyContent: "space-between",
-alignItems: "center",
-paddingLeft: 5,
-},
-userName:{
-flex: 1,
-position: "absolute",
-marginLeft: 45,
-},
-time:{
-flex: 1,
-fontSize: 13,
-color: "#545350",
-paddingRight: 10,
-},
-midderBar: {
-flex: 1,
-paddingLeft: 45,
-},
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    marginVertical: 10,
+    flexDirection: "column",
+  },
+  topBar: {
+    outline: '#FF5733',
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 5,
+  },
+  userName:{
+    flex: 1,
+    position: "absolute",
+    marginLeft: 45,
+  },
+  time:{
+    flex: 1,
+    fontSize: 13,
+    color: "#545350",
+    paddingRight: 10,
+  },
+  midderBar: {
+    flex: 1,
+    paddingLeft: 45,
+  },
+ 
+  bottomBar: {
+    paddingLeft: 45,
+  },
+  replyContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 45,
+    paddingTop: 10,
+  },
+  replyInput: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+  },
+  replyButton: {
+    backgroundColor: 'blue',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  replyButtonText: {
+    color: '#FFF',
+    fontSize: 14,
+  },
+  postedReplyContainer: {
+    paddingHorizontal: 45,
+    marginTop: 10,
+  },
+  postedReplyText: {
+    fontSize: 15,
+  },
 });
 
 export default PostComment;

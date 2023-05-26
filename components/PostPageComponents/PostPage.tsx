@@ -1,4 +1,5 @@
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, FlatList } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, FlatList, Dimensions,} from 'react-native';
+// import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
 import React, {useState, useEffect} from 'react';
 import { useRouter, useLocalSearchParams, } from 'expo-router';
 import { Timestamp, GeoPoint, getDoc, doc } from 'firebase/firestore';
@@ -9,6 +10,8 @@ import CommentBar from './CommentBar';
 import { getPoster, getTimeDifference } from '../PostData';
 import { db } from '../../firebase';
 
+const windowWidth = Dimensions.get('screen').width;
+const windowHeight = Dimensions.get('screen').height;
 
 type CacheData = {
   id: string, 
@@ -99,7 +102,8 @@ const PostPage = (props: CacheData) => {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
+      <KeyboardAvoidingView>
       <FlatList data={commentsToRender}
         keyExtractor={(c) => c.__id}
         ListHeaderComponent={
@@ -125,11 +129,9 @@ const PostPage = (props: CacheData) => {
           )
         }}>
       </FlatList>
-
-      
-     
-      <KeyboardAvoidingView>
+      <View style={styles.commentInput}>
         <CommentBar />
+      </View>
       </KeyboardAvoidingView>
     </View>
   );
@@ -138,7 +140,14 @@ const PostPage = (props: CacheData) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    flexDirection: 'column',
+    backgroundColor: '#EEF2FF',
+    justifyContent: 'space-between'
+  },
+  commentInput: {
+    bottom: 0,
+    top: windowHeight - 710,
+    backgroundColor: '#FFFFFF'
   },
   postContent: {
     marginVertical: 10,
