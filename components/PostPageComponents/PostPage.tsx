@@ -9,8 +9,8 @@ import PostComment from './PostComment';
 import CommentBar from './CommentBar';
 import { getPoster, getTimeDifference } from '../PostData';
 import { db } from '../../firebase';
+import NewPostComment from './NewPostComment';
 
-const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
 
 type CacheData = {
@@ -27,90 +27,13 @@ type CacheData = {
   nComments: number,
 }
 
-type CommentData = {
-  __id: string;
-  __userId: string;
-  _createdAt: Timestamp;
-  username: string;
-  replies: never[];
-  text: string;
-  timePosted: string;
-}
-
-const comment = {
-  __id:  "",
-  __userId: "",
-  _createdAt: new Timestamp(0, 0),
-  username: "",
-  replies: [],
-  text: "",
-  timePosted: "",
-}
-
 const PostPage = (props: CacheData) => {
-  const [loading, setLoading] = useState(true);
-  const [postId, setPostId] = useState(props.id);
-  const [commentIds, setCommentIds] = useState(props.comments);
-  const [commentsToRender, setCommentsToRender] = useState([comment]);
-  const [commenter, setCommenter] = useState("");
-  const [whenPosted, setWhenPosted] = useState("");
-
-  // console.log(props.comments);
-
-  const fetchPostComments = async (postId: string) => {
-    const commentsList:CommentData[] = [];
-
-    setCommentIds(props.comments);
-    setPostId(postId);
-
-    commentIds.forEach(async (id) => {
-      // console.log("comment id: " + id);
-      const comment = {
-        __id:  "",
-        __userId: "",
-        _createdAt: new Timestamp(0, 0),
-        username: "",
-        replies: [],
-        text: "",
-        timePosted: "",
-      }
-
-      // For each comment ID, find the document for the comment
-      const commentDoc = await getDoc(doc(db, "comment", id));
-
-      if (commentDoc.exists()) {
-        comment.__id = commentDoc.data().__id;
-        comment.__userId = commentDoc.data().__userId;
-        comment.username = await getPoster(comment.__userId)
-        // setCommenter(username);
-        comment._createdAt = commentDoc.data()._createdAt;
-        comment.timePosted = getTimeDifference(comment._createdAt)
-        // setWhenPosted(timeDiff);
-        comment.replies = commentDoc.data().replies;
-        comment.text = commentDoc.data().text;
-      }
-      
-      // Add the document to the commentList
-      commentsList.push(comment);
-      // console.log(comment.username + "says " + comment.text);
-    })
-
-    setCommentsToRender(commentsList);
-
-    if (loading) {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchPostComments(props.id);
-  }, [])
 
   return (
       <KeyboardAvoidingView>
       <FlatList style={styles.scrollingComments}
-        data={commentsToRender}
-        keyExtractor={(c) => c.__id}
+        data={props.comments}
+        keyExtractor={(c) => c}
         ListHeaderComponent={
           <PostHeader id={props.id} 
           userId={props.userId} 
@@ -125,12 +48,7 @@ const PostPage = (props: CacheData) => {
         }
         renderItem={({item}) => {
           return (
-            <PostComment __id={item.__id}
-                      __userId={item.__userId}
-                      replies={item.replies}
-                      username={item.username}
-                      text={item.text}
-                      timePosted={item.timePosted}/>
+            <NewPostComment id={item}/>
           )
         }}>
       </FlatList>
@@ -144,10 +62,12 @@ const PostPage = (props: CacheData) => {
 const styles = StyleSheet.create({
   scrollingComments: {
     backgroundColor: '#EEF2FF',
+    marginBottom:5
   },
   commentInput: {
-    bottom: 0,
-    top: windowHeight - 760,
+    position: "absolute",
+    marginTop: windowHeight - 100,
+    paddingTop: 5
   },
 });
 
