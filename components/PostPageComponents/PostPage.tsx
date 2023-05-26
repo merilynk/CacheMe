@@ -141,7 +141,7 @@ const PostPage = (props: CacheData) => {
         ) : (<></>)}
 
         <View style={styles.commentInput}>
-          <CommentBar />
+          <CommentBar __id={props.id}/>
         </View>
       </KeyboardAvoidingView>
   );
