@@ -62,6 +62,9 @@ const [postedReply, setPostedReply] = useState('');*/}
 
   }, [])*/}
 
+  console.log(props.username);
+  console.log(props.text);
+
   return (
     <>
     <SafeAreaView>
@@ -80,11 +83,10 @@ const [postedReply, setPostedReply] = useState('');*/}
         <View style={styles.midderBar}>
           <RegularText style={{ fontSize: 15 }}>{props.text}</RegularText>
         </View>
-        {/*{!showReplyBox && (
-          <TouchableOpacity style={styles.bottomBar} onPress={handleShowReplyBox}>
-            <RegularText style={{ fontSize: 13, marginTop: 10, }}>Reply</RegularText>
-          </TouchableOpacity>
-        )}
+   
+        <TouchableOpacity style={styles.bottomBar}>
+          <RegularText style={{ fontSize: 13, marginTop: 10, }}>Reply</RegularText>
+        </TouchableOpacity>
 
         {/* {showReplyBox && (
           <View style={styles.replyContainer}>
@@ -106,6 +108,7 @@ const [postedReply, setPostedReply] = useState('');*/}
               <RegularText style={styles.postedReplyText}>{postedReply}</RegularText>
             </View>
            )} */}
+
         </View>
     </SafeAreaView></>
   );

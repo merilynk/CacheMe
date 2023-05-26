@@ -55,7 +55,7 @@ const PostPage = (props: CacheData) => {
   const [commenter, setCommenter] = useState("");
   const [whenPosted, setWhenPosted] = useState("");
 
-  console.log(props.comments);
+  // console.log(props.comments);
 
   const fetchPostComments = async (postId: string) => {
     const commentsList:CommentData[] = [];
@@ -64,7 +64,7 @@ const PostPage = (props: CacheData) => {
     setPostId(postId);
 
     commentIds.forEach(async (id) => {
-      console.log(id);
+      // console.log("comment id: " + id);
       const comment = {
         __id:  "",
         __userId: "",
@@ -92,6 +92,7 @@ const PostPage = (props: CacheData) => {
       
       // Add the document to the commentList
       commentsList.push(comment);
+      // console.log(comment.username + "says " + comment.text);
     })
 
     setCommentsToRender(commentsList);
@@ -101,10 +102,14 @@ const PostPage = (props: CacheData) => {
     }
   }
 
+  useEffect(() => {
+    fetchPostComments(props.id);
+  }, [])
+
   return (
-    <View style={styles.container}>
       <KeyboardAvoidingView>
-      <FlatList data={commentsToRender}
+      <FlatList style={styles.scrollingComments}
+        data={commentsToRender}
         keyExtractor={(c) => c.__id}
         ListHeaderComponent={
           <PostHeader id={props.id} 
@@ -133,25 +138,16 @@ const PostPage = (props: CacheData) => {
         <CommentBar />
       </View>
       </KeyboardAvoidingView>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
+  scrollingComments: {
     backgroundColor: '#EEF2FF',
-    justifyContent: 'space-between'
   },
   commentInput: {
     bottom: 0,
-    top: windowHeight - 770,
-    height: 5,
-  },
-  postContent: {
-    marginVertical: 10,
-    paddingHorizontal: 20,
+    top: windowHeight - 760,
   },
 });
 
