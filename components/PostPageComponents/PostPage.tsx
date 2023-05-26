@@ -55,16 +55,16 @@ const PostPage = (props: CacheData) => {
   const [commenter, setCommenter] = useState("");
   const [whenPosted, setWhenPosted] = useState("");
 
-  // console.log(props.comments);
+  console.log("comments: " + props.comments);
 
   const fetchPostComments = async (postId: string) => {
+    console.log("fetch post comments")
     const commentsList:CommentData[] = [];
 
-    setCommentIds(props.comments);
-    setPostId(postId);
+    console.log("comments ids: " + commentIds);
 
     commentIds.forEach(async (id) => {
-      // console.log("comment id: " + id);
+      console.log("comment id: " + id);
       const comment = {
         __id:  "",
         __userId: "",
@@ -92,7 +92,7 @@ const PostPage = (props: CacheData) => {
       
       // Add the document to the commentList
       commentsList.push(comment);
-      // console.log(comment.username + "says " + comment.text);
+      console.log(comment.username + " says " + comment.text);
     })
 
     setCommentsToRender(commentsList);
@@ -103,40 +103,46 @@ const PostPage = (props: CacheData) => {
   }
 
   useEffect(() => {
+    setCommentIds(props.comments);
+    setPostId(postId);
     fetchPostComments(props.id);
   }, [])
 
   return (
       <KeyboardAvoidingView>
-      <FlatList style={styles.scrollingComments}
-        data={commentsToRender}
-        keyExtractor={(c) => c.__id}
-        ListHeaderComponent={
-          <PostHeader id={props.id} 
-          userId={props.userId} 
-          username={props.username}
-          imageRef={props.imageRef}
-          caption={props.caption}
-          distBtwn={props.distBtwn} 
-          timePosted={props.timePosted}
-          location={props.location}
-          nLikes={props.nLikes}
-          nComments={props.nComments} />
-        }
-        renderItem={({item}) => {
-          return (
-            <PostComment __id={item.__id}
-                      __userId={item.__userId}
-                      replies={item.replies}
-                      username={item.username}
-                      text={item.text}
-                      timePosted={item.timePosted}/>
-          )
-        }}>
-      </FlatList>
-      <View style={styles.commentInput}>
-        <CommentBar />
-      </View>
+        {!loading ? (
+          <FlatList style={styles.scrollingComments}
+            data={commentsToRender}
+            keyExtractor={(c) => c.__id}
+            ListHeaderComponent={
+              <PostHeader id={props.id} 
+              userId={props.userId} 
+              username={props.username}
+              imageRef={props.imageRef}
+              caption={props.caption}
+              distBtwn={props.distBtwn} 
+              timePosted={props.timePosted}
+              location={props.location}
+              nLikes={props.nLikes}
+              nComments={props.nComments} />
+            }
+            renderItem={({item}) => {
+              console.log("rendering: " + item.__id);
+              return (
+                <PostComment __id={item.__id}
+                          __userId={item.__userId}
+                          replies={item.replies}
+                          username={item.username}
+                          text={item.text}
+                          timePosted={item.timePosted}/>
+              )
+            }}>
+          </FlatList>
+        ) : (<></>)}
+
+        <View style={styles.commentInput}>
+          <CommentBar />
+        </View>
       </KeyboardAvoidingView>
   );
 };
@@ -146,7 +152,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#EEF2FF',
   },
   commentInput: {
-    bottom: 0,
+    // position: 'absolute',
+    // bottom: 50,
     top: windowHeight - 760,
   },
 });
