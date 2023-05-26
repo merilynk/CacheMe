@@ -53,7 +53,7 @@ const PostPage = (props: CacheData) => {
         }}>
       </FlatList>
       <View style={styles.commentInput}>
-        <CommentBar />
+        <CommentBar __id={props.id}/>
       </View>
       </KeyboardAvoidingView>
   );

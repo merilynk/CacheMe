@@ -1,23 +1,54 @@
+import { FieldValue, Timestamp, arrayUnion, collection, doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { auth, db } from '../../firebase';
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
 
-const CommentBar = () => {
+type CacheData = {
+  __id: string,
+}
+
+const CommentBar = (props: CacheData) => {
   const [text, onChangeText] = useState(''); // State to track the comment text
   const [replying, setReplying] = useState(false); // State to track the reply status
   const [replyToUsername, setReplyToUsername] = useState(''); // State to track the username being replied to
 
-  const postComment = () => {
+  const postComment = async () => {
     if (replying) {
       console.log(`Replying to ${replyToUsername}: ${text}`);
     } else {
       console.log(text);
     }
-    onChangeText('');
+    
+    addCommentToFirestore(props.__id);
     stopReply();
+    onChangeText('');
   };
+
+  const addCommentToFirestore = async (postId: string) => {
+    try {
+      const newCommentRef = doc(collection(db, "comment"));
+      setDoc(newCommentRef, {
+        __id: newCommentRef.id,
+        __userId: auth.currentUser?.uid,
+        _createdAt: Timestamp.fromDate(new Date()),
+        replies: [],
+        text: text,
+      });
+      console.log("Document written with ID: ", newCommentRef.id);
+
+      const updateCacheRef = doc(db, "cache", props.__id);
+      updateDoc(updateCacheRef, {
+        comments: arrayUnion(newCommentRef.id),
+        numComments: increment(1),
+      });
+      console.log("Cache document updated: ", updateCacheRef.id);
+    } catch (e) {
+      console.error("Error adding comment document");
+    }  
+  }
 
   const stopReply = () => {
     setReplying(false);

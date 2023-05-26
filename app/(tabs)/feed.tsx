@@ -45,7 +45,7 @@ const Feed = () => {
     
     const fetchPosts = async () => {
         const postsList:CacheData[] = [];
-        const cacheRef = await collection(db, "cache");
+        const cacheRef = collection(db, "cache");
         const q = query(cacheRef, orderBy('_createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
 
