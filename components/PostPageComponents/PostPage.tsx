@@ -146,8 +146,8 @@ const styles = StyleSheet.create({
   },
   commentInput: {
     bottom: 0,
-    top: windowHeight - 710,
-    backgroundColor: '#FFFFFF'
+    top: windowHeight - 770,
+    height: 5,
   },
   postContent: {
     marginVertical: 10,
