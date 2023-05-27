@@ -37,7 +37,7 @@ const postPageEx = () => {
 
     useEffect ( () => {
         console.log("post id: " + id);
-        cache.then( async (c) => {
+        cache.then((c) => {
             if (c) {
                 getPoster(c.__userId).then( username => {
                     setPoster(username);
@@ -64,7 +64,7 @@ const postPageEx = () => {
             console.log("Could not fetch cache.")
         })
     }, [postId]) 
-
+    
     return (
         <PostPage id={id} 
             userId={uid} 

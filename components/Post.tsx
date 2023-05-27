@@ -94,34 +94,10 @@ const PostPreview = (props: CacheData) => {
         await updateDoc(cacheRef, {numLikes: increment(1)});
         setIsLiked(!isLiked);
     };
-    
-    const toggleComment = async () => {
-        // const cacheRef = doc(db, "cache", props.id);
-        // if (isComment) {
-        //     setCommentCount(commentCount - 1)
-        // } else {
-        //     setCommentCount(commentCount + 1)
-        // }
-        // await updateDoc(cacheRef, {numComments: commentCount});
-        // setIsComment(!isComment);
-        // // Add linking to view post page.
-        viewPost();
-    };
 
     const viewPost = () => {
-        console.log(props.id);
-        const { postId = props.id, 
-            userId = props.uid, 
-            username = poster,
-            imageRef = imageURI, 
-            caption = props.captionText, 
-            distBtwn = distBetween, 
-            timePosted = props.timePosted, 
-            location = props.location, 
-            nLikes = props.numLikes,
-            liked = isLiked,
-            nComments = props.numComments } = params;
-        router.push({ pathname: 'postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
+        const { postId = props.id } = params;
+        router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
         
     }
 
@@ -172,7 +148,7 @@ const PostPreview = (props: CacheData) => {
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{likeCount}</RegularText>
         
-                        <TouchableOpacity onPress={toggleComment}>
+                        <TouchableOpacity onPress={viewPost}>
                             <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 5}}/>
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{commentCount}</RegularText>
