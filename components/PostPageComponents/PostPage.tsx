@@ -36,6 +36,8 @@ const PostPage = (props: CacheData) => {
       <KeyboardAvoidingView>
         {true ? ( // need to change
           <FlatList style={styles.scrollingComments}
+            stickyHeaderIndices={[0]}
+            ListHeaderComponentStyle={{backgroundColor: "#EEF2FF"}}
             data={props.comments}
             keyExtractor={(c) => c}
             ListHeaderComponent={
@@ -68,11 +70,12 @@ const PostPage = (props: CacheData) => {
 const styles = StyleSheet.create({
   scrollingComments: {
     backgroundColor: '#EEF2FF',
+    marginBottom: 80
   },
   commentInput: {
-    // position: 'absolute',
-    // bottom: 50,
-    top: windowHeight - 760,
+    position: 'absolute',
+    top: windowHeight - 90,
+    //top: windowHeight - 760,
   },
 });
 
