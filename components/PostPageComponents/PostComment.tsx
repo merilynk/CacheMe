@@ -28,15 +28,6 @@ type CommentData = {
   timePosted: string;
 }
 
-const comment = {
-  __id:  "",
-  __userId: "",
-  username: "",
-  replies: [],
-  text: "",
-  timePosted: "",
-}
-
 const PostComment = (props: CommentData) => {
   {/*const [loading, setLoading] = useState(true);
   const [showReplyBox, setShowReplyBox] = useState(false);
