@@ -33,7 +33,7 @@ const PostPage = (props: CacheData) => {
 
 
   return (
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView style={{flex: 1}}>
         {true ? ( // need to change
           <FlatList style={styles.scrollingComments}
             stickyHeaderIndices={[0]}
@@ -60,9 +60,9 @@ const PostPage = (props: CacheData) => {
           </FlatList>
         ) : (<></>)}
 
-        <View style={styles.commentInput}>
+<KeyboardAvoidingView  style={styles.commentInput} behavior='padding'>
           <CommentBar __id={props.id}/>
-        </View>
+        </KeyboardAvoidingView>
       </KeyboardAvoidingView>
   );
 };
@@ -70,11 +70,10 @@ const PostPage = (props: CacheData) => {
 const styles = StyleSheet.create({
   scrollingComments: {
     backgroundColor: '#EEF2FF',
-    marginBottom: 80
+    marginBottom: 0
   },
   commentInput: {
-    position: 'absolute',
-    top: windowHeight - 90,
+    //top: windowHeight - 90,
     //top: windowHeight - 760,
   },
 });
