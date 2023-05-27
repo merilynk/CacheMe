@@ -47,7 +47,6 @@ export default function Post() {
                 comments: [],
                 location: new GeoPoint(location?.coords.latitude as number, location?.coords.longitude as number),
                 numComments: 0,
-                comments: [],
                 numLikes: 0,
                 reported: false
               }
