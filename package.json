@@ -39,7 +39,11 @@
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-native": "0.71.8",
+<<<<<<< HEAD
+    "react-native-linear-gradient": "^2.6.2",
+=======
     "react-native-blur": "^3.2.2",
+>>>>>>> eb01f0d81a4feb9fc2a1fe24c986596b6f14797d
     "react-native-dotenv": "^3.4.8",
     "react-native-element-dropdown": "^2.9.0",
     "react-native-linear-gradient": "^2.6.2",
@@ -47,7 +51,10 @@
     "react-native-safe-area-context": "4.5.0",
     "react-native-screens": "~3.20.0",
     "react-native-skeleton-placeholder": "^5.2.4",
+<<<<<<< HEAD
+=======
     "react-native-uuid": "^2.0.1",
+>>>>>>> eb01f0d81a4feb9fc2a1fe24c986596b6f14797d
     "react-native-web": "~0.18.10",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.2",
@@ -55,6 +62,10 @@
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.10",
+<<<<<<< HEAD
+    "react-native-uuid": "^2.0.1",
+=======
+>>>>>>> eb01f0d81a4feb9fc2a1fe24c986596b6f14797d
     "yarn": "^1.22.19"
   },
   "devDependencies": {

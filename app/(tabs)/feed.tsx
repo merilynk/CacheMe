@@ -12,7 +12,7 @@ import { auth, db, storage } from '../../firebase';
 import { GeoPoint, Timestamp, collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 
-// Set the default number of posts to load for each pagiation
+// Set the default number of posts to load for each pagiation ** TODO
 const PAGE_SIZE = 20;
 
 const cache = {
@@ -61,8 +61,7 @@ const Feed = () => {
                 numLikes,
                 reported
             } = cache.data();
-            // console.log("DB DATA: ")
-            // console.log(cache.data())
+
             postsList.push({
                 __id,
                 __imageId,
@@ -74,18 +73,6 @@ const Feed = () => {
                 numLikes,
                 reported
             });
-            // console.log("GOT: ")
-            // console.log({
-            //     __id,
-            //     __imageId,
-            //     __userId,
-            //     _createdAt,
-            //     caption,
-            //     location,
-            //     numComments,
-            //     numLikes,
-            //     reported
-            // });
         });
 
         setPostsToRender(postsList);
@@ -105,11 +92,11 @@ const Feed = () => {
             {loading ? (
                 <ScrollView stickyHeaderIndices={[0]} style={styles.container}>
                     <Header/>
-                    <PostPreview id={""} captionText={"hello"} 
+                    <PostPreview id={""} captionText={""} 
                         uid={"mgEEj5Bn8PKhEtj2X6dl"} 
                         image={"4d6de4a1-ee2d-11ed-8ee9-63af3c88610d"}
-                        numComments={200}
-                        numLikes={400}
+                        numComments={0}
+                        numLikes={0}
                         location={new GeoPoint(-78.3, 105.6)}
                         timePosted={new Timestamp(800, 894023)}/>
                 </ScrollView>
