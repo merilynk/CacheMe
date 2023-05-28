@@ -33,6 +33,10 @@ export default function Home() {
               name: fullName,
               username: username,
             });
+<<<<<<< HEAD
+=======
+            // console.log(result);
+>>>>>>> eb01f0d81a4feb9fc2a1fe24c986596b6f14797d
         })
         .catch((error) => {
           const errorCode = error.code;

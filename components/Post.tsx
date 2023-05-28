@@ -4,13 +4,12 @@ import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import RegularText from './Texts/regularText';
-import BigText from './Texts/bigText';
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
 import { distanceBetween } from 'geofire-common';
 import getLocation from '../helpers/location';
 import Location from 'expo-location';
-import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
 
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
@@ -54,13 +53,16 @@ const PostPreview = (props: CacheData) => {
     }
 
     const getImage = async () => {
-        if (props.image != "" || props.image != null) {
+        
+        if (props.image != "" && props.image != null) {
             const gsRef = ref(storage, "images/" + props.image);
             getDownloadURL(gsRef).then( (url) => {
                 setImageURI(url);
+                console.log(url);
             });
-            // console.log("Theres's an image.")
-        }   
+        } else{
+            setImageURI("");
+        } 
     }
 
     useEffect( () => {
@@ -71,16 +73,11 @@ const PostPreview = (props: CacheData) => {
             // setCurrUserLoc(loc);
             let currUserLat = loc?.coords.latitude as number;
             let currUserLong = loc?.coords.longitude as number;
-            // console.log("Current User: [" + currUserLat + ", " + currUserLong + "]");
             let postLat = props.location.latitude;
             let postLong = props.location.longitude;
-            // console.log("Post: [" + postLat + ", " + postLong + "]");
             const distInBtwn = distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
             setDistBetween(Math.round(distInBtwn));
-            // console.log("Distance Between: " + distInBtwn);
-            // console.log(distBetween);
-            // console.log(props.timePosted.toDate());
-            // console.log(moment(props.timePosted.toDate()).fromNow());
+
         })();
     }, []);
 
@@ -101,9 +98,6 @@ const PostPreview = (props: CacheData) => {
         
     }
 
-    const locatePost = () => {
-        console.log("Post is located at " + props.location);
-    }
 
     return (
         <View style={styles.outerContainer}>
@@ -155,7 +149,10 @@ const PostPreview = (props: CacheData) => {
                     </View>
                     <View style={styles.icons}>
                         <RegularText>{distBetween} km away</RegularText>
-                        <TouchableOpacity onPress={locatePost}>
+                        <TouchableOpacity onPress={() => {
+                            const {latitude = props.location.latitude, longitude = props.location.longitude} = params;
+                            router.push({pathname: "/map", params: {latitude, longitude}});
+                        }}>
                             <Ionicons name="location-sharp" size={35} color="white" />
                         </TouchableOpacity>
                     </View>
