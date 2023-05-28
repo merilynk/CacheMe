@@ -8,32 +8,43 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { ImageResult } from 'expo-image-manipulator';
 import BigText from '../../components/Texts/bigText';
 import RegularText from '../../components/Texts/regularText';
-import SmallText from '../../components/Texts/smallText';
+import MiniText from '../../components/Texts/miniText';
 import { collection, addDoc, GeoPoint, doc, setDoc, Timestamp } from "firebase/firestore";
 import SelectPrivacyScreen from '../../components/dropDownPrivacy';
 import SelectRadiusScreen from '../../components/dropDownRadius';
 import { FontAwesome } from '@expo/vector-icons';
 import { auth } from '../../firebase'
 import getLocation from '../../helpers/location'
-import { useNavigation } from 'expo-router';
+
+import {  useRouter } from 'expo-router';
 
 
 const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
 
 export default function Post() {
+  const router = useRouter();
     const [imageURI, setImageURI] = useState("");
     const [image, setImage] = useState<ImageResult>();
     const [caption, setCaption] = useState("");
-    const imageID = uuid.v1().toString();
-
+    let imageID = uuid.v1().toString();
+    const [captionExists, setCaptionExists] = useState(false);
+    const [posting, setPosting] = useState(false);
     const postCache = async () => {
-      uploadImage();
-      addCacheToFirestore();
+      setPosting(true);
+      if(await uploadImage()){
+        addCacheToFirestore();
+      }
+      setImageURI("");
+      setImage(undefined);
+      setCaption("");
+      setCaptionExists(false);
+      setPosting(false);
+      router.push("/feed");
+      
     }
 
     const addCacheToFirestore = async () => {
-      
       try {
         await getLocation().then((location) => {
         const newDocRef = doc(collection(db, "cache"));
@@ -41,14 +52,16 @@ export default function Post() {
               newDocRef, 
               {
                 __id: newDocRef.id,
-                __imageId: imageID,
+                __imageId: image ? imageID : "",
                 __userId: auth.currentUser?.uid,
                 _createdAt: Timestamp.fromDate(new Date()),
                 caption: caption,
+                comments: [],
                 location: new GeoPoint(location?.coords.latitude as number, location?.coords.longitude as number),
                 numComments: 0,
                 numLikes: 0,
-                reported: false
+                reported: false,
+                comments: []
               }
             )
         console.log("Document written with ID: ", newDocRef.id);
@@ -69,12 +82,12 @@ export default function Post() {
         
         if (!result.canceled) {
           setImageURI(result.assets[0].uri);
-          setImage(await ImageManipulator.manipulateAsync(result.assets[0].uri, [{resize: {width: 500}}], {compress: 1})) 
+          setImage(await ImageManipulator.manipulateAsync(result.assets[0].uri, [{resize: {width: 500}}], {compress: 1}))
         }
       };
 
     const takeImage = async () => {
-      let permission = await ImagePicker.requestCameraPermissionsAsync();
+      await ImagePicker.requestCameraPermissionsAsync();
       let result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [4, 3],
@@ -94,22 +107,27 @@ export default function Post() {
         const imageRef = ref(storage, `images/${imageID}`);
         const result = await uploadBytes(imageRef, blobFile);
         if(result){
-          Alert.alert("Upload successful")
+          Alert.alert("Upload successful");
+          return true;
+        }else{
+          Alert.alert("Upload failed!");
+          return false;
         }
-        //TODO: add "uploading" icon while it's uploading, then go to diff page or change page when done.
-        // let navigate = useNavigation("./feed");
-      }     
+      }
+      return true;   
     }
 
 
     return(
         <View style={styles.container}>
-          {image && <View style={styles.topRow}>
+          <View style={styles.topRow}>
             <BigText>Create Cache</BigText>
-            <TouchableOpacity style={styles.postButton} onPress={postCache}>
+            {!posting ? <TouchableOpacity style={styles.postButton} onPress={(image || captionExists)  ? postCache : () => Alert.alert("Add a picture or caption first!")}>
               <RegularText>Post</RegularText>
-            </TouchableOpacity>
-          </View>}
+            </TouchableOpacity> : <TouchableOpacity style={styles.postButton}>
+              <RegularText>Posting...</RegularText>
+            </TouchableOpacity>}
+          </View>
 
           <View style={styles.postSettings}>
             <TouchableOpacity>
@@ -117,12 +135,12 @@ export default function Post() {
             </TouchableOpacity>
             
             <View style={styles.dropDownMenu}>
-              <SmallText>Who can see it?</SmallText>
+              <MiniText>Who can see it?</MiniText>
               <SelectPrivacyScreen></SelectPrivacyScreen>
             </View>
 
             <View style={styles.dropDownMenu}>
-              <SmallText>Post Discovery Radius:</SmallText>
+              <MiniText>Post Discovery Radius:</MiniText>
               <SelectRadiusScreen></SelectRadiusScreen>
             </View>
           </View>
@@ -130,7 +148,10 @@ export default function Post() {
             <TextInput 
               style={styles.textInput} 
               placeholder="What's your story?" 
-              onChangeText={newText => setCaption(newText)}
+              onChangeText={newText => {
+                setCaption(newText);
+                newText != "" ? setCaptionExists(true) : setCaptionExists(false);
+              }}
               defaultValue={caption}
               placeholderTextColor="#B3B3B3"
               />

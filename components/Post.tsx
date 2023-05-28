@@ -5,19 +5,19 @@ import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import RegularText from './Texts/regularText';
-import BigText from './Texts/bigText';
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
 import { distanceBetween } from 'geofire-common';
 import getLocation from '../helpers/location';
 import Location from 'expo-location';
 import {BlurView } from 'expo-blur';
+import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
 
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 
-type PostProps = {
+type CacheData = {
     id: string,
     captionText: string,
     uid: string, 
@@ -27,7 +27,7 @@ type PostProps = {
     location: GeoPoint,
     timePosted: Timestamp,
 }
-const PostPreview = (props: PostProps) => {
+const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
     const [isLiked, setIsLiked] = useState(false);
@@ -35,10 +35,13 @@ const PostPreview = (props: PostProps) => {
     const [likeCount, setLikeCount] = useState(props.numLikes);
     const [commentCount, setCommentCount] = useState(props.numComments);
     const [poster, setPoster] = useState("");
-    const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
+    // const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
     const [imageURI, setImageURI] = useState<string>();
     const [outOfRadius, setOutOfRadius] = useState(false);
+
+    const router = useRouter();
+    const params = useLocalSearchParams();
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -53,13 +56,16 @@ const PostPreview = (props: PostProps) => {
     }
 
     const getImage = async () => {
-        if (props.image != "" || props.image != null) {
+        
+        if (props.image != "" && props.image != null) {
             const gsRef = ref(storage, "images/" + props.image);
             getDownloadURL(gsRef).then( (url) => {
                 setImageURI(url);
                 console.log(url);
             });
-        }   
+        } else{
+            setImageURI("");
+        } 
     }
 
     useEffect( () => {
@@ -67,7 +73,7 @@ const PostPreview = (props: PostProps) => {
         getImage();
         (async () => {
             const loc = await getLocation();
-            setCurrUserLoc(loc);
+            // setCurrUserLoc(loc);
             let currUserLat = loc?.coords.latitude as number;
             let currUserLong = loc?.coords.longitude as number;
             let postLat = props.location.latitude;
@@ -91,24 +97,16 @@ const PostPreview = (props: PostProps) => {
             setLikeCount(likeCount + 1)
         }
         const cacheRef = doc(db, "cache", props.id);
-        await updateDoc(cacheRef, {numLikes: likeCount});
+        await updateDoc(cacheRef, {numLikes: increment(1)});
         setIsLiked(!isLiked);
     };
-    
-    const toggleComment = async () => {
-        const cacheRef = doc(db, "cache", props.id);
-        if (isComment) {
-            setCommentCount(commentCount - 1)
-        } else {
-            setCommentCount(commentCount + 1)
-        }
-        await updateDoc(cacheRef, {numComments: commentCount});
-        setIsComment(!isComment);
-    };
 
-    const locatePost = () => {
-        console.log("Post is located at " + props.location);
+    const viewPost = () => {
+        const { postId = props.id } = params;
+        router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
+        
     }
+
 
     return (
         <View style={styles.outerContainer}>
@@ -161,14 +159,17 @@ const PostPreview = (props: PostProps) => {
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{likeCount}</RegularText>
         
-                        <TouchableOpacity onPress={toggleComment}>
+                        <TouchableOpacity onPress={viewPost}>
                             <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 5}}/>
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{commentCount}</RegularText>
                     </View>
                     <View style={styles.icons}>
                         <RegularText>{distBetween} km away</RegularText>
-                        <TouchableOpacity onPress={locatePost}>
+                        <TouchableOpacity onPress={() => {
+                            const {latitude = props.location.latitude, longitude = props.location.longitude} = params;
+                            router.push({pathname: "/map", params: {latitude, longitude}});
+                        }}>
                             <Ionicons name="location-sharp" size={35} color="white" />
                         </TouchableOpacity>
                     </View>
@@ -195,9 +196,10 @@ const styles = StyleSheet.create({
     postContainer: {
         justifyContent: "space-between",
         alignItems: "center"
-    },
+    }, 
     text: {
-        margin: 15,
+        // marginTop: 15,
+        paddingTop: 10,
         marginLeft: 20,
         marginRight: 20,
         justifyContent: "flex-start",

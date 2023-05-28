@@ -38,8 +38,12 @@
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
-    "react-native": "0.71.7",
+    "react-native": "0.71.8",
+<<<<<<< HEAD
+    "react-native-linear-gradient": "^2.6.2",
+=======
     "react-native-blur": "^3.2.2",
+>>>>>>> eb01f0d81a4feb9fc2a1fe24c986596b6f14797d
     "react-native-dotenv": "^3.4.8",
     "react-native-element-dropdown": "^2.9.0",
     "react-native-linear-gradient": "^2.6.2",
