@@ -60,8 +60,8 @@ export default function Post() {
                 location: new GeoPoint(location?.coords.latitude as number, location?.coords.longitude as number),
                 numComments: 0,
                 numLikes: 0,
-                reported: false,
-                comments: []
+                likeIDs: [],
+                reported: false
               }
             )
         console.log("Document written with ID: ", newDocRef.id);
