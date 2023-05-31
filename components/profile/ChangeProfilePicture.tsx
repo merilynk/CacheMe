@@ -11,6 +11,8 @@ import uuid from 'react-native-uuid';
 
 type ChangeProfilePictureProps = {
   userID: string;
+  changeProfilePictureID: (id: string) => void;
+
 }
 
 export default function ChangeProfilePicture(props: ChangeProfilePictureProps) {
@@ -22,10 +24,9 @@ const uploadImage = async (image: { uri: any; width?: number; height?: number; b
     const blobFile = await response.blob();
     const imageRef = ref(storage, `profile/${imageID}`);
     await updateDoc(doc(db, "user", props.userID), {profilePicture: imageID,});
-    const result = await uploadBytes(imageRef, blobFile).then(() =>{
+    await uploadBytes(imageRef, blobFile).then(() =>{
+      props.changeProfilePictureID(imageID);
       // Delete old profile picture from storage
-      // Find a way to update picture on profile page after choosing new one
-
   });
   }
 }

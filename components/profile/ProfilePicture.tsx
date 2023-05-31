@@ -1,10 +1,10 @@
 import { getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
 import { storage } from "../../firebase";
-import { Dimensions, View, Image } from "react-native";
+import { Dimensions, View, Image, Text } from "react-native";
 
 type profilePictureProps = {
-    profilePictureID: string;  
+    profilePictureID: string;
 }
 
 const windowWidth = Dimensions.get('screen').width
@@ -37,7 +37,6 @@ export default function Home(props: profilePictureProps) {
     return (
         <View style={{
             width: windowWidth,
-            // height: windowWidth,
             justifyContent: "center",
             alignItems: "center",}}> 
                     {imageURI != "" && <Image source={{uri: imageURI}}

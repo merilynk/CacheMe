@@ -1,10 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator } from 'react-native'
 import { auth, db, storage } from '../../firebase'
 import { useRouter } from 'expo-router';
 import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { getDownloadURL, ref } from 'firebase/storage';
 import ChangeProfilePicture from '../../components/profile/ChangeProfilePicture';
 
 type UserData = {
@@ -22,6 +21,7 @@ const windowHeight = Dimensions.get('screen').height
 
 export default function Home() {
   const [user, setUser] =  useState<UserData>();
+  const [profilePictureID, setProfilePictureID] = useState<string>();
   
   useEffect (() => {
     const fetchUser = async (id: string) => {
@@ -39,7 +39,7 @@ export default function Home() {
           user.name = userDoc.data().name;
           user.profilePicture = userDoc.data().profilePicture;
           user.username = userDoc.data().username;
-          
+          setProfilePictureID(user.profilePicture);
         }
         setUser(user);
     }
@@ -55,24 +55,32 @@ export default function Home() {
           })
           .catch(error => alert(error.message))
     }
+    const changeProfilePictureID = (newID: string) => {
+      setProfilePictureID(newID);
+    }
 
     
-
-    return (
+    if(user){
+      return (
         <View style={styles.container}>
-            {user?.profilePicture && <ProfilePicture profilePictureID={user?.profilePicture}/>}
+            {profilePictureID && <ProfilePicture profilePictureID={profilePictureID}/>}
             <Text>Email: {user?.email}</Text>
             <Text>Name: {user?.name}</Text>
             <Text>Username: {user?.username}</Text>
-            {user?.__id && <ChangeProfilePicture userID={user?.__id} />}
+            {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
             <TouchableOpacity
             onPress={handleSignOut}
             style={styles.button}>
             <Text style={styles.buttonText}>Sign out</Text>
           </TouchableOpacity>
-          
         </View>
       )
+    }else{
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    }
+    
 }
 
 const styles = StyleSheet.create({
