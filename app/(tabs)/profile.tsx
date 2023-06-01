@@ -1,10 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import { auth, db } from '../../firebase'
 import { useRouter } from 'expo-router';
-import ProfilePicture from "../../components/profile/ProfilePicture"
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import ChangeProfilePicture from '../../components/profile/ChangeProfilePicture';
 
 type UserData = {
   __id: string;
@@ -14,7 +13,6 @@ type UserData = {
   username: string;
   friends: [];
 }
-
 
 
 export default function Home() {
@@ -47,6 +45,7 @@ export default function Home() {
 }, [auth.currentUser?.uid]) 
 
     const router = useRouter();
+
     const handleSignOut = () => {
         auth
           .signOut()
@@ -59,39 +58,38 @@ export default function Home() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity>
-            <Text>Back</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Sign Out</Text>
+          <TouchableOpacity style={styles.backArrow} onPress={router.back}>
+            <Ionicons name="arrow-back-outline" size={35} color="black" />
           </TouchableOpacity>
         </View>
         <View style={styles.profileContainer}>
           <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 100, height: 100, borderRadius: 50,}}></Image>
-          <Text>FirstName Lastname</Text>
+          <Text style={styles.nameText}>FirstName Lastname</Text>
           <Text>@username</Text>
           <View style={styles.profileData}>
             <View style={styles.data}>
-              <Text>500</Text>
+              <Text style={styles.number}>500</Text>
               <Text>Friends</Text>
             </View>
             <View style={styles.data}>
-              <Text>6</Text>
+              <Text style={styles.number}>6</Text>
               <Text>Posts</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.friendButton}><Text>Friend</Text></TouchableOpacity>
+          {/* <TouchableOpacity style={styles.friendButton}>
+            <FontAwesome name="user-plus" size={15} style={{paddingRight: 5}}color="black" />
+            <Text style={{fontWeight: "500"}}>Friend</Text>
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity style={styles.friendButton}>
+            <FontAwesome name="check" size={15} style={{paddingRight: 5}}color="black" /> 
+            <Text style={{fontWeight: "500"}}>Added</Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity style={styles.friendButton} onPress={handleSignOut}>
+            <FontAwesome name="sign-out" size={15} style={{paddingRight: 5}}color="black" /> 
+            <Text style={{fontWeight: "500"}}>Sign Out</Text>
+          </TouchableOpacity>
         </View>
       </View>
-        // <View style={styles.container}>
-        //     <Text>Email: {auth.currentUser?.email}</Text>
-        //   <TouchableOpacity
-        //     onPress={handleSignOut}
-        //     style={styles.button}
-        //   >
-        //     <Text style={styles.buttonText}>Sign out</Text>
-        //   </TouchableOpacity>
-        // </View>
       )
 }
 
@@ -102,8 +100,7 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'center',
       flexWrap: 'wrap',
-      borderColor: 'green',
-      borderWidth: 1,
+      backgroundColor: '#EEF2FF',
     },
     header: {
       // flex: 1,
@@ -112,8 +109,13 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: 30,
-      borderColor: 'blue',
-      borderWidth: 1,
+    },
+    backArrow: {
+      //flex: 1,
+      width: 50,
+      height: 30,
+      marginLeft: 10,
+      marginTop: 5,
     },
     profileContainer: {
       // flex: 5,
@@ -122,8 +124,10 @@ const styles = StyleSheet.create({
       alignContent: 'center',
       alignItems: 'center',
       flexWrap: 'wrap',
-      borderColor: 'red',
-      borderWidth: 1,
+    },
+    nameText: {
+      fontSize: 20,
+      fontWeight: "500",
     },
     profileData: {
       flex: 1,
@@ -132,21 +136,26 @@ const styles = StyleSheet.create({
       marginTop: 11,
       justifyContent: 'space-between',
       flexDirection: 'row',
-      borderColor: 'pink',
-      borderWidth: 1,
+    },
+    number: {
+      fontSize: 18,
+      fontWeight: "500",
     },
     data: {
       flexDirection: 'column',
       justifyContent: 'center',
-      borderColor: 'purple',
-      borderWidth: 1,
+      alignItems: 'center',
     },
     friendButton: {
-      width: 82,
-      height: 25,
+      width: 90,
+      height: 30,
       marginTop: 10,
-      borderColor: 'cyan',
-      borderWidth: 1,
+      flexDirection: "row",
+      alignItems: 'center',
+      textSize: 12,
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      borderRadius: 10,
     }
     //  button: {
     //   backgroundColor: '#0782F9',
