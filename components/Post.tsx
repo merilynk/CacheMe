@@ -35,7 +35,6 @@ const PostPreview = (props: CacheData) => {
     const [likeCount, setLikeCount] = useState(props.numLikes);
     const [commentCount, setCommentCount] = useState(props.numComments);
     const [poster, setPoster] = useState("");
-    // const [currUserLoc, setCurrUserLoc] = useState<Location.LocationObject | null >();
     const [distBetween, setDistBetween] = useState(0);
     const [imageURI, setImageURI] = useState<string>();
     const [outOfRadius, setOutOfRadius] = useState(false);
@@ -73,7 +72,6 @@ const PostPreview = (props: CacheData) => {
         getImage();
         (async () => {
             const loc = await getLocation();
-            // setCurrUserLoc(loc);
             let currUserLat = loc?.coords.latitude as number;
             let currUserLong = loc?.coords.longitude as number;
             let postLat = props.location.latitude;
