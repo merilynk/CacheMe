@@ -2,27 +2,13 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
 import { storage } from "../../firebase";
 import { Dimensions, View, Image, Text } from "react-native";
+import getProfileImage from "../../helpers/profile";
 
 type profilePictureProps = {
     profilePictureID: string;
 }
 
 const windowWidth = Dimensions.get('screen').width
-
-async function getProfileImage (image: string) {
-    let uri = "";
-    if (image != "" || image != null) {
-        const gsRef = ref(storage, "profile/" + image);
-        await getDownloadURL(gsRef).then( (url) => {
-            uri = url;
-            return url;
-        });
-        return uri;
-    }  else {
-        return uri;
-    } 
-  }
-
 
 export default function Home(props: profilePictureProps) {
     const [imageURI, setImageURI] = useState("");

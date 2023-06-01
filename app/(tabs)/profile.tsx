@@ -18,7 +18,6 @@ const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
 
 
-
 export default function Home() {
   const [user, setUser] =  useState<UserData>();
   const [profilePictureID, setProfilePictureID] = useState<string>();
