@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import getLocation from '../../helpers/location';
 import React from 'react';
 import Location from 'expo-location';
-import { useRouter, useSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter, useSearchParams } from 'expo-router';
 
 // Firebase
 import { db } from '../../firebase';
@@ -42,7 +42,7 @@ export default function Map() {
   const [loading, setLoading] = useState(true);
   const [postsToRender, setPostsToRender] = useState([cache]);
   const router = useRouter();
-
+  const params = useLocalSearchParams();
   const { latitude, longitude } = useSearchParams();
   const mapRef = React.createRef();
   const fetchPosts = async () => {
@@ -115,12 +115,14 @@ useEffect(() => {
           return (
             <Marker 
             key={post.__id}
-            // image={require("../../assets/images/CacheMeLogo.png")} add an image as a marker?
             coordinate={{
               latitude: post.location.latitude as number,
               longitude: post.location.longitude as number
             }}
-             onPress={() => {router.push("/post/" + post.__id)}} // Sends you to the page for the specific route
+             onPress={() => {
+              const { postId = post.__id } = params;
+              router.push({ pathname: '/postPageEX', params: { postId }})
+             }} // Sends you to the page for the specific route
              >
               
             </Marker>
