@@ -28,12 +28,15 @@ type CacheData = {
 
 const PostPage = (props: CacheData) => {
   const [comments, setComments] = useState<string[]>([]);
+  const [numComments, setNumComments] = useState<number>(props.nComments);
   useEffect (() => {
     setComments(props.comments);
+    setNumComments(props.nComments);
   }
-  , [props.comments]) 
+  , [props.comments, props.nComments]) 
   const newComment = (newComment: string) => {
     setComments([...comments, newComment]);
+    setNumComments(numComments + 1);
   }
 
 
@@ -55,7 +58,7 @@ const PostPage = (props: CacheData) => {
               timePosted={props.timePosted}
               location={props.location}
               nLikes={props.nLikes}
-              nComments={props.nComments} />
+              nComments={numComments} />
             }
             renderItem={({item}) => {
               return (
