@@ -15,6 +15,7 @@ import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-route
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
+import getUserDistanceFromPost from '../helpers/post';
 
 type CacheData = {
     id: string,
@@ -69,13 +70,8 @@ const PostPreview = (props: CacheData) => {
         getPoster();
         getImage();
         (async () => {
-            const loc = await getLocation();
-            let currUserLat = loc?.coords.latitude as number;
-            let currUserLong = loc?.coords.longitude as number;
-            let postLat = props.location.latitude;
-            let postLong = props.location.longitude;
-            const distInBtwn = distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
-            setDistBetween(Math.round(distInBtwn));
+            const distInBtwn = await getUserDistanceFromPost(props.location.latitude, props.location.longitude)
+            setDistBetween(distInBtwn);
             console.log("Distance between user and post (km): " + distInBtwn);
             if (distInBtwn > 5) {
                 console.log("Too far => Blur");
