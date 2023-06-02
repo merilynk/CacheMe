@@ -12,6 +12,7 @@ type UserData = {
   name: string;
   profilePicture: string;
   username: string;
+  friends: [];
 }
 
 const windowWidth = Dimensions.get('screen').width
@@ -29,7 +30,8 @@ export default function Home() {
             email: "",
             name: "",
             profilePicture: "",
-            username: ""
+            username: "",
+            friends: []
         }
         const userDoc = await getDoc(doc(db, "user", id));
         if (userDoc.exists()) {
@@ -38,6 +40,7 @@ export default function Home() {
           user.name = userDoc.data().name;
           user.profilePicture = userDoc.data().profilePicture;
           user.username = userDoc.data().username;
+          user.friends = userDoc.data().friends;
           setProfilePictureID(user.profilePicture);
         }
         setUser(user);
@@ -63,10 +66,10 @@ export default function Home() {
       return (
         <View style={styles.container}>
             {profilePictureID && <ProfilePicture profilePictureID={profilePictureID}/>}
-            <Text>Email: {user?.email}</Text>
-            <Text>Name: {user?.name}</Text>
-            <Text>Username: {user?.username}</Text>
-            {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
+            <Text>Email: {user.email}</Text>
+            <Text>Name: {user.name}</Text>
+            <Text>Username: {user.username}</Text>
+            {user.__id && <ChangeProfilePicture userID={user.__id} changeProfilePictureID={changeProfilePictureID} />}
             <TouchableOpacity
             onPress={handleSignOut}
             style={styles.button}>

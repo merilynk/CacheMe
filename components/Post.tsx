@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-//import ProfileInfo from './ProfileInfor'
 import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
@@ -61,7 +60,6 @@ const PostPreview = (props: CacheData) => {
     }
 
     const getImage = async () => {
-        
         if (props.image != "" && props.image != null) {
             const gsRef = ref(storage, "images/" + props.image);
             getDownloadURL(gsRef).then( (url) => {
@@ -143,31 +141,19 @@ const PostPreview = (props: CacheData) => {
             </View>
             {(props.image == null || props.image == "") ? (
                 <></>
-            ) : ( outOfRadius ? (
-                // Blur view not working...
-                <BlurView intensity={80} style={styles.postContainer}> 
-                    <ImageBackground source={{uri: imageURI}}
-                        style={{
-                            width: width - 30, 
-                            height: width - 30, 
-                            borderRadius: 15,
-                            }}
-                        blurRadius={30}>
-                            <RegularText>Unlock the cache!</RegularText>
-                    </ImageBackground>  
-                </BlurView>)
-                : (<View style={styles.postContainer }> 
+            ) : (<View style={styles.postContainer }> 
                     <Image source={{uri: imageURI}}
+                    blurRadius={outOfRadius ? 20 : 0}
                     style={{
                         width: width - 30, 
                         height: width - 30, 
                         borderRadius: 15,
                         }}
                     />
-                </View> )
+                </View> 
             )}
-            <View style={outOfRadius ? styles.blurredText : styles.text}>
-                <RegularText>{props.captionText}</RegularText>
+            <View style={{paddingBottom: 5}} >
+                <RegularText style={outOfRadius ? styles.blurredText : styles.text}>{props.captionText}</RegularText>
             </View>
             <View>
                 <LinearGradient
@@ -220,7 +206,6 @@ const styles = StyleSheet.create({
         alignItems: "center"
     }, 
     text: {
-        // marginTop: 15,
         paddingTop: 10,
         marginLeft: 20,
         marginRight: 20,
