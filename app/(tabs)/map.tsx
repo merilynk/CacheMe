@@ -8,7 +8,7 @@ import Location from 'expo-location';
 import { useLocalSearchParams, useRouter, useSearchParams } from 'expo-router';
 
 // Firebase
-import { db } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { GeoPoint, Timestamp, collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 
@@ -113,7 +113,8 @@ useEffect(() => {
         {postsToRender.map((post) => { // Going through every post and returning a marker object for it
 
           return (
-            <Marker 
+            <Marker
+            pinColor={post.__userId == auth.currentUser?.uid ? 'green' : 'red'}
             key={post.__id}
             coordinate={{
               latitude: post.location.latitude as number,

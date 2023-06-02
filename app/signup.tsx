@@ -32,7 +32,9 @@ export default function Home() {
               email: email,
               name: fullName,
               username: username,
-              profilePicture: "default-profile-picture.jpg"
+              profilePicture: "default-profile-picture.jpg",
+              friends: [],
+              userPosts: []
             });
         })
         .catch((error) => {
