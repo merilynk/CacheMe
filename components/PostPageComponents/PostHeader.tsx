@@ -50,15 +50,14 @@ const PostHeader = (props: CacheData) => {
                 <View style={styles.image}> 
                     <Image source={{uri: props.imageRef}}
                     style={{
-                            width: windowWidth*.86, 
-                            height: windowWidth*.86, 
-                            borderRadius: 15
+                            width: windowWidth, 
+                            height: windowWidth
                         }}
                     />
                 </View> 
             )}
             <View style={styles.caption}>
-                <SmallText style={{marginTop: 10}}>{ props.caption }</SmallText>
+                <RegularText>{ props.caption }</RegularText>
             </View>
         </View>
         
@@ -140,7 +139,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     caption: {
-        width: windowWidth*.85,
+        padding:2,
+        width: windowWidth,
         justifyContent: 'flex-start'
     },
     interactBar: {

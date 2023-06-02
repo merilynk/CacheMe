@@ -1,6 +1,6 @@
 // React Modules
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList, Alert, ListRenderItemInfo } from "react-native"
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList, Alert, ListRenderItemInfo, ActivityIndicator } from "react-native"
 import { LayoutAnimation, RefreshControl } from 'react-native';
 
 // Components
@@ -88,18 +88,9 @@ const Feed = () => {
     })
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             {loading ? (
-                <ScrollView stickyHeaderIndices={[0]} style={styles.container}>
-                    <Header/>
-                    <PostPreview id={""} captionText={""} 
-                        uid={"mgEEj5Bn8PKhEtj2X6dl"} 
-                        image={"4d6de4a1-ee2d-11ed-8ee9-63af3c88610d"}
-                        numComments={0}
-                        numLikes={0}
-                        location={new GeoPoint(-78.3, 105.6)}
-                        timePosted={new Timestamp(800, 894023)}/>
-                </ScrollView>
+                <ActivityIndicator size="large" />
             ) : (
                 <>
                     <Header />
@@ -132,6 +123,7 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 25,
         margin: 0,
+        marginBottom: 50,
         backgroundColor: "#EEF2FF",
     },
 })
