@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { Link, useRouter } from 'expo-router';
 import RegularText from "../Texts/regularText"
 import SmallText from "../Texts/smallText"
 import { GeoPoint } from 'firebase/firestore';
+import { scrambleText } from '../../helpers/post';
 
 const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
@@ -25,7 +26,16 @@ type CacheData = {
   }
 
 const PostHeader = (props: CacheData) => {
+    const [outOfRadius, setOutOfRadius] = useState(true);
     const router = useRouter();
+
+    useEffect( () => {
+            if (props.distBtwn > 5) {
+                setOutOfRadius(true);
+            } else {
+                setOutOfRadius(false);
+            }
+    }, []);
 
    return (
     <View style={styles.container}>
@@ -53,11 +63,12 @@ const PostHeader = (props: CacheData) => {
                             width: windowWidth, 
                             height: windowWidth
                         }}
+                        blurRadius={outOfRadius ? 20 : 0}
                     />
                 </View> 
             )}
             <View style={styles.caption}>
-                <RegularText>{ props.caption }</RegularText>
+                <RegularText>{outOfRadius ? "Move closer to unlock this cache!" : props.caption }</RegularText>
             </View>
         </View>
         
@@ -152,6 +163,21 @@ const styles = StyleSheet.create({
     icons: {
         flexDirection: "row",
         paddingLeft: 15,
+    },blurredText: {
+        margin: 15,
+        marginLeft: 20,
+        marginRight: 20,
+        justifyContent: "flex-start",
+        height: 3,
+        width: 70,
+        shadowOpacity: 1,
+        shadowColor: '#000',
+        shadowOffset: { width: 10, height: 10 },
+        shadowRadius: 5,
+        elevation: 5,
+        borderWidth: 0.5,
+        borderColor: "white",
+        backgroundColor: "rgba(255, 255, 255, 1)"
     }
 
 })
