@@ -13,6 +13,7 @@ type UserData = {
   name: string;
   profilePicture: string;
   username: string;
+  friends: [];
 }
 
 const windowWidth = Dimensions.get('screen').width
@@ -30,7 +31,8 @@ export default function Home() {
             email: "",
             name: "",
             profilePicture: "",
-            username: ""
+            username: "",
+            friends: []
         }
         const userDoc = await getDoc(doc(db, "user", id));
         if (userDoc.exists()) {
@@ -39,6 +41,7 @@ export default function Home() {
           user.name = userDoc.data().name;
           user.profilePicture = userDoc.data().profilePicture;
           user.username = userDoc.data().username;
+          user.friends = userDoc.data().friends;
           setProfilePictureID(user.profilePicture);
         }
         setUser(user);

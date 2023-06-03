@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-//import ProfileInfo from './ProfileInfor'
 import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
@@ -16,6 +15,7 @@ import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-route
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
+import getUserDistanceFromPost from '../helpers/post';
 
 type CacheData = {
     id: string,
@@ -55,7 +55,6 @@ const PostPreview = (props: CacheData) => {
     }
 
     const getImage = async () => {
-        
         if (props.image != "" && props.image != null) {
             const gsRef = ref(storage, "images/" + props.image);
             getDownloadURL(gsRef).then( (url) => {
@@ -71,13 +70,8 @@ const PostPreview = (props: CacheData) => {
         getPoster();
         getImage();
         (async () => {
-            const loc = await getLocation();
-            let currUserLat = loc?.coords.latitude as number;
-            let currUserLong = loc?.coords.longitude as number;
-            let postLat = props.location.latitude;
-            let postLong = props.location.longitude;
-            const distInBtwn = distanceBetween([currUserLat, currUserLong], [postLat, postLong]);
-            setDistBetween(Math.round(distInBtwn));
+            const distInBtwn = await getUserDistanceFromPost(props.location.latitude, props.location.longitude)
+            setDistBetween(distInBtwn);
             console.log("Distance between user and post (km): " + distInBtwn);
             if (distInBtwn > 5) {
                 console.log("Too far => Blur");
@@ -119,31 +113,19 @@ const PostPreview = (props: CacheData) => {
             </View>
             {(props.image == null || props.image == "") ? (
                 <></>
-            ) : ( outOfRadius ? (
-                // Blur view not working...
-                <BlurView intensity={80} style={styles.postContainer}> 
-                    <ImageBackground source={{uri: imageURI}}
-                        style={{
-                            width: width - 30, 
-                            height: width - 30, 
-                            borderRadius: 15,
-                            }}
-                        blurRadius={30}>
-                            <Text>Unlock the cache!</Text>
-                    </ImageBackground>  
-                </BlurView>)
-                : (<View style={styles.postContainer }> 
+            ) : (<View style={styles.postContainer }> 
                     <Image source={{uri: imageURI}}
+                    blurRadius={outOfRadius ? 20 : 0}
                     style={{
                         width: width - 30, 
                         height: width - 30, 
                         borderRadius: 15,
                         }}
                     />
-                </View> )
+                </View> 
             )}
-            <View style={outOfRadius ? styles.blurredText : styles.text}>
-                <RegularText>{props.captionText}</RegularText>
+            <View style={{paddingBottom: 5}} >
+                <RegularText style={outOfRadius ? styles.blurredText : styles.text}>{props.captionText}</RegularText>
             </View>
             <View>
                 <LinearGradient
@@ -196,7 +178,6 @@ const styles = StyleSheet.create({
         alignItems: "center"
     }, 
     text: {
-        // marginTop: 15,
         paddingTop: 10,
         marginLeft: 20,
         marginRight: 20,

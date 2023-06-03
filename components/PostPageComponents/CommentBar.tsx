@@ -8,6 +8,7 @@ const windowHeight = Dimensions.get('screen').height;
 
 type CacheData = {
   __id: string,
+  addComment: (id: string) => void;
 }
 
 const CommentBar = (props: CacheData) => {
@@ -44,6 +45,7 @@ const CommentBar = (props: CacheData) => {
         comments: arrayUnion(newCommentRef.id),
         numComments: increment(1),
       });
+      props.addComment(newCommentRef.id);
       console.log("Cache document updated: ", updateCacheRef.id);
     } catch (e) {
       console.error("Error adding comment document");

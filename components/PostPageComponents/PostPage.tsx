@@ -1,15 +1,12 @@
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, FlatList, Dimensions,} from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, FlatList, Dimensions,} from 'react-native';
 // import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
-import React, {useState, useEffect} from 'react';
-import { useRouter, useLocalSearchParams, } from 'expo-router';
-import { Timestamp, GeoPoint, getDoc, doc } from 'firebase/firestore';
+import React, {useEffect, useState} from 'react';
+import { GeoPoint } from 'firebase/firestore';
 
 import PostHeader from './PostHeader';
-import PostComment from './PostComment';
 import CommentBar from './CommentBar';
-import { getPoster, getTimeDifference } from '../PostData';
-import { db } from '../../firebase';
 import NewPostComment from './NewPostComment';
+import PostPreview from '../Post';
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
@@ -20,7 +17,7 @@ type CacheData = {
   username: string,
   imageRef: string, 
   caption: string, 
-  comments: never[],
+  comments: string[],
   distBtwn: number, 
   timePosted: string, 
   location: GeoPoint | null, 
@@ -30,15 +27,26 @@ type CacheData = {
 
 
 const PostPage = (props: CacheData) => {
+  const [comments, setComments] = useState<string[]>([]);
+  const [numComments, setNumComments] = useState<number>(props.nComments);
+  useEffect (() => {
+    setComments(props.comments);
+    setNumComments(props.nComments);
+  }
+  , [props.comments, props.nComments]) 
+  const newComment = (newComment: string) => {
+    setComments([...comments, newComment]);
+    setNumComments(numComments + 1);
+  }
 
 
   return (
       <KeyboardAvoidingView style={{flex: 1}}>
-        {true ? ( // need to change
           <FlatList style={styles.scrollingComments}
             stickyHeaderIndices={[0]}
             ListHeaderComponentStyle={{backgroundColor: "#EEF2FF"}}
-            data={props.comments}
+            data={comments}
+            extraData={comments}
             keyExtractor={(c) => c}
             ListHeaderComponent={
               <PostHeader id={props.id} 
@@ -50,7 +58,7 @@ const PostPage = (props: CacheData) => {
               timePosted={props.timePosted}
               location={props.location}
               nLikes={props.nLikes}
-              nComments={props.nComments} />
+              nComments={numComments} />
             }
             renderItem={({item}) => {
               return (
@@ -58,10 +66,11 @@ const PostPage = (props: CacheData) => {
               )
             }}>
           </FlatList>
-        ) : (<></>)}
 
 <KeyboardAvoidingView  style={styles.commentInput} behavior='padding'>
-          <CommentBar __id={props.id}/>
+          <CommentBar 
+          __id={props.id}
+          addComment={newComment}/>
         </KeyboardAvoidingView>
       </KeyboardAvoidingView>
   );
