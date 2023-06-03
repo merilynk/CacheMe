@@ -25,6 +25,7 @@ const ViewProfile = () => {
     
     const [user, setUser] =  useState<UserData>();
     const [profilePictureID, setProfilePictureID] = useState<string>();
+    const [friended, setFriended] = useState(false);
     const router = useRouter();
 
 
@@ -53,6 +54,16 @@ const ViewProfile = () => {
         fetchUser(uid);  // grab uid of the user whose profile is being viewed and use it here
     }) 
 
+    const toggleAddFriend = () => {
+      if (friended) {
+        console.log("remove friend")
+        setFriended(false)
+      } else {
+        console.log("add friend")
+        setFriended(true)
+      }
+    }
+
     return (
         <View style={styles.container}>
           <View style={styles.header}>
@@ -74,14 +85,19 @@ const ViewProfile = () => {
                 <Text>Posts</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.friendButton}>
-              <FontAwesome name="user-plus" size={15} style={{paddingRight: 5}}color="black" />
-              <Text style={{fontWeight: "500"}}>Friend</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={styles.friendButton}>
-              <FontAwesome name="check" size={15} style={{paddingRight: 5}}color="black" /> 
-              <Text style={{fontWeight: "500"}}>Added</Text>
-            </TouchableOpacity> */}
+            {friended ? (
+              <TouchableOpacity style={styles.friendButton} onPress={toggleAddFriend}>
+                <FontAwesome name="check" size={15} style={{paddingRight: 5}}color="black" /> 
+                <Text style={{fontWeight: "500"}}>Added</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.friendButton} onPress={toggleAddFriend}>
+                <FontAwesome name="user-plus" size={15} style={{paddingRight: 5}}color="black" />
+                <Text style={{fontWeight: "500"}}>Friend</Text>
+              </TouchableOpacity>
+            )}
+           
+            
           </View>
         </View>
     )

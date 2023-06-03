@@ -15,7 +15,7 @@ import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-route
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
-import {getUserDistanceFromPost, scrambleText, viewProfile} from '../helpers/post';
+import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
 
 type CacheData = {
     id: string,
