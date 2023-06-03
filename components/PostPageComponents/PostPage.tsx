@@ -20,7 +20,7 @@ type CacheData = {
   comments: string[],
   distBtwn: number, 
   timePosted: string, 
-  location: GeoPoint | null, 
+  location: GeoPoint, 
   nLikes: number,
   nComments: number,
 }
