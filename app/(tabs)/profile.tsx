@@ -1,9 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import { auth, db } from '../../firebase'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator } from 'react-native'
+import { auth, db, storage } from '../../firebase'
 import { useRouter } from 'expo-router';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
+import ChangeProfilePicture from '../../components/profile/ChangeProfilePicture';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 type UserData = {
   __id: string;
@@ -11,8 +13,10 @@ type UserData = {
   name: string;
   profilePicture: string;
   username: string;
-  friends: [];
 }
+
+const windowWidth = Dimensions.get('screen').width
+const windowHeight = Dimensions.get('screen').height
 
 
 export default function Home() {
@@ -26,8 +30,7 @@ export default function Home() {
             email: "",
             name: "",
             profilePicture: "",
-            username: "",
-            friends: []
+            username: ""
         }
         const userDoc = await getDoc(doc(db, "user", id));
         if (userDoc.exists()) {
@@ -36,7 +39,6 @@ export default function Home() {
           user.name = userDoc.data().name;
           user.profilePicture = userDoc.data().profilePicture;
           user.username = userDoc.data().username;
-          user.friends = userDoc.data().friends;
           setProfilePictureID(user.profilePicture);
         }
         setUser(user);
@@ -55,42 +57,55 @@ export default function Home() {
           .catch(error => alert(error.message))
       }
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backArrow} onPress={router.back}>
-            <Ionicons name="arrow-back-outline" size={35} color="black" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.profileContainer}>
-          <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 100, height: 100, borderRadius: 50,}}></Image>
-          <Text style={styles.nameText}>FirstName Lastname</Text>
-          <Text>@username</Text>
-          <View style={styles.profileData}>
-            <View style={styles.data}>
-              <Text style={styles.number}>500</Text>
-              <Text>Friends</Text>
-            </View>
-            <View style={styles.data}>
-              <Text style={styles.number}>6</Text>
-              <Text>Posts</Text>
-            </View>
+      const changeProfilePictureID = (newID: string) => {
+        setProfilePictureID(newID);
+      }
+
+    if (user) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backArrow} onPress={router.back}>
+              <Ionicons name="arrow-back-outline" size={35} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.signoutButton} onPress={handleSignOut}>
+              <FontAwesome name="sign-out" size={15} style={{paddingRight: 5}}color="black" /> 
+              <Text style={{fontWeight: "500"}}>Sign Out</Text>
+            </TouchableOpacity>
           </View>
-          {/* <TouchableOpacity style={styles.friendButton}>
-            <FontAwesome name="user-plus" size={15} style={{paddingRight: 5}}color="black" />
-            <Text style={{fontWeight: "500"}}>Friend</Text>
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity style={styles.friendButton}>
-            <FontAwesome name="check" size={15} style={{paddingRight: 5}}color="black" /> 
-            <Text style={{fontWeight: "500"}}>Added</Text>
-          </TouchableOpacity> */}
-          <TouchableOpacity style={styles.friendButton} onPress={handleSignOut}>
-            <FontAwesome name="sign-out" size={15} style={{paddingRight: 5}}color="black" /> 
-            <Text style={{fontWeight: "500"}}>Sign Out</Text>
-          </TouchableOpacity>
+          <View style={styles.profileContainer}>
+            {profilePictureID && <ProfilePicture profilePictureID={profilePictureID}/>}
+            <Text style={styles.nameText}>{user?.name}</Text>
+            <Text>@{user?.username}</Text>
+            <View style={styles.profileData}>
+              <View style={styles.data}>
+                <Text style={styles.number}>500</Text>
+                <Text>Friends</Text>
+              </View>
+              <View style={styles.data}>
+                <Text style={styles.number}>6</Text>
+                <Text>Posts</Text>
+              </View>
+            </View>
+            {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
+            {/* <TouchableOpacity style={styles.friendButton}>
+              <FontAwesome name="user-plus" size={15} style={{paddingRight: 5}}color="black" />
+              <Text style={{fontWeight: "500"}}>Friend</Text>
+            </TouchableOpacity> */}
+            {/* <TouchableOpacity style={styles.friendButton}>
+              <FontAwesome name="check" size={15} style={{paddingRight: 5}}color="black" /> 
+              <Text style={{fontWeight: "500"}}>Added</Text>
+            </TouchableOpacity> */}
+          </View>
+
         </View>
-      </View>
       )
+    }else{
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    }
+    
 }
 
 const styles = StyleSheet.create({
@@ -121,7 +136,6 @@ const styles = StyleSheet.create({
       // flex: 5,
       width: '100%',
       height: 263,
-      alignContent: 'center',
       alignItems: 'center',
       flexWrap: 'wrap',
     },
@@ -133,7 +147,6 @@ const styles = StyleSheet.create({
       flex: 1,
       width: 164,
       height: 41,
-      marginTop: 11,
       justifyContent: 'space-between',
       flexDirection: 'row',
     },
@@ -149,6 +162,16 @@ const styles = StyleSheet.create({
     friendButton: {
       width: 90,
       height: 30,
+      flexDirection: "row",
+      alignItems: 'center',
+      textSize: 12,
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      borderRadius: 10,
+    },
+    signoutButton: {
+      width: 90,
+      height: 30,
       marginTop: 10,
       flexDirection: "row",
       alignItems: 'center',
@@ -156,19 +179,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       backgroundColor: 'white',
       borderRadius: 10,
-    }
-    //  button: {
-    //   backgroundColor: '#0782F9',
-    //   width: '60%',
-    //   padding: 15,
-    //   borderRadius: 10,
-    //   alignItems: 'center',
-    //   marginTop: 40,
-    // },
-    // buttonText: {
-    //   color: 'white',
-    //   fontWeight: '700',
-    //   fontSize: 16,
-    // },
+      marginRight: 10,
+    },
   })
   
