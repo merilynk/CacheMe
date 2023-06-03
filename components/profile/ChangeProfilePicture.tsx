@@ -51,7 +51,7 @@ const pickImage = async () => {
         <TouchableOpacity
         onPress={pickImage}
         style={styles.button}>
-            <RegularText style={styles.buttonText}>Change Profile Picture</RegularText>
+            <RegularText style={styles.buttonText}>Edit Profile</RegularText>
         </TouchableOpacity>
     )
 }
@@ -64,16 +64,18 @@ const styles = StyleSheet.create({
       alignItems: 'center'
     },
      button: {
-      backgroundColor: '#0782F9',
-      width: '60%',
-      padding: 15,
-      borderRadius: 10,
+      width: 90,
+      height: 30,
+      marginTop: 10,
+      flexDirection: "row",
       alignItems: 'center',
-      marginTop: 40,
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      borderRadius: 10,
     },
     buttonText: {
-      color: 'white',
+      color: 'black',
       fontWeight: '700',
-      fontSize: 16,
+      fontSize: 12,
     },
   })
