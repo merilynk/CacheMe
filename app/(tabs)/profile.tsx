@@ -68,16 +68,15 @@ export default function Home() {
             <TouchableOpacity style={styles.backArrow} onPress={router.back}>
               <Ionicons name="arrow-back-outline" size={35} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.friendButton} onPress={handleSignOut}>
+            <TouchableOpacity style={styles.signoutButton} onPress={handleSignOut}>
               <FontAwesome name="sign-out" size={15} style={{paddingRight: 5}}color="black" /> 
               <Text style={{fontWeight: "500"}}>Sign Out</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.profileContainer}>
             {profilePictureID && <ProfilePicture profilePictureID={profilePictureID}/>}
-            <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 100, height: 100, borderRadius: 50,}}></Image>
             <Text style={styles.nameText}>{user?.name}</Text>
-            <Text>{user?.username}</Text>
+            <Text>@{user?.username}</Text>
             <View style={styles.profileData}>
               <View style={styles.data}>
                 <Text style={styles.number}>500</Text>
@@ -137,7 +136,6 @@ const styles = StyleSheet.create({
       // flex: 5,
       width: '100%',
       height: 263,
-      alignContent: 'center',
       alignItems: 'center',
       flexWrap: 'wrap',
     },
@@ -149,7 +147,6 @@ const styles = StyleSheet.create({
       flex: 1,
       width: 164,
       height: 41,
-      marginTop: 11,
       justifyContent: 'space-between',
       flexDirection: 'row',
     },
@@ -165,7 +162,6 @@ const styles = StyleSheet.create({
     friendButton: {
       width: 90,
       height: 30,
-      marginTop: 10,
       flexDirection: "row",
       alignItems: 'center',
       textSize: 12,
@@ -173,18 +169,17 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderRadius: 10,
     },
-    button: {
-      backgroundColor: '#0782F9',
-      width: '60%',
-      padding: 15,
-      borderRadius: 10,
+    signoutButton: {
+      width: 90,
+      height: 30,
+      marginTop: 10,
+      flexDirection: "row",
       alignItems: 'center',
-      marginTop: 40,
-    },
-    buttonText: {
-      color: 'white',
-      fontWeight: '700',
-      fontSize: 16,
+      textSize: 12,
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      borderRadius: 10,
+      marginRight: 10,
     },
   })
   
