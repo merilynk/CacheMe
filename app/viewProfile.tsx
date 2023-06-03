@@ -1,73 +1,58 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator } from 'react-native'
-import { auth, db, storage } from '../../firebase'
+import { auth, db, storage } from '../firebase'
 import { useRouter } from 'expo-router';
-import ProfilePicture from "../../components/profile/ProfilePicture"
+import ProfilePicture from "../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import ChangeProfilePicture from '../../components/profile/ChangeProfilePicture';
+import ChangeProfilePicture from '../components/profile/ChangeProfilePicture';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
+// THIS CODE IS JUST COPIED FROM ./(tabs)/profile.tsx BUT STILL NEEDS CHANGING SO IT WORKS AS "VIEWING THE PROFILE OF OTHERS"
+
 type UserData = {
-  __id: string;
-  email: string;
-  name: string;
-  profilePicture: string;
-  username: string;
+    __id: string;
+    email: string;
+    name: string;
+    profilePicture: string;
+    username: string;
+    friends: [];
 }
 
-const windowWidth = Dimensions.get('screen').width
-const windowHeight = Dimensions.get('screen').height
-
-
-export default function Home() {
-  const [user, setUser] =  useState<UserData>();
-  const [profilePictureID, setProfilePictureID] = useState<string>();
-  
-  useEffect (() => {
-    const fetchUser = async (id: string) => {
-        const user: UserData = {
-            __id:  "",
-            email: "",
-            name: "",
-            profilePicture: "",
-            username: ""
-        }
-        const userDoc = await getDoc(doc(db, "user", id));
-        if (userDoc.exists()) {
-          user.__id = userDoc.data().__id;
-          user.email = userDoc.data().email;
-          user.name = userDoc.data().name;
-          user.profilePicture = userDoc.data().profilePicture;
-          user.username = userDoc.data().username;
-          setProfilePictureID(user.profilePicture);
-        }
-        setUser(user);
-    }
-    fetchUser(auth.currentUser?.uid ? auth.currentUser?.uid : "");
-}, [auth.currentUser?.uid]) 
-
+const ViewProfile = () => {
+    const [user, setUser] =  useState<UserData>();
+    const [profilePictureID, setProfilePictureID] = useState<string>();
     const router = useRouter();
 
-    const handleSignOut = () => {
-        auth
-          .signOut()
-          .then(() => {
-            router.push("/");
-          })
-          .catch(error => alert(error.message))
-      }
+    useEffect (() => {
+        const fetchUser = async (id: string) => {
+            const user: UserData = {
+                __id:  "",
+                email: "",
+                name: "",
+                profilePicture: "",
+                username: "",
+                friends: []
+            }
+            const userDoc = await getDoc(doc(db, "user", id));
+            if (userDoc.exists()) {
+              user.__id = userDoc.data().__id;
+              user.email = userDoc.data().email;
+              user.name = userDoc.data().name;
+              user.profilePicture = userDoc.data().profilePicture;
+              user.username = userDoc.data().username;
+              user.friends = userDoc.data().friends;
+              setProfilePictureID(user.profilePicture);
+            }
+            setUser(user);
+        }
+        fetchUser(auth.currentUser?.uid ? auth.currentUser?.uid : "");  // grab uid of the user whose profile is being viewed and use it here
+    }, [user]) 
 
-      const changeProfilePictureID = (newID: string) => {
-        setProfilePictureID(newID);
-      }
-
-    if (user) {
-      return (
+    return (
         <View style={styles.container}>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.signoutButton} onPress={handleSignOut}>
-              <FontAwesome name="sign-out" size={15} style={{paddingRight: 5}}color="black" /> 
-              <Text style={{fontWeight: "500"}}>Sign Out</Text>
+            <TouchableOpacity style={styles.backArrow} onPress={router.back}>
+              <Ionicons name="arrow-back-outline" size={35} color="black" />
             </TouchableOpacity>
           </View>
           <View style={styles.profileContainer}>
@@ -84,24 +69,18 @@ export default function Home() {
                 <Text>Posts</Text>
               </View>
             </View>
-            {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
-            {/* <TouchableOpacity style={styles.friendButton}>
+            <TouchableOpacity style={styles.friendButton}>
               <FontAwesome name="user-plus" size={15} style={{paddingRight: 5}}color="black" />
               <Text style={{fontWeight: "500"}}>Friend</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             {/* <TouchableOpacity style={styles.friendButton}>
               <FontAwesome name="check" size={15} style={{paddingRight: 5}}color="black" /> 
               <Text style={{fontWeight: "500"}}>Added</Text>
             </TouchableOpacity> */}
           </View>
         </View>
-      )
-    }else{
-      <View style={styles.container}>
-        <ActivityIndicator size="large" />
-      </View>
-    }
-    
+    )
+
 }
 
 const styles = StyleSheet.create({
@@ -178,4 +157,5 @@ const styles = StyleSheet.create({
       marginRight: 10,
     },
   })
-  
+
+export default ViewProfile
