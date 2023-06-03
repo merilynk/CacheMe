@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator } from 'react-native'
 import { auth, db, storage } from '../firebase'
-import { useRouter } from 'expo-router';
+import { useRouter, useSearchParams } from 'expo-router';
 import ProfilePicture from "../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
@@ -19,9 +19,14 @@ type UserData = {
 }
 
 const ViewProfile = () => {
+
+    const { userId } = useSearchParams();
+    const uid = userId as string;
+    
     const [user, setUser] =  useState<UserData>();
     const [profilePictureID, setProfilePictureID] = useState<string>();
     const router = useRouter();
+
 
     useEffect (() => {
         const fetchUser = async (id: string) => {
@@ -45,8 +50,8 @@ const ViewProfile = () => {
             }
             setUser(user);
         }
-        fetchUser(auth.currentUser?.uid ? auth.currentUser?.uid : "");  // grab uid of the user whose profile is being viewed and use it here
-    }, [user]) 
+        fetchUser(uid);  // grab uid of the user whose profile is being viewed and use it here
+    }) 
 
     return (
         <View style={styles.container}>
@@ -65,7 +70,7 @@ const ViewProfile = () => {
                 <Text>Friends</Text>
               </View>
               <View style={styles.data}>
-                <Text style={styles.number}>6</Text>
+                <Text style={styles.number}>{user?.friends.length}</Text>
                 <Text>Posts</Text>
               </View>
             </View>

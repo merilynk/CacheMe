@@ -3,11 +3,12 @@ import { View, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import RegularText from "../Texts/regularText"
 import SmallText from "../Texts/smallText"
 import { GeoPoint } from 'firebase/firestore';
 import { scrambleText } from '../../helpers/post';
+import { auth } from '../../firebase';
 
 const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
@@ -28,6 +29,16 @@ type CacheData = {
 const PostHeader = (props: CacheData) => {
     const [outOfRadius, setOutOfRadius] = useState(true);
     const router = useRouter();
+    const params = useLocalSearchParams();
+
+    const viewProfile = () => {
+        if (props.userId == auth.currentUser?.uid) {
+            router.push({ pathname: 'profile' })
+            return;
+        }
+        const { userId = props.userId } = params;
+        router.push({ pathname: '/viewProfile', params: { userId }});
+    }
 
     useEffect( () => {
             if (props.distBtwn > 5) {
@@ -46,9 +57,9 @@ const PostHeader = (props: CacheData) => {
             <View style={styles.profilePic}>
                 <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 50, height: 50, borderRadius: 25,}}></Image>
             </View>
-            <View style={styles.userName}>
+            <TouchableOpacity style={styles.userName} onPress={viewProfile}>
                 <RegularText>{ props.username }</RegularText>
-            </View>
+            </TouchableOpacity>
             <View style={styles.time}>
                 <RegularText style={{color: "#545350"}}>{ props.timePosted }</RegularText>
             </View>

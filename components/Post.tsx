@@ -15,7 +15,7 @@ import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-route
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
-import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
+import {getUserDistanceFromPost, scrambleText, viewProfile} from '../helpers/post';
 
 type CacheData = {
     id: string,
@@ -95,19 +95,26 @@ const PostPreview = (props: CacheData) => {
 
     const viewPost = () => {
         const { postId = props.id } = params;
-        router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
-        
+        router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}  
     }
 
+    const viewProfile = () => {
+        if (props.uid == auth.currentUser?.uid) {
+            router.push({ pathname: 'profile' })
+            return;
+        }
+        const { userId = props.uid } = params;
+        router.push({ pathname: '/viewProfile', params: { userId }});
+    }
 
     return (
         <View style={styles.outerContainer}>
             <View style={styles.container}>
              <View style={styles.profileContainer}>
                 <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
-                <View style={styles.profileContainer}>
+                <TouchableOpacity style={styles.profileContainer} onPress={viewProfile}>
                     <RegularText style={styles.name} >{ poster }</RegularText>
-                </View>
+                </TouchableOpacity>
              </View>
              <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>

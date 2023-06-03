@@ -1,5 +1,8 @@
 import { distanceBetween } from "geofire-common";
 import getLocation from "./location";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { auth } from "../firebase";
+import { Router } from "@react-navigation/routers";
 
 export async function getUserDistanceFromPost(postLat: number, postLong: number) {
     const loc = await getLocation();
