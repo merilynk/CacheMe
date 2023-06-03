@@ -69,8 +69,7 @@ export default function Home() {
         <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.signoutButton} onPress={handleSignOut}>
-              <FontAwesome name="sign-out" size={15} style={{paddingRight: 5}}color="black" /> 
-              <Text style={{fontWeight: "500"}}>Sign Out</Text>
+              <FontAwesome name="sign-out" size={30} style={{paddingRight: 10}}color="black" /> 
             </TouchableOpacity>
           </View>
           <View style={styles.profileContainer}>
@@ -79,7 +78,7 @@ export default function Home() {
             <Text>@{user?.username}</Text>
             <View style={styles.profileData}>
               <View style={styles.data}>
-                <Text style={styles.number}>500</Text>
+                <Text style={styles.number}>{user?.friends.length}</Text>
                 <Text>Friends</Text>
               </View>
               <View style={styles.data}>
@@ -88,14 +87,6 @@ export default function Home() {
               </View>
             </View>
             {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
-            {/* <TouchableOpacity style={styles.friendButton}>
-              <FontAwesome name="user-plus" size={15} style={{paddingRight: 5}}color="black" />
-              <Text style={{fontWeight: "500"}}>Friend</Text>
-            </TouchableOpacity> */}
-            {/* <TouchableOpacity style={styles.friendButton}>
-              <FontAwesome name="check" size={15} style={{paddingRight: 5}}color="black" /> 
-              <Text style={{fontWeight: "500"}}>Added</Text>
-            </TouchableOpacity> */}
           </View>
         </View>
       )
@@ -121,15 +112,9 @@ const styles = StyleSheet.create({
       width: "100%",
       height: 50,
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-end',
       marginTop: 30,
-    },
-    backArrow: {
-      //flex: 1,
-      width: 50,
-      height: 30,
-      marginLeft: 10,
-      marginTop: 5,
+      backgroundColor: '#EEF2FF',
     },
     profileContainer: {
       // flex: 5,
@@ -137,6 +122,7 @@ const styles = StyleSheet.create({
       height: 263,
       alignItems: 'center',
       flexWrap: 'wrap',
+      backgroundColor: '#EEF2FF',
     },
     nameText: {
       fontSize: 20,
@@ -169,16 +155,14 @@ const styles = StyleSheet.create({
       borderRadius: 10,
     },
     signoutButton: {
-      width: 90,
+      width: 30,
       height: 30,
       marginTop: 10,
+      marginRight: 15,
       flexDirection: "row",
       alignItems: 'center',
-      textSize: 12,
       justifyContent: 'center',
-      backgroundColor: 'white',
       borderRadius: 10,
-      marginRight: 10,
     },
   })
   
