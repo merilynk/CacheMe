@@ -26,6 +26,7 @@ type CacheData = {
     numLikes: number,
     location: GeoPoint,
     timePosted: Timestamp,
+    likeIDs: string[],
 }
 
 const PostPreview = (props: CacheData) => {
@@ -43,9 +44,11 @@ const PostPreview = (props: CacheData) => {
 
     const router = useRouter();
     const params = useLocalSearchParams();
+    const uid: string = auth.currentUser!.uid;
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
+
         if (docSnap.exists()) {
             setPoster(docSnap.data().username)
             return docSnap.data().username;
@@ -54,6 +57,7 @@ const PostPreview = (props: CacheData) => {
             setPoster("InvalidUser");
             return "InvalidUser";
         }
+        
     }
 
     const getImage = async () => {
@@ -72,6 +76,7 @@ const PostPreview = (props: CacheData) => {
     useEffect( () => {
         getPoster();
         getImage();
+        checkForID(uid);
         (async () => {
             const loc = await getLocation();
             let currUserLat = loc?.coords.latitude as number;
@@ -88,6 +93,7 @@ const PostPreview = (props: CacheData) => {
                 setOutOfRadius(false);
             }
         })();
+        
     }, []);
 
     const toggleLike = async () => {
@@ -104,17 +110,24 @@ const PostPreview = (props: CacheData) => {
                 numLikes: increment(1),
                 likeIDs: arrayUnion(auth.currentUser?.uid),
             });
-            
-
-        }
+        
+        };
         setIsLiked(!isLiked);
     };
 
     const viewPost = () => {
         const { postId = props.id } = params;
         router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
-        
     }
+
+    const checkForID = (stringToCheck: string) => {
+        props.likeIDs.forEach((ID) => {
+            if (ID === stringToCheck) {
+                console.log("Matched ID: " + ID);
+                setIsLiked(!isLiked);
+            }
+        });
+    };
 
 
     return (
@@ -140,7 +153,7 @@ const PostPreview = (props: CacheData) => {
                             borderRadius: 15,
                             }}
                         blurRadius={30}>
-                            <Text>Unlock the cache!</Text>
+                            <RegularText>Unlock the cache!</RegularText>
                     </ImageBackground>  
                 </BlurView>)
                 : (<View style={styles.postContainer }> 
@@ -167,7 +180,7 @@ const PostPreview = (props: CacheData) => {
                             <AntDesign name="heart" size={35} color={isLiked ? '#8E4162' : '#FFFFFF'}/>
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{likeCount}</RegularText>
-        
+
                         <TouchableOpacity onPress={viewPost}>
                             <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 5}}/>
                         </TouchableOpacity>
