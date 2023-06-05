@@ -3,11 +3,9 @@ import { auth, db, storage } from '../firebase'
 import { useRouter, useSearchParams } from 'expo-router';
 import ProfilePicture from "../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import ChangeProfilePicture from '../components/profile/ChangeProfilePicture';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-
-// THIS CODE IS JUST COPIED FROM ./(tabs)/profile.tsx BUT STILL NEEDS CHANGING SO IT WORKS AS "VIEWING THE PROFILE OF OTHERS"
 
 type UserData = {
     __id: string;
@@ -50,16 +48,34 @@ const ViewProfile = () => {
               setProfilePictureID(user.profilePicture);
             }
             setUser(user);
+
+            const currUserDoc = await getDoc(doc(db, "user", auth.currentUser?.uid as string));
+            if (currUserDoc.exists()) {
+              let currUserFriendList = currUserDoc.data().friends;
+              if (currUserFriendList.includes(user.__id)) {
+                setFriended(true);
+              }
+              else {
+                setFriended(false);
+              }
+            }
         }
         fetchUser(uid);  // grab uid of the user whose profile is being viewed and use it here
     }) 
 
     const toggleAddFriend = () => {
+      const currUserDoc = doc(db, "user", auth.currentUser?.uid as string);
       if (friended) {
-        console.log("remove friend")
+        console.log("remove friend");
+        updateDoc(currUserDoc, {
+          friends: arrayRemove(user?.__id),
+        });
         setFriended(false)
       } else {
         console.log("add friend")
+        updateDoc(currUserDoc, {
+          friends: arrayUnion(user?.__id),
+        });
         setFriended(true)
       }
     }
@@ -77,11 +93,11 @@ const ViewProfile = () => {
             <Text>@{user?.username}</Text>
             <View style={styles.profileData}>
               <View style={styles.data}>
-                <Text style={styles.number}>500</Text>
+                <Text style={styles.number}>{user?.friends.length}</Text>
                 <Text>Friends</Text>
               </View>
               <View style={styles.data}>
-                <Text style={styles.number}>{user?.friends.length}</Text>
+                <Text style={styles.number}>6</Text>
                 <Text>Posts</Text>
               </View>
             </View>
