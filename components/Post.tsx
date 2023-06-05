@@ -13,6 +13,7 @@ import {BlurView } from 'expo-blur';
 import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
 
 import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
@@ -28,6 +29,7 @@ type CacheData = {
     timePosted: Timestamp,
     likeIDs: string[],
 }
+
 
 const PostPreview = (props: CacheData) => {
 
@@ -92,20 +94,22 @@ const PostPreview = (props: CacheData) => {
 
     const toggleLike = async () => {
         const cacheRef = doc(db, "cache", props.id);
+        const cacheRef = doc(db, "cache", props.id);
         if (isLiked) {
             setLikeCount(likeCount - 1)
             await updateDoc(cacheRef, {
                 numLikes: increment(-1),
-                likeIDs: arrayRemove(auth.currentUser?.uid),
+                likeIDs: arrayRemove("userID"),
             });
         } else {
             setLikeCount(likeCount + 1)
             await updateDoc(cacheRef, {
                 numLikes: increment(1),
-                likeIDs: arrayUnion(auth.currentUser?.uid),
+                likeIDs: arrayUnion("userID"),
             });
-        
-        };
+            
+
+        }
         setIsLiked(!isLiked);
     };
 
