@@ -13,7 +13,7 @@ import Location from 'expo-location';
 import {BlurView } from 'expo-blur';
 import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
 
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 
@@ -27,6 +27,7 @@ type CacheData = {
     location: GeoPoint,
     timePosted: Timestamp,
 }
+
 const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
@@ -89,13 +90,22 @@ const PostPreview = (props: CacheData) => {
     }, []);
 
     const toggleLike = async () => {
+        const cacheRef = doc(db, "cache", props.id);
         if (isLiked) {
             setLikeCount(likeCount - 1)
+            await updateDoc(cacheRef, {
+                numLikes: increment(-1),
+                likeIDs: arrayRemove("userID"),
+            });
         } else {
             setLikeCount(likeCount + 1)
+            await updateDoc(cacheRef, {
+                numLikes: increment(1),
+                likeIDs: arrayUnion("userID"),
+            });
+            
+
         }
-        const cacheRef = doc(db, "cache", props.id);
-        await updateDoc(cacheRef, {numLikes: increment(1)});
         setIsLiked(!isLiked);
     };
 
