@@ -107,9 +107,8 @@ const PostPreview = (props: CacheData) => {
                 numLikes: increment(1),
                 likeIDs: arrayUnion("userID"),
             });
-            
-
-        }
+        
+        };
         setIsLiked(!isLiked);
     };
 
@@ -141,7 +140,20 @@ const PostPreview = (props: CacheData) => {
             </View>
             {(props.image == null || props.image == "") ? (
                 <></>
-            ) : (<View style={styles.postContainer }> 
+            ) : ( outOfRadius ? (
+                // Blur view not working...
+                <BlurView intensity={80} style={styles.postContainer}> 
+                    <ImageBackground source={{uri: imageURI}}
+                        style={{
+                            width: width - 30, 
+                            height: width - 30, 
+                            borderRadius: 15,
+                            }}
+                        blurRadius={30}>
+                            <RegularText>Unlock the cache!</RegularText>
+                    </ImageBackground>  
+                </BlurView>)
+                : (<View style={styles.postContainer }> 
                     <Image source={{uri: imageURI}}
                     blurRadius={outOfRadius ? 20 : 0}
                     style={{
@@ -151,7 +163,7 @@ const PostPreview = (props: CacheData) => {
                         }}
                     />
                 </View> 
-            )}
+            ))}
             <View style={{paddingBottom: 5}} >
                 <RegularText style={outOfRadius ? styles.blurredText : styles.text}>{props.captionText}</RegularText>
             </View>
