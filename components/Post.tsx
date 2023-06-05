@@ -40,6 +40,7 @@ const PostPreview = (props: CacheData) => {
     const [imageURI, setImageURI] = useState<string>();
     const [outOfRadius, setOutOfRadius] = useState(false);
 
+
     const router = useRouter();
     const params = useLocalSearchParams();
 
@@ -95,13 +96,13 @@ const PostPreview = (props: CacheData) => {
             setLikeCount(likeCount - 1)
             await updateDoc(cacheRef, {
                 numLikes: increment(-1),
-                likeIDs: arrayRemove("userID"),
+                likeIDs: arrayRemove(auth.currentUser?.uid),
             });
         } else {
             setLikeCount(likeCount + 1)
             await updateDoc(cacheRef, {
                 numLikes: increment(1),
-                likeIDs: arrayUnion("userID"),
+                likeIDs: arrayUnion(auth.currentUser?.uid),
             });
             
 
