@@ -11,8 +11,7 @@ import getLocation from '../helpers/location';
 import Location from 'expo-location';
 import {BlurView } from 'expo-blur';
 import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
-
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
@@ -26,7 +25,10 @@ type CacheData = {
     numLikes: number,
     location: GeoPoint,
     timePosted: Timestamp,
+    likeIDs: string[],
 }
+
+
 const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
@@ -39,11 +41,14 @@ const PostPreview = (props: CacheData) => {
     const [imageURI, setImageURI] = useState<string>();
     const [outOfRadius, setOutOfRadius] = useState(false);
 
+
     const router = useRouter();
     const params = useLocalSearchParams();
+    const uid: string = auth.currentUser!.uid;
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
+
         if (docSnap.exists()) {
             setPoster(docSnap.data().username)
             return docSnap.data().username;
@@ -52,6 +57,7 @@ const PostPreview = (props: CacheData) => {
             setPoster("InvalidUser");
             return "InvalidUser";
         }
+        
     }
 
     const getImage = async () => {
@@ -69,6 +75,7 @@ const PostPreview = (props: CacheData) => {
     useEffect( () => {
         getPoster();
         getImage();
+        checkForID(uid);
         (async () => {
             const distInBtwn = await getUserDistanceFromPost(props.location.latitude, props.location.longitude)
             setDistBetween(distInBtwn);
@@ -80,27 +87,43 @@ const PostPreview = (props: CacheData) => {
                 setOutOfRadius(false);
             }
         })();
+        
     }, []);
 
     const toggleLike = async () => {
-        if (isLiked) {
-            setLikeCount(likeCount - 1)
-        } else {
-            setLikeCount(likeCount + 1)
-        }
         const cacheRef = doc(db, "cache", props.id);
-        await updateDoc(cacheRef, {
-            numLikes: increment(1),
-            likeIDs: arrayUnion(auth.currentUser?.uid)
-        });
-        setIsLiked(!isLiked);
+        if (isLiked) {
+            setIsLiked(!isLiked);
+            setLikeCount(likeCount - 1)
+            await updateDoc(cacheRef, {
+                numLikes: increment(-1),
+                likeIDs: arrayRemove(uid),
+            });
+        } else {
+            setIsLiked(!isLiked);
+            setLikeCount(likeCount + 1)
+            await updateDoc(cacheRef, {
+                numLikes: increment(1),
+                likeIDs: arrayUnion(uid),
+            });
+        
+        };
+        
     };
 
     const viewPost = () => {
         const { postId = props.id } = params;
         router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
-        
     }
+
+    const checkForID = (stringToCheck: string) => {
+        props.likeIDs.forEach((ID) => {
+            if (ID === stringToCheck) {
+                console.log("Matched ID: " + ID);
+                setIsLiked(!isLiked);
+            }
+        });
+    };
 
 
     return (
@@ -141,7 +164,7 @@ const PostPreview = (props: CacheData) => {
                             <AntDesign name="heart" size={35} color={isLiked ? '#8E4162' : '#FFFFFF'}/>
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{likeCount}</RegularText>
-        
+
                         <TouchableOpacity onPress={viewPost}>
                             <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 5}}/>
                         </TouchableOpacity>
@@ -248,4 +271,3 @@ const styles = StyleSheet.create({
 
 
 export default PostPreview
-
