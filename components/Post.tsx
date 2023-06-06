@@ -12,7 +12,7 @@ import Location from 'expo-location';
 import {BlurView } from 'expo-blur';
 import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
 
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
@@ -26,7 +26,10 @@ type CacheData = {
     numLikes: number,
     location: GeoPoint,
     timePosted: Timestamp,
+    likeIDs: string[],
 }
+
+
 const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
@@ -41,6 +44,7 @@ const PostPreview = (props: CacheData) => {
 
     const router = useRouter();
     const params = useLocalSearchParams();
+    const uid: string = auth.currentUser!.uid;
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
@@ -69,6 +73,7 @@ const PostPreview = (props: CacheData) => {
     useEffect( () => {
         getPoster();
         getImage();
+        checkForID(uid);
         (async () => {
             const distInBtwn = await getUserDistanceFromPost(props.location.latitude, props.location.longitude)
             setDistBetween(distInBtwn);
@@ -83,16 +88,21 @@ const PostPreview = (props: CacheData) => {
     }, []);
 
     const toggleLike = async () => {
+        const cacheRef = doc(db, "cache", props.id);
         if (isLiked) {
-            setLikeCount(likeCount - 1)
+            setLikeCount(likeCount - 1);
+            await updateDoc(cacheRef, {
+                numLikes: increment(-1),
+                likeIDs: arrayRemove(auth.currentUser?.uid)
+            });
         } else {
             setLikeCount(likeCount + 1)
+            await updateDoc(cacheRef, {
+                numLikes: increment(1),
+                likeIDs: arrayUnion(auth.currentUser?.uid)
+            });
         }
-        const cacheRef = doc(db, "cache", props.id);
-        await updateDoc(cacheRef, {
-            numLikes: increment(1),
-            likeIDs: arrayUnion(auth.currentUser?.uid)
-        });
+        
         setIsLiked(!isLiked);
     };
 
@@ -101,6 +111,15 @@ const PostPreview = (props: CacheData) => {
         router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
         
     }
+
+    const checkForID = (stringToCheck: string) => {
+        props.likeIDs.forEach((ID) => {
+            if (ID === stringToCheck) {
+                console.log("Matched ID: " + ID);
+                setIsLiked(!isLiked);
+            }
+        });
+    };
 
 
     return (
