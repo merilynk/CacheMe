@@ -12,7 +12,7 @@ import Location from 'expo-location';
 import {BlurView } from 'expo-blur';
 import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
 
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
@@ -89,7 +89,10 @@ const PostPreview = (props: CacheData) => {
             setLikeCount(likeCount + 1)
         }
         const cacheRef = doc(db, "cache", props.id);
-        await updateDoc(cacheRef, {numLikes: increment(1)});
+        await updateDoc(cacheRef, {
+            numLikes: increment(1),
+            likeIDs: arrayUnion(auth.currentUser?.uid)
+        });
         setIsLiked(!isLiked);
     };
 
