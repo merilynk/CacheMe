@@ -91,9 +91,9 @@ const PostHeader = (props: CacheData) => {
           setUser(user);
       }
       fetchUser(props.userId);
-  }, []) 
+  }, [props.userId]) 
 
-    
+    console.log(profilePictureID);
     if(profilePictureID){
       getProfileImage(profilePictureID as string).then( async (uri) => {
         if (uri) {

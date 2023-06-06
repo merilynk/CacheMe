@@ -96,11 +96,11 @@ const NewPostComment = (props: CommentProps) => {
           setUser(user);
         }
         
-        console.log(pfpuserid);
+        
         if(pfpuserid){
             fetchUser(pfpuserid as string);
         }
-      }, [])
+      }, [pfpuserid])
 
     if(profilePictureID){
       getProfileImage(profilePictureID as string).then( async (uri) => {
