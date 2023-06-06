@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator } from 'react-native'
 import { auth, db, storage } from '../../firebase'
 import { useRouter } from 'expo-router';
-import UserFeed  from "./UserFeed"
+import UserFeed  from "../../components/UserFeed"
 import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
@@ -88,9 +88,11 @@ export default function Home() {
               </View>
             </View>
             {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
-          </View>
         </View>
-      )
+        {/* Feed starts here */}
+        <UserFeed />
+      </View>
+    );
     }else{
       <View style={styles.container}>
         <ActivityIndicator size="large" />
