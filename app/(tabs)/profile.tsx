@@ -90,6 +90,8 @@ export default function Home() {
             {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
           </View>
         </View>
+        // Feed starts here:
+        
       )
     }else{
       <View style={styles.container}>
