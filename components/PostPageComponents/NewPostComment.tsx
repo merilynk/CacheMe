@@ -61,7 +61,6 @@ const NewPostComment = (props: CommentProps) => {
             comment.__id = commentDoc.data().__id;
             comment.__userId = commentDoc.data().__userId;
             setpfpuserid(comment.__userId);
-            console.log(comment.__userId);
             comment.username = await getPoster(comment.__userId)
             // setCommenter(username);
             comment._createdAt = commentDoc.data()._createdAt;
