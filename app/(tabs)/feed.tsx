@@ -24,7 +24,8 @@ const cache = {
     location: new GeoPoint(0, 0),
     numComments: 0,
     numLikes: 0,
-    reported: false
+    reported: false,
+    likeIDs: [] as string[],
 }
 
 type CacheData = {
@@ -37,6 +38,7 @@ type CacheData = {
     numComments: number; 
     numLikes: number; 
     reported: boolean;
+    likeIDs: string[];
 }
 
 const Feed = () => {
@@ -59,7 +61,8 @@ const Feed = () => {
                 location,
                 numComments,
                 numLikes,
-                reported
+                reported,
+                likeIDs,
             } = cache.data();
 
             postsList.push({
@@ -71,7 +74,8 @@ const Feed = () => {
                 location,
                 numComments,
                 numLikes,
-                reported
+                reported,
+                likeIDs,
             });
         });
 
@@ -105,7 +109,8 @@ const Feed = () => {
                                     numComments={item.numComments} 
                                     numLikes={item.numLikes} 
                                     location={item.location} 
-                                    timePosted={item._createdAt} />
+                                    timePosted={item._createdAt}
+                                    likeIDs={item.likeIDs} />
                             );
                         }} 
                         showsVerticalScrollIndicator={false}/>
