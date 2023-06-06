@@ -89,16 +89,10 @@ export default function Home() {
             </View>
             {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
         </View>
-<<<<<<< HEAD
         {/* Feed starts here */}
         <UserFeed />
       </View>
     );
-=======
-        // Feed starts here:
-        
-      )
->>>>>>> b1f96e52850cd2cdf79cf7f146c8e614cc76428b
     }else{
       <View style={styles.container}>
         <ActivityIndicator size="large" />
