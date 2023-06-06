@@ -94,18 +94,7 @@ const Feed = () => {
     return(
         <SafeAreaView style={styles.container}>
             {loading ? (
-                <ScrollView stickyHeaderIndices={[0]} style={styles.container}>
-                    <Header/>
-                    <PostPreview id={""} captionText={""} 
-                        uid={"mgEEj5Bn8PKhEtj2X6dl"} 
-                        image={"4d6de4a1-ee2d-11ed-8ee9-63af3c88610d"}
-                        numComments={0}
-                        numLikes={0}
-                        location={new GeoPoint(-78.3, 105.6)}
-                        timePosted={new Timestamp(800, 894023)}
-                        likeIDs={[]}
-                        />
-                </ScrollView>
+                <ActivityIndicator size="large" />
             ) : (
                 <>
                     <Header />

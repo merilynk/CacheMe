@@ -12,8 +12,7 @@ import Location from 'expo-location';
 import {BlurView } from 'expo-blur';
 import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
 
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
-
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
@@ -27,10 +26,7 @@ type CacheData = {
     numLikes: number,
     location: GeoPoint,
     timePosted: Timestamp,
-    likeIDs: string[],
 }
-
-
 const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
@@ -43,14 +39,11 @@ const PostPreview = (props: CacheData) => {
     const [imageURI, setImageURI] = useState<string>();
     const [outOfRadius, setOutOfRadius] = useState(false);
 
-
     const router = useRouter();
     const params = useLocalSearchParams();
-    const uid: string = auth.currentUser!.uid;
 
     const getPoster = async () => {
         const docSnap = await getDoc(doc(db, "user", props.uid));
-
         if (docSnap.exists()) {
             setPoster(docSnap.data().username)
             return docSnap.data().username;
@@ -59,7 +52,6 @@ const PostPreview = (props: CacheData) => {
             setPoster("InvalidUser");
             return "InvalidUser";
         }
-        
     }
 
     const getImage = async () => {
@@ -77,7 +69,6 @@ const PostPreview = (props: CacheData) => {
     useEffect( () => {
         getPoster();
         getImage();
-        checkForID(uid);
         (async () => {
             const distInBtwn = await getUserDistanceFromPost(props.location.latitude, props.location.longitude)
             setDistBetween(distInBtwn);
@@ -89,41 +80,24 @@ const PostPreview = (props: CacheData) => {
                 setOutOfRadius(false);
             }
         })();
-        
     }, []);
 
     const toggleLike = async () => {
-        const cacheRef = doc(db, "cache", props.id);
         if (isLiked) {
             setLikeCount(likeCount - 1)
-            await updateDoc(cacheRef, {
-                numLikes: increment(-1),
-                likeIDs: arrayRemove("userID"),
-            });
         } else {
             setLikeCount(likeCount + 1)
-            await updateDoc(cacheRef, {
-                numLikes: increment(1),
-                likeIDs: arrayUnion("userID"),
-            });
-        
-        };
+        }
+        const cacheRef = doc(db, "cache", props.id);
+        await updateDoc(cacheRef, {numLikes: increment(1)});
         setIsLiked(!isLiked);
     };
 
     const viewPost = () => {
         const { postId = props.id } = params;
         router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
+        
     }
-
-    const checkForID = (stringToCheck: string) => {
-        props.likeIDs.forEach((ID) => {
-            if (ID === stringToCheck) {
-                console.log("Matched ID: " + ID);
-                setIsLiked(!isLiked);
-            }
-        });
-    };
 
 
     return (
@@ -139,20 +113,7 @@ const PostPreview = (props: CacheData) => {
             </View>
             {(props.image == null || props.image == "") ? (
                 <></>
-            ) : ( outOfRadius ? (
-                // Blur view not working...
-                <BlurView intensity={80} style={styles.postContainer}> 
-                    <ImageBackground source={{uri: imageURI}}
-                        style={{
-                            width: width - 30, 
-                            height: width - 30, 
-                            borderRadius: 15,
-                            }}
-                        blurRadius={30}>
-                            <RegularText>Unlock the cache!</RegularText>
-                    </ImageBackground>  
-                </BlurView>)
-                : (<View style={styles.postContainer }> 
+            ) : (<View style={styles.postContainer }> 
                     <Image source={{uri: imageURI}}
                     blurRadius={outOfRadius ? 20 : 0}
                     style={{
@@ -162,7 +123,7 @@ const PostPreview = (props: CacheData) => {
                         }}
                     />
                 </View> 
-            ))}
+            )}
             <View style={{paddingBottom: 5}} >
                 <RegularText style={outOfRadius ? styles.blurredText : styles.text}>{props.captionText}</RegularText>
             </View>
@@ -177,7 +138,7 @@ const PostPreview = (props: CacheData) => {
                             <AntDesign name="heart" size={35} color={isLiked ? '#8E4162' : '#FFFFFF'}/>
                         </TouchableOpacity>
                         <RegularText style={{ marginLeft: 5}}>{likeCount}</RegularText>
-
+        
                         <TouchableOpacity onPress={viewPost}>
                             <FontAwesome name="comment" size={35} color="white" style={{marginLeft: 5}}/>
                         </TouchableOpacity>
