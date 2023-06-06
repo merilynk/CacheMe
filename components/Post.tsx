@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground} from 'react-native'
+import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground, Dimensions} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +17,9 @@ import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
 
+import getProfileImage from "../helpers/profile";
+
+
 type CacheData = {
     id: string,
     captionText: string,
@@ -27,6 +30,19 @@ type CacheData = {
     location: GeoPoint,
     timePosted: Timestamp,
 }
+
+type UserData = {
+    __id: string;
+    email: string;
+    name: string;
+    profilePicture: string;
+    username: string;
+    friends: [];
+}
+
+const windowWidth = Dimensions.get('screen').width
+
+
 const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
@@ -82,6 +98,47 @@ const PostPreview = (props: CacheData) => {
         })();
     }, []);
 
+
+    const [pfpURI, setpfpURI] = useState("");
+
+    const [user, setUser] =  useState<UserData>();
+    const [profilePictureID, setProfilePictureID] = useState<string>();
+    
+
+    useEffect (() => {
+        const fetchUser = async (id: string) => {
+            const user: UserData = {
+                __id:  "",
+                email: "",
+                name: "",
+                profilePicture: "",
+                username: "",
+                friends: []
+            }
+            const userDoc = await getDoc(doc(db, "user", id));
+            if (userDoc.exists()) {
+              user.__id = userDoc.data().__id;
+              user.email = userDoc.data().email;
+              user.name = userDoc.data().name;
+              user.profilePicture = userDoc.data().profilePicture;
+              user.username = userDoc.data().username;
+              user.friends = userDoc.data().friends;
+              setProfilePictureID(user.profilePicture);
+            }
+            setUser(user);
+        }
+        fetchUser(props.uid);
+    }, [props.uid])
+
+    if(profilePictureID){
+        getProfileImage(profilePictureID as string).then( async (uri) => {
+          if (uri) {
+              setpfpURI(uri);
+          } else {
+              setpfpURI("");
+          }
+     })};
+
     const toggleLike = async () => {
         if (isLiked) {
             setLikeCount(likeCount - 1)
@@ -111,7 +168,14 @@ const PostPreview = (props: CacheData) => {
         <View style={styles.outerContainer}>
             <View style={styles.container}>
              <View style={styles.profileContainer}>
-                <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
+             {pfpURI != '' && 
+                <Image source={{uri: pfpURI}} 
+                style={{
+                    width: windowWidth*.125,
+                    height: windowWidth*.125,
+                    borderRadius: (windowWidth*.125)/2,
+                }}
+             />} 
                 <TouchableOpacity style={styles.profileContainer} onPress={viewProfile}>
                     <RegularText style={styles.name} >{ poster }</RegularText>
                 </TouchableOpacity>
