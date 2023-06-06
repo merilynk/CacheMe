@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator } from 'react-native'
 import { auth, db, storage } from '../../firebase'
 import { useRouter } from 'expo-router';
+import UserFeed  from "./UserFeed"
 import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
