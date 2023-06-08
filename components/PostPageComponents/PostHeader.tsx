@@ -3,11 +3,18 @@ import { View, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import RegularText from "../Texts/regularText"
 import SmallText from "../Texts/smallText"
 import { GeoPoint } from 'firebase/firestore';
 import { scrambleText } from '../../helpers/post';
+import { auth } from '../../firebase';
+
+import { FieldValue, Timestamp, arrayUnion, collection, doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
+import getProfileImage from "../../helpers/profile";
+import { db } from '../../firebase';
+
+
 
 const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
@@ -24,10 +31,30 @@ type CacheData = {
     nLikes: number,
     nComments: number,
   }
+  type UserData = {
+    __id: string;
+    email: string;
+    name: string;
+    profilePicture: string;
+    username: string;
+    friends: [];
+  }
+
+  
 
 const PostHeader = (props: CacheData) => {
     const [outOfRadius, setOutOfRadius] = useState(true);
     const router = useRouter();
+    const params = useLocalSearchParams();
+
+    const viewProfile = () => {
+        if (props.userId == auth.currentUser?.uid) {
+            router.push({ pathname: 'profile' })
+            return;
+        }
+        const { userId = props.userId } = params;
+        router.push({ pathname: '/viewProfile', params: { userId }});
+    }
 
     useEffect( () => {
             if (props.distBtwn > 5) {
@@ -36,6 +63,44 @@ const PostHeader = (props: CacheData) => {
                 setOutOfRadius(false);
             }
     }, [props.distBtwn]);
+    const [pfpURI, setpfpURI] = useState("");
+
+    const [user, setUser] =  useState<UserData>();
+    const [profilePictureID, setProfilePictureID] = useState<string>();
+    
+    useEffect (() => {
+      const fetchUser = async (id: string) => {
+          const user: UserData = {
+              __id:  "",
+              email: "",
+              name: "",
+              profilePicture: "",
+              username: "",
+              friends: []
+          }
+          const userDoc = await getDoc(doc(db, "user", id));
+          if (userDoc.exists()) {
+            user.__id = userDoc.data().__id;
+            user.email = userDoc.data().email;
+            user.name = userDoc.data().name;
+            user.profilePicture = userDoc.data().profilePicture;
+            user.username = userDoc.data().username;
+            user.friends = userDoc.data().friends;
+            setProfilePictureID(user.profilePicture);
+          }
+          setUser(user);
+      }
+      fetchUser(props.userId);
+  }, [props.userId]) 
+
+    if(profilePictureID){
+      getProfileImage(profilePictureID as string).then( async (uri) => {
+        if (uri) {
+            setpfpURI(uri);
+        } else {
+            setpfpURI("");
+        }
+   })};
 
    return (
     <View style={styles.container}>
@@ -44,11 +109,18 @@ const PostHeader = (props: CacheData) => {
                 <Ionicons name="arrow-back-outline" size={35} color="black" />
             </TouchableOpacity>
             <View style={styles.profilePic}>
-                <Image source={require('../../assets/images/takumi.jpeg')} style={{width: 50, height: 50, borderRadius: 25,}}></Image>
-            </View>
-            <View style={styles.userName}>
+            {pfpURI != '' && 
+                <Image source={{uri: pfpURI}} 
+                style={{
+                    width: windowWidth*.125,
+                    height: windowWidth*.125,
+                    borderRadius: (windowWidth*.125)/2,
+                }}
+             />}      
+             </View>
+            <TouchableOpacity style={styles.userName} onPress={viewProfile}>
                 <RegularText>{ props.username }</RegularText>
-            </View>
+            </TouchableOpacity>
             <View style={styles.time}>
                 <RegularText style={{color: "#545350"}}>{ props.timePosted }</RegularText>
             </View>
