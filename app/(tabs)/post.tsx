@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert, KeyboardAvoidingView } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes } from "firebase/storage"
 import {storage, db } from "../../firebase"
@@ -181,6 +181,7 @@ export default function Post() {
 
 
     return(
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.topRow}>
             <BigText>Create Cache</BigText>
@@ -240,6 +241,7 @@ export default function Post() {
             </TouchableOpacity>
           </KeyboardAvoidingView>
         </View>
+        </TouchableWithoutFeedback>
     )
 }
 
