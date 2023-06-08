@@ -35,7 +35,7 @@ const PostHeader = (props: CacheData) => {
             } else {
                 setOutOfRadius(false);
             }
-    }, []);
+    }, [props.distBtwn]);
 
    return (
     <View style={styles.container}>
