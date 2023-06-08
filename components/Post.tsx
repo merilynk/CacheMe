@@ -1,3 +1,4 @@
+// This file is used as a template for how a post should look.
 import React, {useState, useEffect} from 'react'
 import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground, Dimensions} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';

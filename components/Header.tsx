@@ -1,3 +1,4 @@
+// This file is our logo.
 import React from 'react'
 import { View, StyleSheet, Image } from 'react-native'
 
@@ -5,7 +6,6 @@ const Header = () => {
    return (
       <View style={styles.container}>
         <Image source={require("../assets/images/CacheMeLogo.png")} style={styles.image}/>
-
       </View>
     )
 }

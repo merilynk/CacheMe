@@ -1,3 +1,4 @@
+// This is the drop down menu for post radius in creation page.
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { SelectCountry as SelectRadius } from 'react-native-element-dropdown';

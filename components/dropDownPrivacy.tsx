@@ -1,3 +1,4 @@
+// This is the drop down menu for privacy in post creation page.
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { SelectCountry as SelectPrivacy } from 'react-native-element-dropdown';
