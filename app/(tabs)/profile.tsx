@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import UserFeed  from "../../components/UserFeed"
 import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { GeoPoint, Timestamp, doc, getDoc } from 'firebase/firestore';
 import ChangeProfilePicture from '../../components/profile/ChangeProfilePicture';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
@@ -17,6 +17,34 @@ type UserData = {
   friends: [];
 }
 
+const cache = {
+  __id: "",
+  __imageId: "",
+  __userId: "",
+  _createdAt: new Timestamp(0, 0),
+  caption: "",
+  comments: [],
+  likeIDs: [],
+  location: new GeoPoint(0, 0),
+  numComments: 0,
+  numLikes: 0,
+  reported: false
+}
+
+type CacheData = {
+  __id: string; 
+  __imageId: string; 
+  __userId: string; 
+  _createdAt: Timestamp; 
+  caption: string; 
+  comments: string[],
+  likeIDs: string[],
+  location: GeoPoint; 
+  numComments: number; 
+  numLikes: number; 
+  reported: boolean;
+}
+
 const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
 
@@ -24,6 +52,8 @@ const windowHeight = Dimensions.get('screen').height
 export default function Home() {
   const [user, setUser] =  useState<UserData>();
   const [profilePictureID, setProfilePictureID] = useState<string>();
+  const [postsToRender, setPostsToRender] = useState([cache]);
+  const [loading, setLoading] = useState(true);
   
   useEffect (() => {
     const fetchUser = async (id: string) => {
@@ -89,9 +119,9 @@ export default function Home() {
             </View>
             {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
         </View>
-        {/* Feed starts here */}
-        <UserFeed />
       </View>
+      // Feed starts here
+      // <UserFeed />
     );
     }else{
       <View style={styles.container}>
