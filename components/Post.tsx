@@ -193,6 +193,7 @@ const PostPreview = (props: CacheData) => {
     return (
         <View style={styles.outerContainer}>
             <View style={styles.container}>
+            {/* Top bar with profile picture name and time uploaded */}
              <View style={styles.profileContainer}>
              {pfpURI != '' && 
                 <Image source={{uri: pfpURI}} 
@@ -202,6 +203,7 @@ const PostPreview = (props: CacheData) => {
                     borderRadius: (windowWidth*.125)/2,
                 }}
              />} 
+                
                 <TouchableOpacity style={styles.profileContainer} onPress={viewProfile}>
                     <RegularText style={styles.name} >{ poster }</RegularText>
                 </TouchableOpacity>
@@ -221,11 +223,13 @@ const PostPreview = (props: CacheData) => {
                     />
                 </View> 
             )}
+            {/* Caption of post */}
             <View style={{paddingBottom: 5}} >
                 <RegularText style={outOfRadius ? styles.blurredText : styles.text}>{props.captionText}</RegularText>
             </View>
             <View>
-                <LinearGradient
+                {/* The bottom Green Blue bar and post interactables*/}
+                <LinearGradient     
                     colors={['rgba(44, 218, 157, .45)', 'rgba(4, 67, 137, .45)']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
