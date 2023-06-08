@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert, KeyboardAvoidingView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes } from "firebase/storage"
 import {storage, db } from "../../firebase"
@@ -230,15 +230,15 @@ export default function Post() {
             
             {imageURI && <Image source={{ uri: imageURI }} style={styles.image} />}
           </View>
-        
-          <View style={styles.bottomRow}>
+          <KeyboardAvoidingView style={styles.bottomRow}
+          behavior='padding'>
             <TouchableOpacity onPress={pickImage} style={{padding: 8}}>
               <FontAwesome name="picture-o" size={24} color="black"  />
             </TouchableOpacity>
             <TouchableOpacity onPress={takeImage} style={{padding: 8}}>
               <FontAwesome name="camera" size={24} color="black"  />
             </TouchableOpacity>
-          </View>
+          </KeyboardAvoidingView>
         </View>
     )
 }
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: "relative",
     paddingHorizontal: windowWidth/15 ,
-    paddingBottom: 25,
+    marginBottom: 15,
     marginTop: "auto",
     
   },
