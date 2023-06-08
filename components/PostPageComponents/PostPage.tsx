@@ -50,15 +50,15 @@ const PostPage = (props: CacheData) => {
             keyExtractor={(c) => c}
             ListHeaderComponent={
               <PostHeader id={props.id} 
-              userId={props.userId} 
-              username={props.username}
-              imageRef={props.imageRef}
-              caption={props.caption}
-              distBtwn={props.distBtwn} 
-              timePosted={props.timePosted}
-              location={props.location}
-              nLikes={props.nLikes}
-              nComments={numComments} />
+                userId={props.userId} 
+                username={props.username}
+                imageRef={props.imageRef}
+                caption={props.caption}
+                distBtwn={props.distBtwn} 
+                timePosted={props.timePosted}
+                location={props.location}
+                nLikes={props.nLikes}
+                nComments={numComments} />
             }
             renderItem={({item}) => {
               return (
@@ -67,10 +67,10 @@ const PostPage = (props: CacheData) => {
             }}>
           </FlatList>
 
-<KeyboardAvoidingView  style={styles.commentInput} behavior='padding'>
+        <KeyboardAvoidingView  style={styles.commentInput} behavior='padding'>
           <CommentBar 
-          __id={props.id}
-          addComment={newComment}/>
+            __id={props.id}
+            addComment={newComment}/>
         </KeyboardAvoidingView>
       </KeyboardAvoidingView>
   );

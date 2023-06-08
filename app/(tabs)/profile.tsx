@@ -1,12 +1,14 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator, FlatList } from 'react-native'
 import { auth, db, storage } from '../../firebase'
 import { useRouter } from 'expo-router';
 import UserFeed  from "../../components/UserFeed"
 import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
-import { GeoPoint, Timestamp, doc, getDoc } from 'firebase/firestore';
+import { GeoPoint, Timestamp, collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import ChangeProfilePicture from '../../components/profile/ChangeProfilePicture';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import PostPreview from '../../components/Post';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type UserData = {
   __id: string;
@@ -23,7 +25,6 @@ const cache = {
   __userId: "",
   _createdAt: new Timestamp(0, 0),
   caption: "",
-  comments: [],
   likeIDs: [],
   location: new GeoPoint(0, 0),
   numComments: 0,
@@ -37,8 +38,7 @@ type CacheData = {
   __userId: string; 
   _createdAt: Timestamp; 
   caption: string; 
-  comments: string[],
-  likeIDs: string[],
+  likeIDs: never[],
   location: GeoPoint; 
   numComments: number; 
   numLikes: number; 
@@ -56,6 +56,46 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   
   useEffect (() => {
+    const fetchUserPosts = async (id: string) => {
+        const cacheList:CacheData[] = [];
+        const cacheRef = collection(db, "cache");
+        const usersCacheQuery = query(cacheRef, where("__userId", "==", id), orderBy("_createdAt", "desc"));
+        const querySnapshot = await getDocs(usersCacheQuery);
+
+        querySnapshot.forEach((cache) => {
+          const {
+            __id,
+            __imageId,
+            __userId,
+            _createdAt,
+            caption,
+            location,
+            numComments,
+            numLikes,
+            reported,
+            likeIDs,
+          } = cache.data();
+
+          cacheList.push({
+            __id,
+            __imageId,
+            __userId,
+            _createdAt,
+            caption,
+            location,
+            numComments,
+            numLikes,
+            reported,
+            likeIDs,
+          });
+        });
+
+        setPostsToRender(cacheList);
+
+        if (loading) {
+          setLoading(false);
+        }
+    }
     const fetchUser = async (id: string) => {
         const user: UserData = {
             __id:  "",
@@ -78,6 +118,7 @@ export default function Home() {
         setUser(user);
     }
     fetchUser(auth.currentUser?.uid ? auth.currentUser?.uid : "");
+    fetchUserPosts(auth.currentUser?.uid as string);
 }, [auth.currentUser?.uid]) 
 
     const router = useRouter();
@@ -97,32 +138,56 @@ export default function Home() {
 
     if (user) {
       return (
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.signoutButton} onPress={handleSignOut}>
-              <FontAwesome name="sign-out" size={30} style={{paddingRight: 10}}color="black" /> 
-            </TouchableOpacity>
-          </View>
-          <View style={styles.profileContainer}>
-            {profilePictureID && <ProfilePicture profilePictureID={profilePictureID}/>}
-            <Text style={styles.nameText}>{user?.name}</Text>
-            <Text>@{user?.username}</Text>
-            <View style={styles.profileData}>
-              <View style={styles.data}>
-                <Text style={styles.number}>{user?.friends.length}</Text>
-                <Text>Friends</Text>
-              </View>
-              <View style={styles.data}>
-                <Text style={styles.number}>6</Text>
-                <Text>Posts</Text>
-              </View>
+        <>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <TouchableOpacity style={styles.signoutButton} onPress={handleSignOut}>
+                <FontAwesome name="sign-out" size={30} style={{ paddingRight: 10 }} color="black" />
+              </TouchableOpacity>
             </View>
-            {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
-        </View>
-      </View>
-      // Feed starts here
-      // <UserFeed />
-    );
+            <View style={styles.profileContainer}>
+              {profilePictureID && <ProfilePicture profilePictureID={profilePictureID} />}
+              <Text style={styles.nameText}>{user?.name}</Text>
+              <Text>@{user?.username}</Text>
+              <View style={styles.profileData}>
+                <View style={styles.data}>
+                  <Text style={styles.number}>{user?.friends.length}</Text>
+                  <Text>Friends</Text>
+                </View>
+                <View style={styles.data}>
+                  <Text style={styles.number}>{postsToRender.length}</Text>
+                  <Text>Posts</Text>
+                </View>
+              </View>
+              {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
+            </View>
+          </View>
+            {/* Feed starts here
+            <UserFeed /> */}  
+          <View style={styles.profileFeed}>
+            { loading ? (
+              <ActivityIndicator size="large" />
+            ) : (
+              <FlatList data={postsToRender}
+                keyExtractor={(c) => c.__id}
+                renderItem={({ item }) => {
+                  return (
+                    <PostPreview id={item.__id}
+                        captionText={item.caption} 
+                        uid={item.__userId} 
+                        image={item.__imageId}
+                        numComments={item.numComments} 
+                        numLikes={item.numLikes} 
+                        location={item.location} 
+                        timePosted={item._createdAt}
+                        likeIDs={item.likeIDs} />
+                  );
+                }}
+              showsVerticalScrollIndicator={false} />
+            ) }
+          </View>
+        </>
+      );
     }else{
       <View style={styles.container}>
         <ActivityIndicator size="large" />
@@ -133,12 +198,13 @@ export default function Home() {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      // flex: 1,
       justifyContent: 'flex-start',
       flexDirection: 'column',
       alignItems: 'center',
       flexWrap: 'wrap',
       backgroundColor: '#EEF2FF',
+      paddingBottom: 20,
     },
     header: {
       // flex: 1,
@@ -196,6 +262,10 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
+    },
+    profileFeed: {
+      flex: 1,
+      backgroundColor: '#EEF2FF',
     },
   })
   
