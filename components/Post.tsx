@@ -146,21 +146,22 @@ const PostPreview = (props: CacheData) => {
           }
      })};
 
+     // This function toggles the like and unlike.
     const toggleLike = async () => {
         const cacheRef = doc(db, "cache", props.id);
         if (isLiked) {
             setIsLiked(!isLiked);
-            setLikeCount(likeCount - 1)
+            setLikeCount(likeCount - 1)     // Decrement local like counter
             await updateDoc(cacheRef, {
-                numLikes: increment(-1),
-                likeIDs: arrayRemove(uid),
+                numLikes: increment(-1),    // Decrement cache like counter
+                likeIDs: arrayRemove(uid),  // Remove user ID from caches likeID array
             });
         } else {
             setIsLiked(!isLiked);
-            setLikeCount(likeCount + 1)
+            setLikeCount(likeCount + 1)     // Increment local like counter
             await updateDoc(cacheRef, {
-                numLikes: increment(1),
-                likeIDs: arrayUnion(uid),
+                numLikes: increment(1),     // Increment cache like counter
+                likeIDs: arrayUnion(uid),   // Add user ID from caches likeID array
             });
         
         };
@@ -180,11 +181,10 @@ const PostPreview = (props: CacheData) => {
         const { userId = props.uid } = params;
         router.push({ pathname: '/viewProfile', params: { userId }});
     }
-
+    // This function checks if the users ID is inside a caches likeIDs array. If it is, the post is set to liked.
     const checkForID = (stringToCheck: string) => {
         props.likeIDs.forEach((ID) => {
             if (ID === stringToCheck) {
-                console.log("Matched ID: " + ID);
                 setIsLiked(!isLiked);
             }
         });
