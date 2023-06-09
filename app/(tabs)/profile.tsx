@@ -162,8 +162,7 @@ export default function Home() {
               {user?.__id && <ChangeProfilePicture userID={user?.__id} changeProfilePictureID={changeProfilePictureID} />}
             </View>
           </View>
-            {/* Feed starts here
-            <UserFeed /> */}  
+            {/* Feed starts here */}  
           <View style={styles.profileFeed}>
             { loading ? (
               <ActivityIndicator size="large" />
