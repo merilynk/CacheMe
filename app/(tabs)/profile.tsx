@@ -1,7 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator, FlatList } from 'react-native'
 import { auth, db, storage } from '../../firebase'
 import { useRouter } from 'expo-router';
-import UserFeed  from "../../components/UserFeed"
 import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { GeoPoint, Timestamp, collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
