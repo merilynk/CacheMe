@@ -63,7 +63,7 @@ export async function getPoster (uid: string) {
 
 export async function getImage (image: string) {
     let uri = "";
-    if (image != "" || image != null) {
+    if (image != "" && image != null) {
         const gsRef = ref(storage, "images/" + image);
         await getDownloadURL(gsRef).then( (url) => {
             uri = url;

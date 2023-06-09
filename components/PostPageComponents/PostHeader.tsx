@@ -70,6 +70,9 @@ const PostHeader = (props: CacheData) => {
     
     useEffect (() => {
       const fetchUser = async (id: string) => {
+        if(id == "" || id == null){
+            return;
+        }
           const user: UserData = {
               __id:  "",
               email: "",
