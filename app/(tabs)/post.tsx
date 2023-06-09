@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert } from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, Dimensions, TextInput, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes } from "firebase/storage"
 import {storage, db } from "../../firebase"
@@ -16,11 +16,32 @@ import { FontAwesome } from '@expo/vector-icons';
 import { auth } from '../../firebase'
 import getLocation from '../../helpers/location'
 
+import {getDoc} from 'firebase/firestore';
+import getProfileImage from "../../helpers/profile";
+
+
+
+import { useEffect} from 'react';
+
 import {  useRouter } from 'expo-router';
+import ProfilePicture from "../../components/profile/ProfilePicture"
+
+
+type UserData = {
+  __id: string;
+  email: string;
+  name: string;
+  profilePicture: string;
+  username: string;
+  friends: [];
+}
+
 
 
 const windowWidth = Dimensions.get('screen').width
 const windowHeight = Dimensions.get('screen').height
+
+
 
 export default function Post() {
   const router = useRouter();
@@ -43,6 +64,47 @@ export default function Post() {
       router.push("/feed");
       
     }
+
+    const [pfpURI, setpfpURI] = useState("");
+
+    const [user, setUser] =  useState<UserData>();
+    const [profilePictureID, setProfilePictureID] = useState<string>();
+    
+    useEffect (() => {
+      const fetchUser = async (id: string) => {
+          const user: UserData = {
+              __id:  "",
+              email: "",
+              name: "",
+              profilePicture: "",
+              username: "",
+              friends: []
+          }
+          const userDoc = await getDoc(doc(db, "user", id));
+          if (userDoc.exists()) {
+            user.__id = userDoc.data().__id;
+            user.email = userDoc.data().email;
+            user.name = userDoc.data().name;
+            user.profilePicture = userDoc.data().profilePicture;
+            user.username = userDoc.data().username;
+            user.friends = userDoc.data().friends;
+            setProfilePictureID(user.profilePicture);
+          }
+          setUser(user);
+      }
+      fetchUser(auth.currentUser?.uid ? auth.currentUser?.uid : "");
+  }, [auth.currentUser?.uid]) 
+
+    
+    if(profilePictureID){
+      getProfileImage(profilePictureID as string).then( async (uri) => {
+        if (uri) {
+            setpfpURI(uri);
+        } else {
+            setpfpURI("");
+        }
+   })};
+
 
     const addCacheToFirestore = async () => {
       try {
@@ -119,6 +181,7 @@ export default function Post() {
 
 
     return(
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.topRow}>
             <BigText>Create Cache</BigText>
@@ -130,10 +193,20 @@ export default function Post() {
           </View>
 
           <View style={styles.postSettings}>
-            <TouchableOpacity>
-              <RegularText>PFP</RegularText>
-            </TouchableOpacity>
-            
+            <View style={{
+              width: windowWidth * .3,
+              justifyContent: "center",
+              alignItems: "center",
+              }}> 
+                {pfpURI != '' && 
+                <Image source={{uri: pfpURI}} 
+                style={{
+                    width: windowWidth*.15,
+                    height: windowWidth*.15,
+                    borderRadius: (windowWidth*.15)/2
+                }}
+             />}
+            </View>
             <View style={styles.dropDownMenu}>
               <MiniText>Who can see it?</MiniText>
               <SelectPrivacyScreen></SelectPrivacyScreen>
@@ -158,16 +231,17 @@ export default function Post() {
             
             {imageURI && <Image source={{ uri: imageURI }} style={styles.image} />}
           </View>
-        
-          <View style={styles.bottomRow}>
+          <KeyboardAvoidingView style={styles.bottomRow}
+          behavior='padding'>
             <TouchableOpacity onPress={pickImage} style={{padding: 8}}>
               <FontAwesome name="picture-o" size={24} color="black"  />
             </TouchableOpacity>
             <TouchableOpacity onPress={takeImage} style={{padding: 8}}>
               <FontAwesome name="camera" size={24} color="black"  />
             </TouchableOpacity>
-          </View>
+          </KeyboardAvoidingView>
         </View>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -189,7 +263,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: "relative",
     paddingHorizontal: windowWidth/15 ,
-    paddingBottom: 25,
+    marginBottom: 15,
     marginTop: "auto",
     
   },

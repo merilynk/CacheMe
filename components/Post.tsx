@@ -1,5 +1,6 @@
+// This file is used as a template for how a post should look.
 import React, {useState, useEffect} from 'react'
-import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground} from 'react-native'
+import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground, Dimensions} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +17,9 @@ import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
 import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
 
+import getProfileImage from "../helpers/profile";
+
+
 type CacheData = {
     id: string,
     captionText: string,
@@ -27,6 +31,17 @@ type CacheData = {
     timePosted: Timestamp,
     likeIDs: string[],
 }
+
+type UserData = {
+    __id: string;
+    email: string;
+    name: string;
+    profilePicture: string;
+    username: string;
+    friends: [];
+}
+
+const windowWidth = Dimensions.get('screen').width
 
 
 const PostPreview = (props: CacheData) => {
@@ -90,21 +105,63 @@ const PostPreview = (props: CacheData) => {
         
     }, []);
 
+
+    const [pfpURI, setpfpURI] = useState("");
+
+    const [user, setUser] =  useState<UserData>();
+    const [profilePictureID, setProfilePictureID] = useState<string>();
+    
+
+    useEffect (() => {
+        const fetchUser = async (id: string) => {
+            const user: UserData = {
+                __id:  "",
+                email: "",
+                name: "",
+                profilePicture: "",
+                username: "",
+                friends: []
+            }
+            const userDoc = await getDoc(doc(db, "user", id));
+            if (userDoc.exists()) {
+              user.__id = userDoc.data().__id;
+              user.email = userDoc.data().email;
+              user.name = userDoc.data().name;
+              user.profilePicture = userDoc.data().profilePicture;
+              user.username = userDoc.data().username;
+              user.friends = userDoc.data().friends;
+              setProfilePictureID(user.profilePicture);
+            }
+            setUser(user);
+        }
+        fetchUser(props.uid);
+    }, [props.uid])
+
+    if(profilePictureID){
+        getProfileImage(profilePictureID as string).then( async (uri) => {
+          if (uri) {
+              setpfpURI(uri);
+          } else {
+              setpfpURI("");
+          }
+     })};
+
+     // This function toggles the like and unlike.
     const toggleLike = async () => {
         const cacheRef = doc(db, "cache", props.id);
         if (isLiked) {
             setIsLiked(!isLiked);
-            setLikeCount(likeCount - 1)
+            setLikeCount(likeCount - 1)     // Decrement local like counter
             await updateDoc(cacheRef, {
-                numLikes: increment(-1),
-                likeIDs: arrayRemove(uid),
+                numLikes: increment(-1),    // Decrement cache like counter
+                likeIDs: arrayRemove(uid),  // Remove user ID from caches likeID array
             });
         } else {
             setIsLiked(!isLiked);
-            setLikeCount(likeCount + 1)
+            setLikeCount(likeCount + 1)     // Increment local like counter
             await updateDoc(cacheRef, {
-                numLikes: increment(1),
-                likeIDs: arrayUnion(uid),
+                numLikes: increment(1),     // Increment cache like counter
+                likeIDs: arrayUnion(uid),   // Add user ID from caches likeID array
             });
         
         };
@@ -113,13 +170,21 @@ const PostPreview = (props: CacheData) => {
 
     const viewPost = () => {
         const { postId = props.id } = params;
-        router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}
+        router.push({ pathname: '/postPageEX', params: { postId }}); // userId, username, imageRef, caption, distBtwn, timePosted, location, nLikes, liked, nComments}  
     }
 
+    const viewProfile = () => {
+        if (props.uid == auth.currentUser?.uid) {
+            router.push({ pathname: 'profile' })
+            return;
+        }
+        const { userId = props.uid } = params;
+        router.push({ pathname: '/viewProfile', params: { userId }});
+    }
+    // This function checks if the users ID is inside a caches likeIDs array. If it is, the post is set to liked.
     const checkForID = (stringToCheck: string) => {
         props.likeIDs.forEach((ID) => {
             if (ID === stringToCheck) {
-                console.log("Matched ID: " + ID);
                 setIsLiked(!isLiked);
             }
         });
@@ -129,11 +194,20 @@ const PostPreview = (props: CacheData) => {
     return (
         <View style={styles.outerContainer}>
             <View style={styles.container}>
+            {/* Top bar with profile picture name and time uploaded */}
              <View style={styles.profileContainer}>
-                <Image source = {require("../assets/images/takumi.jpeg")} style={styles.profileImage}/>
-                <View style={styles.profileContainer}>
+             {pfpURI != '' && 
+                <Image source={{uri: pfpURI}} 
+                style={{
+                    width: windowWidth*.125,
+                    height: windowWidth*.125,
+                    borderRadius: (windowWidth*.125)/2,
+                }}
+             />} 
+                
+                <TouchableOpacity style={styles.profileContainer} onPress={viewProfile}>
                     <RegularText style={styles.name} >{ poster }</RegularText>
-                </View>
+                </TouchableOpacity>
              </View>
              <Text style={styles.postTime}>{ moment(props.timePosted.toDate()).fromNow() }</Text>
             </View>
@@ -150,11 +224,13 @@ const PostPreview = (props: CacheData) => {
                     />
                 </View> 
             )}
+            {/* Caption of post */}
             <View style={{paddingBottom: 5}} >
                 <RegularText style={outOfRadius ? styles.blurredText : styles.text}>{props.captionText}</RegularText>
             </View>
             <View>
-                <LinearGradient
+                {/* The bottom Green Blue bar and post interactables*/}
+                <LinearGradient     
                     colors={['rgba(44, 218, 157, .45)', 'rgba(4, 67, 137, .45)']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}

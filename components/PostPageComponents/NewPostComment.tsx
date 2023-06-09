@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { Dimensions, View, StyleSheet, SafeAreaView, TouchableOpacity, Image, InteractionManager } from 'react-native';
 import RegularText from "../Texts/regularText"
 import { Timestamp, doc, getDoc } from 'firebase/firestore';
 import { getPoster, getTimeDifference } from '../PostData';
 import { db } from '../../firebase';
+
+import getProfileImage from "../../helpers/profile";
+
 
 type CommentProps = {
     id: string
@@ -19,8 +22,26 @@ type CommentData = {
     timePosted: string;
 }
 
+type UserData = {
+  __id: string;
+  email: string;
+  name: string;
+  profilePicture: string;
+  username: string;
+  friends: [];
+}
+
+const windowWidth = Dimensions.get('screen').width
+
+
 const NewPostComment = (props: CommentProps) => {
     const [comment, setComment] = useState<CommentData>();
+    const [pfpuserid, setpfpuserid] = useState<string>();
+    const [pfpURI, setpfpURI] = useState("");
+
+    const [user, setUser] =  useState<UserData>();
+    const [profilePictureID, setProfilePictureID] = useState<string>();
+
     useEffect(() => {
         // This has to be in here, see: https://devtrium.com/posts/async-functions-useeffect
         const fetchComment = async (id: string) => {
@@ -39,6 +60,7 @@ const NewPostComment = (props: CommentProps) => {
             if (commentDoc.exists()) {
             comment.__id = commentDoc.data().__id;
             comment.__userId = commentDoc.data().__userId;
+            setpfpuserid(comment.__userId);
             comment.username = await getPoster(comment.__userId)
             // setCommenter(username);
             comment._createdAt = commentDoc.data()._createdAt;
@@ -50,7 +72,43 @@ const NewPostComment = (props: CommentProps) => {
             setComment(comment);
         }
         fetchComment(props.id);
-      }, [])
+
+        const fetchUser = async (id: string) => {
+          const user: UserData = {
+              __id:  "",
+              email: "",
+              name: "",
+              profilePicture: "",
+              username: "",
+              friends: []
+          }
+          const userDoc = await getDoc(doc(db, "user", id));
+          if (userDoc.exists()) {
+            user.__id = userDoc.data().__id;
+            user.email = userDoc.data().email;
+            user.name = userDoc.data().name;
+            user.profilePicture = userDoc.data().profilePicture;
+            user.username = userDoc.data().username;
+            user.friends = userDoc.data().friends;
+            setProfilePictureID(user.profilePicture);
+          }
+          setUser(user);
+        }
+        
+        
+        if(pfpuserid){
+            fetchUser(pfpuserid as string);
+        }
+      }, [pfpuserid])
+
+    if(profilePictureID){
+      getProfileImage(profilePictureID as string).then( async (uri) => {
+        if (uri) {
+            setpfpURI(uri);
+        } else {
+            setpfpURI("");
+        }
+   })};
 
       return (
         <>
@@ -58,8 +116,15 @@ const NewPostComment = (props: CommentProps) => {
           <View style={styles.container}>
             <View style={styles.topBar}>
               <View>
-                <Image source={require('../../assets/images/takumi.jpeg')} style={{ width: 30, height: 30, borderRadius: 15 }}></Image>
-              </View>
+              {pfpURI != '' && 
+                <Image source={{uri: pfpURI}} 
+                style={{
+                    width: windowWidth*.1,
+                    height: windowWidth*.1,
+                    borderRadius: (windowWidth*.1)/2
+                }}
+             />}              
+             </View>
               <View style={styles.userName}>
                 <RegularText style={{fontWeight: "bold", fontSize: 14}}>{comment?.username}</RegularText>
               </View>

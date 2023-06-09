@@ -1,3 +1,4 @@
+// Sign up page.
 import { Link, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'

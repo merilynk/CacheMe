@@ -1,7 +1,14 @@
 import { FieldValue, Timestamp, arrayUnion, collection, doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
+import { Image, View, StyleSheet, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import { auth, db } from '../../firebase';
+
+import getProfileImage from "../../helpers/profile";
+
+
+
+import { useEffect} from 'react';
+
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
@@ -9,6 +16,15 @@ const windowHeight = Dimensions.get('screen').height;
 type CacheData = {
   __id: string,
   addComment: (id: string) => void;
+}
+
+type UserData = {
+  __id: string;
+  email: string;
+  name: string;
+  profilePicture: string;
+  username: string;
+  friends: [];
 }
 
 const CommentBar = (props: CacheData) => {
@@ -27,6 +43,46 @@ const CommentBar = (props: CacheData) => {
     stopReply();
     onChangeText('');
   };
+
+  const [pfpURI, setpfpURI] = useState("");
+
+    const [user, setUser] =  useState<UserData>();
+    const [profilePictureID, setProfilePictureID] = useState<string>();
+    
+    useEffect (() => {
+      const fetchUser = async (id: string) => {
+          const user: UserData = {
+              __id:  "",
+              email: "",
+              name: "",
+              profilePicture: "",
+              username: "",
+              friends: []
+          }
+          const userDoc = await getDoc(doc(db, "user", id));
+          if (userDoc.exists()) {
+            user.__id = userDoc.data().__id;
+            user.email = userDoc.data().email;
+            user.name = userDoc.data().name;
+            user.profilePicture = userDoc.data().profilePicture;
+            user.username = userDoc.data().username;
+            user.friends = userDoc.data().friends;
+            setProfilePictureID(user.profilePicture);
+          }
+          setUser(user);
+      }
+      fetchUser(auth.currentUser?.uid ? auth.currentUser?.uid : "");
+  }, [auth.currentUser?.uid]) 
+
+    
+    if(profilePictureID){
+      getProfileImage(profilePictureID as string).then( async (uri) => {
+        if (uri) {
+            setpfpURI(uri);
+        } else {
+            setpfpURI("");
+        }
+   })};
 
   const addCommentToFirestore = async (postId: string) => {
     try {
@@ -74,8 +130,15 @@ const CommentBar = (props: CacheData) => {
       {/* Bottom Row */}
       <View style={styles.bottomRow}>
         <View style={styles.pfp}>
-          <Text>PFP</Text>
-        </View>
+        {pfpURI != '' && 
+                <Image source={{uri: pfpURI}} 
+                style={{
+                    width: windowWidth*.1,
+                    height: windowWidth*.1,
+                    borderRadius: (windowWidth*.1)/2,
+                }}
+             />}       
+            </View>
 
         {/* Comment Input */}
         <TextInput

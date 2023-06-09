@@ -1,4 +1,4 @@
-import MapView, { Heatmap, Marker } from 'react-native-maps';
+import MapView, { Circle, Heatmap, Marker } from 'react-native-maps';
 import { StyleSheet, View, ActivityIndicator, Text, Alert } from 'react-native';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useEffect, useState } from 'react';
@@ -6,6 +6,7 @@ import getLocation from '../../helpers/location';
 import React from 'react';
 import Location from 'expo-location';
 import { useLocalSearchParams, useRouter, useSearchParams } from 'expo-router';
+import MapViewDirections from 'react-native-maps-directions'
 
 // Firebase
 import { auth, db } from '../../firebase';
@@ -90,6 +91,59 @@ useEffect(() => {
         setLoading(false);
     })();
 }, []);
+function toRadians(degrees: number) {
+  return degrees * (Math.PI / 180);
+}
+
+function toDegrees(radians: number) {
+  return radians * (180 / Math.PI);
+}
+
+function calculateMidpoint(lat1: number, lon1: number, lat2: number, lon2: number) {
+  // Convert all latitudes/longitudes from decimal degrees to radians
+  lat1 = toRadians(lat1);
+  lon1 = toRadians(lon1);
+  lat2 = toRadians(lat2);
+  lon2 = toRadians(lon2);
+
+  // calculate the differences between the coordinates
+  var dLon = lon2 - lon1;
+
+  // Calculate Bx and By
+  var Bx = Math.cos(lat2) * Math.cos(dLon);
+  var By = Math.cos(lat2) * Math.sin(dLon);
+
+  // Calculate the midpoint coordinates
+  var midLat = Math.atan2(
+      Math.sin(lat1) + Math.sin(lat2),
+      Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By)
+  );
+  var midLon = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
+
+  // Convert the midpoint coordinates to degrees
+  midLat = toDegrees(midLat);
+  midLon = toDegrees(midLon);
+
+  return { latitude: midLat, longitude: midLon };
+}
+
+function getDistanceInLatDegrees(lat1: number, lon1: number, lat2: number, lon2: number) {
+  var earthRadius = 6371; // Radius of the earth in km
+  var dLat = toRadians(lat2-lat1);  
+  var dLon = toRadians(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = earthRadius * c; // Distance in km
+
+  var kmPerDegree = 111.111; // average km per degree of latitude
+  var dInLatDegrees = d / kmPerDegree;
+  
+  return dInLatDegrees;
+}
+
 
   if(loading){
     return(
@@ -105,11 +159,32 @@ useEffect(() => {
       showsUserLocation={true}
       provider={PROVIDER_GOOGLE}
       region={{
-        latitude: latitude ? parseFloat(latitude as string) as number : location?.coords.latitude as number,
-        longitude: longitude ? parseFloat(longitude as string) as number : location?.coords.longitude as number,
-        latitudeDelta: latitude ? 0.01 : .28,
-        longitudeDelta: longitude ? 0.01 : .28,
+        latitude: latitude ? calculateMidpoint(parseFloat(latitude as string) as number, parseFloat(longitude as string) as number, location?.coords.latitude as number, location?.coords.longitude as number).latitude : location?.coords.latitude as number,
+        longitude: longitude ? calculateMidpoint(parseFloat(latitude as string) as number, parseFloat(longitude as string) as number, location?.coords.latitude as number, location?.coords.longitude as number).longitude : location?.coords.longitude as number,
+        latitudeDelta: latitude ? getDistanceInLatDegrees(parseFloat(latitude as string) as number, parseFloat(longitude as string) as number, location?.coords.latitude as number, location?.coords.longitude as number) * 1.9 : .28,
+        longitudeDelta: longitude ? getDistanceInLatDegrees(parseFloat(latitude as string) as number, parseFloat(longitude as string) as number, location?.coords.latitude as number, location?.coords.longitude as number) * 0.2 : .28,
       }}>
+        <Circle
+        fillColor='rgba(1,1,1,0.5)'
+        radius={5000}
+        center={
+          {latitude: location?.coords.latitude as number,
+          longitude: location?.coords.longitude as number}
+        }
+        ></Circle>
+        {latitude && longitude && <MapViewDirections
+        strokeColor='blue'
+        strokeWidth={5}
+        apikey='AIzaSyCuImeYX2zaOvY2mQ4bRMtixQ-UsMCgHI8'
+        origin={{
+          latitude: location?.coords.latitude as number,
+          longitude: location?.coords.longitude as number
+        }}
+        destination={{
+          latitude: parseFloat(latitude as string) as number,
+          longitude: parseFloat(longitude as string) as number,
+        }}
+        />}
         {postsToRender.map((post) => { // Going through every post and returning a marker object for it
 
           return (
