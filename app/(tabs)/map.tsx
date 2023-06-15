@@ -1,5 +1,5 @@
-import MapView, { Circle, Heatmap, Marker } from 'react-native-maps';
-import { StyleSheet, View, ActivityIndicator, Text, Alert } from 'react-native';
+import MapView, { Circle, Marker } from 'react-native-maps';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useEffect, useState } from 'react';
 import getLocation from '../../helpers/location';

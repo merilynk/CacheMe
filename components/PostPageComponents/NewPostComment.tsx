@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dimensions, View, StyleSheet, SafeAreaView, TouchableOpacity, Image, InteractionManager } from 'react-native';
+import { Dimensions, View, StyleSheet, SafeAreaView, Image } from 'react-native';
 import RegularText from "../Texts/regularText"
 import { Timestamp, doc, getDoc } from 'firebase/firestore';
 import { getPoster, getTimeDifference } from '../PostData';

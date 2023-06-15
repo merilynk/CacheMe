@@ -1,14 +1,13 @@
 // React Modules
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, FlatList, Alert, ListRenderItemInfo, ActivityIndicator } from "react-native"
-import { LayoutAnimation, RefreshControl } from 'react-native';
+import { SafeAreaView, StyleSheet, FlatList, ActivityIndicator } from "react-native"
 
 // Components
 import PostPreview from '../../components/Post'
 import Header from '../../components/Header'
 
 // Firebase
-import { auth, db, storage } from '../../firebase';
+import { db } from '../../firebase';
 import { GeoPoint, Timestamp, collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 

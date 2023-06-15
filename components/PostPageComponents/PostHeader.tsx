@@ -3,14 +3,12 @@ import { View, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { } from '@expo/vector-icons';
-import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import RegularText from "../Texts/regularText"
-import SmallText from "../Texts/smallText"
 import { GeoPoint } from 'firebase/firestore';
-import { scrambleText } from '../../helpers/post';
 import { auth } from '../../firebase';
 
-import { FieldValue, Timestamp, arrayUnion, collection, doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import getProfileImage from "../../helpers/profile";
 import { db } from '../../firebase';
 

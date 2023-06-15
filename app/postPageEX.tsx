@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { useRouter, useLocalSearchParams, useSearchParams } from 'expo-router';
-import { View, StyleSheet, Image, Dimensions } from 'react-native'
+import { useSearchParams } from 'expo-router';
 import PostPage from '../components/PostPageComponents/PostPage'
 import { GeoPoint, Timestamp } from 'firebase/firestore';
-import Location from 'expo-location';
 import { getCacheData, getDistanceBetween, getImage, getPoster, getTimeDifference } from '../components/PostData';
 
 const cache = {

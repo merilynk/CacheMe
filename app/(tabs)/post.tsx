@@ -9,7 +9,7 @@ import { ImageResult } from 'expo-image-manipulator';
 import BigText from '../../components/Texts/bigText';
 import RegularText from '../../components/Texts/regularText';
 import MiniText from '../../components/Texts/miniText';
-import { collection, addDoc, GeoPoint, doc, setDoc, Timestamp } from "firebase/firestore";
+import { collection, GeoPoint, doc, setDoc, Timestamp } from "firebase/firestore";
 import SelectPrivacyScreen from '../../components/dropDownPrivacy';
 import SelectRadiusScreen from '../../components/dropDownRadius';
 import { FontAwesome } from '@expo/vector-icons';
@@ -24,7 +24,6 @@ import getProfileImage from "../../helpers/profile";
 import { useEffect} from 'react';
 
 import {  useRouter } from 'expo-router';
-import ProfilePicture from "../../components/profile/ProfilePicture"
 
 
 type UserData = {

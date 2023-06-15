@@ -1,7 +1,5 @@
-import { getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
-import { storage } from "../../firebase";
-import { Dimensions, View, Image, Text } from "react-native";
+import { Dimensions, View, Image } from "react-native";
 import getProfileImage from "../../helpers/profile";
 
 type profilePictureProps = {

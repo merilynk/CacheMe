@@ -1,21 +1,17 @@
 // This file is used as a template for how a post should look.
 import React, {useState, useEffect} from 'react'
-import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, ImageBackground, Dimensions} from 'react-native'
+import { useWindowDimensions, View, Image, StyleSheet, TouchableOpacity, Text, Dimensions} from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import RegularText from './Texts/regularText';
 import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment';
-import { distanceBetween } from 'geofire-common';
-import getLocation from '../helpers/location';
-import Location from 'expo-location';
-import {BlurView } from 'expo-blur';
-import { Link, useNavigation, useLocalSearchParams, useRouter } from 'expo-router';
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { doc, getDoc, updateDoc, GeoPoint, Timestamp, increment, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db, auth, storage } from '../firebase';;
 import { getDownloadURL, ref } from "firebase/storage";
-import {getUserDistanceFromPost, scrambleText} from '../helpers/post';
+import {getUserDistanceFromPost} from '../helpers/post';
 
 import getProfileImage from "../helpers/profile";
 
@@ -48,7 +44,6 @@ const PostPreview = (props: CacheData) => {
 
     const {width} = useWindowDimensions()
     const [isLiked, setIsLiked] = useState(false);
-    const [isComment, setIsComment] = useState(false);
     const [likeCount, setLikeCount] = useState(props.numLikes);
     const [commentCount, setCommentCount] = useState(props.numComments);
     const [poster, setPoster] = useState("");
@@ -148,16 +143,15 @@ const PostPreview = (props: CacheData) => {
 
      // This function toggles the like and unlike.
     const toggleLike = async () => {
+        setIsLiked(!isLiked);
         const cacheRef = doc(db, "cache", props.id);
         if (isLiked) {
-            setIsLiked(!isLiked);
             setLikeCount(likeCount - 1)     // Decrement local like counter
             await updateDoc(cacheRef, {
                 numLikes: increment(-1),    // Decrement cache like counter
                 likeIDs: arrayRemove(uid),  // Remove user ID from caches likeID array
             });
         } else {
-            setIsLiked(!isLiked);
             setLikeCount(likeCount + 1)     // Increment local like counter
             await updateDoc(cacheRef, {
                 numLikes: increment(1),     // Increment cache like counter

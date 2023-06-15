@@ -6,7 +6,6 @@ import { GeoPoint } from 'firebase/firestore';
 import PostHeader from './PostHeader';
 import CommentBar from './CommentBar';
 import NewPostComment from './NewPostComment';
-import PostPreview from '../Post';
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;

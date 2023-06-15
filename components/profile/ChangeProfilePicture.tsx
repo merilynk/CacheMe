@@ -1,12 +1,10 @@
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
-import { ImageResult } from 'expo-image-manipulator';
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { useEffect, useState } from 'react';
+import { ref, uploadBytes } from "firebase/storage"
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import RegularText from '../Texts/regularText';
-import { auth, db, storage } from '../../firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db, storage } from '../../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 import uuid from 'react-native-uuid';
 
 type ChangeProfilePictureProps = {

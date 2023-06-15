@@ -1,4 +1,4 @@
-import { FieldValue, Timestamp, arrayUnion, collection, doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
+import { Timestamp, arrayUnion, collection, doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Image, View, StyleSheet, Text, Dimensions, TouchableOpacity, TextInput } from 'react-native';
 import { auth, db } from '../../firebase';

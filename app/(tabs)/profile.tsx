@@ -1,13 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ActivityIndicator, FlatList } from 'react-native'
-import { auth, db, storage } from '../../firebase'
+import { StyleSheet, Text, TouchableOpacity, View, Dimensions, ActivityIndicator, FlatList } from 'react-native'
+import { auth, db } from '../../firebase'
 import { useRouter } from 'expo-router';
 import ProfilePicture from "../../components/profile/ProfilePicture"
 import { useEffect, useState } from 'react';
 import { GeoPoint, Timestamp, collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import ChangeProfilePicture from '../../components/profile/ChangeProfilePicture';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import PostPreview from '../../components/Post';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 type UserData = {
   __id: string;

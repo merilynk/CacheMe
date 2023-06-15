@@ -3,7 +3,7 @@ import { Link, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { auth, db, createUserWithEmailAndPassword } from '../firebase';
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, setDoc, doc } from "firebase/firestore";
 
 export default function Home() {
     const [email, setEmail] = useState('');
