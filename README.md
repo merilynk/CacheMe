@@ -22,9 +22,9 @@ REACT_APP_STORAGE_BUCKET="cachemedev.appspot.com"
 REACT_APP_MESSAGING_SENDER_ID="92608567871"
 REACT_APP_APP_ID="1:92608567871:web:044f9f3474d6a713b8b68a"
 REACT_APP_MEASUREMENT_ID="G-H262CCF8PG"
-
-5. Download the Expo Go app on your phone/tablet
-6. Run ```$ npm install```
-7. Then run ```$ npm start```
-8. Scan the QR code in the terminal with the Expo Go app in iOs or with your camera on Android
-9. You can also use an iOs or Android simulator
+```
+4. Download the Expo Go app on your phone/tablet
+5. Run ```$ npm install```
+6. Then run ```$ npm start```
+7. Scan the QR code in the terminal with the Expo Go app in iOs or with your camera on Android
+8. You can also use an iOs or Android simulator
