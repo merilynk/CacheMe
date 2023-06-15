@@ -14,7 +14,7 @@ The app lets you create virtual 'buried treasure' out of special memories you mi
 ## Installation: 
 1. Clone/download the repository
 2. Create a file .env in your main folder
-3. copy these contents down and save it
+3. copy these contents down and save it in the file
 ```REACT_APP_API_KEY="AIzaSyDo0buGzOOIuEH-ScmzcxQhOj9CrRLoPXY"
 REACT_APP_AUTH_DOMAIN="cachemedev.firebaseapp.com"
 REACT_APP_PROJECT_ID="cachemedev"
