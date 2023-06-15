@@ -15,5 +15,6 @@ The app lets you create virtual 'buried treasure' out of special memories you mi
 1. Clone/download the repository
 2. Download the Expo Go app on your phone/tablet
 3. Run ```$ npm install```
-4. Scan the QR code in the terminal with the Expo Go app in iOs or with your camera on Android
-5. You can also use an iOs or Android simulator
+4. Then run ```$ npm start```
+5. Scan the QR code in the terminal with the Expo Go app in iOs or with your camera on Android
+6. You can also use an iOs or Android simulator
